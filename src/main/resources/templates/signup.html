@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>chat app</title>
+    </head>
+    <body>
+        <form method="post">
+            <label>Tên đăng nhập: </label>
+            <input type="text" name="userName" required> <br>
+
+            <label>Email: </label>
+            <input type="text" name="email" required> <br>
+
+            <label>Mật khẩu: </label>
+            <input type="password" name="password" required> <br>
+            
+            <label>Giới thiệu ngắn: </label>
+            <input type="text" name="bio" maxlength="300"> <br>
+            
+            <button name="action" value="register">Gửi</button> <br>
+
+            <p th:text="${message}"></p>
+        </form>
+        <form method="post">
+            <button name="action" value="goback">Quay lại</button>
+        </form>
+    </body>
+</html>
