@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Quản lý Chat App</title>
+        <link rel="stylesheet" th:href="@{/styleManage.css}">
+    </head>
+    <body>
+        <div class="main">
+            <div class="top-taskbar">
+                <button id="goHomeBtn">Quản lý Chat App</button>
+                <input type="text" placeholder="Tìm kiếm" id="searchInput">
+                <button id="logoutBtn">Đăng xuất</button>
+            </div>
+
+            <div class="main-view">
+                <div class="sidebar">
+                    <p>Quản lý người dùng</p>
+                    <p>Quản lý báo cáo</p>
+                </div>
+                <div class="main-view2">
+                </div>
+            </div>
+        </div>
+    </body>
+    <script th:src="@{scriptManage.js}"></script>
+</html>

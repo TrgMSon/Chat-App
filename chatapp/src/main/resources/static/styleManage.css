@@ -1,0 +1,77 @@
+body {
+    margin: 0;
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.top-taskbar {
+    display: flex;
+    width: 100%;
+    border-bottom: 1px solid black;
+    padding-bottom: 10px;
+    padding-top: 20px;
+}
+
+.top-taskbar p {
+    width: 100px;
+    margin: 20px;
+}
+
+.main-view {
+    display: flex;
+    height: 80%;
+    flex: 1;
+    margin-top: 40px;
+}
+
+#searchInput {
+    margin-left: 50%;
+}
+
+#logoutBtn {
+    margin-left: 5%;
+    border: none;
+    background-color: white;
+    cursor: pointer;
+}
+
+#goHomeBtn {
+    font-size: 30px;
+    width: auto;
+    border: none;
+    background-color: white;
+    cursor: pointer;
+    padding-left: 10px;
+}
+
+.sidebar {
+    width: 300px;
+    border: 1px solid black;
+    height: fit-content;
+    margin-right: 10px;
+    margin-left: 10px;
+    border-radius: 4px;
+    padding: 20px;
+}
+
+.sidebar p {
+    padding: 20px;
+    border-bottom: 1px solid black;
+    cursor: pointer;
+}
+
+.sidebar p:hover {
+    background-color: #A9A9A9;
+}
+
+.main-view2 {
+    flex: 1;
+    height: 100%;
+    border: 1px solid black;
+    border-radius: 4px;
+    padding: 20px;
+}

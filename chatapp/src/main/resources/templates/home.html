@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>chat app</title>
+    <link rel="stylesheet" th:href="@{/styleHome.css}">
+    <link rel="stylesheet" th:href="@{/styleModul.css}">
+
+    <!-- https://cdnjs.com/libraries/sockjs-client -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
+    <!-- https://cdnjs.com/libraries/stomp.js/ -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+</head>
+
+<body>
+    <div class="app">
+        <!--side bar-->
+        <aside class="sidebar">
+            <div id="searchForm" class="search-form">
+                <div id="userInfor">
+                    <div class="avatar" id="userIcon" th:data-user-name="${user.userName}"
+                        th:data-first-char="${user.userName.toUpperCase().substring(0, 1)}">
+                        <h2 th:text="${user.userName.toUpperCase().substring(0, 1)}" th:title="${user.userName}"></h2>
+                    </div>
+                    <div id="menu" class="drop-down">
+                        <p th:text="${user.userName}"></p>
+                        <button id="profileBtn" type="button">Thông tin người dùng</button>
+                        <form method="post" th:action="@{/logout}">
+                            <button type="submit">Đăng xuất</button>
+                        </form>
+                    </div>
+                    <h3>Chat App</h3>
+                </div>
+
+                <form id="searchFormInput">
+                    <input type="text" placeholder="Tìm kiếm" id="searchInput">
+                    <button id="closeSearchBtn">Đóng</button>
+                </form>
+
+                <button id="addFriendBtn">Thêm bạn</button>
+                <button id="createGroupBtn">Tạo nhóm</button>
+            </div>
+            <div class="line">
+                <label></label>
+            </div>
+            <ul id="listRoom" name="listRoom" class="list-room">
+                <li class="room" th:each="room : ${rooms}" th:data-room-id="${room.roomId}"
+                    th:data-room-name="${room.roomName}" th:data-room-type="${room.type}"
+                    th:data-first-char="${room.roomName.toUpperCase().substring(0, 1)}">
+
+                    <div class="avatar">
+                        <h1 th:text="${room.roomName.toUpperCase().substring(0, 1)}"></h1>
+                    </div>
+                    <p th:text="${room.roomName}"></p>
+                </li>
+            </ul>
+        </aside>
+
+        <!--chat-->
+        <main class="chat">
+            <div class="chat-title" id="chatTitle">
+                <div class="avatar">
+                    <h1 id="chatTitleIcon"></h1>
+                </div>
+                <h2 id="chatTitleText"></h2>
+            </div>
+
+            <div class="messages" id="messageArea"></div>
+
+            <form class="message-form" id="messageForm">
+                <input type="file" id="imageInput" accept="image/*" multiple hidden>
+                <label for="imageInput" id="lbUploadImg">Gửi hình ảnh</label>
+                <span id="fileName"></span>
+                <input type="text" placeholder="Nhập tin nhắn..." id="messageInput">
+                <button type="submit" hidden></button>
+            </form>
+        </main>
+
+        <div class="hide welcome-page" id="welcomePage">
+            <p>Chào mừng đến với Chat App</p>
+        </div>
+
+        <div class="user-profile" id="userProfile">
+            <h3>Thông tin người dùng: </h3> <br>
+
+            <div>
+                <label>Tên đăng nhập: </label>
+                <label th:text="${user.userName}" id="lbName"></label>
+            </div>
+            <div>
+                <label>Giới thiệu: </label>
+                <label th:text="${user.bio}" id="lbBio"></label>
+            </div>
+
+            <button id="closeUserProfileBtn">Đóng</button>
+        </div>
+
+        <div id="addFriendDiv">
+            <p>Thêm bạn</p>
+            <form id="formAF">
+                <input type="text" placeholder="Tìm kiếm" id="searchInputAF">
+            </form>
+            <div id="listUserArea">
+                <ul id="listUserInfor">
+                    <li class="userInforDiv">
+                    </li>
+                </ul>
+            </div>
+            <button id="closeAFBtn">Đóng</button>
+        </div>
+
+    </div>
+
+    <script th:src="@{/scriptChat.js}"></script>
+    <script th:src="@{/scriptModul.js}"></script>
+</body>
+
+</html>

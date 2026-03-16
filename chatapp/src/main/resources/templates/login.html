@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>chat app</title>
+    </head>
+    <body>
+        <form method="post" id="formLogin">
+            <label>Email: </label>
+            <input type="text" name="email" id="emailInput" value="abc@mail.com"> <br>
+            <label>Mật khẩu: </label>
+            <input type="password" name="password" id="passwordInput" value="12345"> <br>
+            <button>Gửi</button>
+        </form>
+        <button id="signupBtn">Đăng ký</button>
+        <p th:text="${message}"></p>
+    </body>
+    <script th:src="@{/scriptLogin.js}"></script>
+</html>
