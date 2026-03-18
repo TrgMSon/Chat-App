@@ -1,13 +1,19 @@
 package com.example.chatapp.repository;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import com.example.chatapp.dto.UserDTO2;
+import com.example.chatapp.model.Room;
 import com.example.chatapp.model.RoomMember;
 import com.example.chatapp.model.User;
+
+import jakarta.transaction.Transactional;
 
 @Repository
 public interface UserRepo extends JpaRepository<User, String> {
@@ -24,7 +30,40 @@ public interface UserRepo extends JpaRepository<User, String> {
         ArrayList<String> findRoomIdByName(String roomName, String userId);
 
         @Query(value = """
-                        SELECT * FROM user WHERE user_name LIKE %?1% AND user_id <> ?2 
-                        """, nativeQuery = true) // sửa thành tìm user chưa nhắn tin
-        ArrayList<User> findListRoom(String name, String userId);
+                        SELECT u.user_id, u.user_name, u.bio FROM user AS u WHERE user_name LIKE %?1%
+                        AND u.user_id <> ?2 AND NOT EXISTS (SELECT rm1.user_id FROM room_member AS rm1
+                        JOIN room_member AS rm2 ON rm1.room_id = rm2.room_id
+                        WHERE rm1.user_id = ?2 AND rm2.user_id = u.user_id)
+                        AND u.role = 'user' 
+                                          """, nativeQuery = true)
+        ArrayList<UserDTO2> findListRoom(String name, String userId);
+
+        @Query(value = """
+                        SELECT u.user_id, u.user_name, u.bio FROM user AS u WHERE user_name LIKE %?1%
+                        AND u.user_id <> ?2 AND EXISTS (SELECT rm1.user_id FROM room_member AS rm1
+                        JOIN room_member AS rm2 ON rm1.room_id = rm2.room_id
+                        WHERE rm1.user_id = ?2 AND rm2.user_id = u.user_id)
+                        AND u.role = 'user' 
+                        """, nativeQuery = true)
+        ArrayList<UserDTO2> findChattingUser(String name, String userId);
+
+        @Transactional
+        @Modifying
+        @Query(value = """
+                        INSERT INTO room(room_id, type, created_at) VALUES(?1, ?2, ?3);
+                        """, nativeQuery = true)
+        void createRoom(String room_id, String type, LocalDateTime createdAt);
+
+        @Query(value = "SELECT * FROM room WHERE room_id = ?1", nativeQuery = true)
+        Room isExistRoom(String roomId);
+
+        @Transactional
+        @Modifying
+        @Query(value = "INSERT INTO room_member(user_id, room_id, room_name, joined_at) VALUES(?1, ?2, ?3, ?4)", nativeQuery = true)
+        void saveRoomMember(String user_id, String room_id, String room_name, LocalDateTime joinedAt);
+
+        @Transactional
+        @Modifying
+        @Query(value = "INSERT INTO room(room_id, type, created_at) VALUES(?1, ?2, ?3)", nativeQuery = true)
+        void saveRoom(String roomId, String type, LocalDateTime createdAt);
 }

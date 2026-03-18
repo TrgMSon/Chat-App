@@ -1,28 +1,49 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <title>chat app</title>
-    </head>
-    <body>
-        <form method="post">
-            <label>Tên đăng nhập: </label>
-            <input type="text" name="userName" required> <br>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat App</title>
+    <link rel="stylesheet" th:href="@{/styleSignup.css}">
+</head>
+<body>
 
-            <label>Email: </label>
-            <input type="text" name="email" required> <br>
+<div class="container">
+    <h3>Đăng ký tài khoản mới</h3>
 
-            <label>Mật khẩu: </label>
-            <input type="password" name="password" required> <br>
-            
-            <label>Giới thiệu ngắn: </label>
-            <input type="text" name="bio" maxlength="300"> <br>
-            
-            <button name="action" value="register">Gửi</button> <br>
+    <form method="post">
 
-            <p th:text="${message}"></p>
-        </form>
-        <form method="post">
-            <button name="action" value="goback">Quay lại</button>
-        </form>
-    </body>
+        <div class="form-group">
+            <label for="username">Tên người dùng:</label>
+            <input type="text" id="username" name="userName" required>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" placeholder="abc@gmail.com" required>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Mật khẩu:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+
+        <div class="form-group">
+            <label for="bio">Giới thiệu bản thân (Không bắt buộc):</label>
+            <input type="text" id="bio" name="bio">
+        </div>
+
+        <button type="submit" name="action" value="register">Đăng ký</button>
+    </form>
+
+    <div class="error-msg">
+        <span th:text="${error}"></span>
+    </div>
+
+    <div class="login">
+        Đã có tài khoản? <a th:href="@{/login}">Đăng nhập ngay</a>
+    </div>
+
+</div>
+
+</body>
 </html>

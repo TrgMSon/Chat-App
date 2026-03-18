@@ -15,6 +15,7 @@ const userProfile = document.getElementById("userProfile");
 const searchForm = document.getElementById("searchFormInput");
 const searchInput = document.getElementById("searchInput");
 const closeSearchBtn = document.getElementById("closeSearchBtn");
+const fileName = document.getElementById("fileName");
 const userLoginName = userIcon.dataset.userName;
 
 let stompClient = null;
@@ -76,9 +77,20 @@ listRoom.forEach(room => {
 
         messageArea.innerHTML = "";
 
+        let viewMemberBtn = document.createElement("button");
+        viewMemberBtn.innerText = "Xem thành viên";
+        viewMemberBtn.classList.add("viewMemberBtn");
+
         roomType = this.dataset.roomType;
-        const roomName = this.dataset.roomName;
-        const firstChar = this.dataset.firstChar;
+        if (roomType === "group" && chatTitle.querySelector(".viewMemberBtn") === null) {
+            chatTitle.appendChild(viewMemberBtn);
+        }
+        if (roomType === "direct" && chatTitle.querySelector(".viewMemberBtn") !== null) {
+            chatTitle.removeChild(chatTitle.querySelector(".viewMemberBtn"));
+        }
+
+        let roomName = this.dataset.roomName;
+        let firstChar = this.dataset.firstChar;
         chatTitleText.innerText = roomName;
         chatTitleIcon.innerText = firstChar;
 
@@ -109,8 +121,9 @@ function getCurrentDateTime() {
 }
 
 async function sendMessage() {
-    let content = messageInput.value.trim();
     let images = imageInput.files;
+    let content = messageInput.value.trim();
+
 
     if (content === "" && images.length === 0) return;
 
@@ -149,7 +162,7 @@ async function sendMessage() {
 
             stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(messageData));
         }
-        imageInput.innerHTML = "";
+        fileName.innerHTML = "";
     }
 }
 
@@ -229,8 +242,6 @@ function addMessageToUI(message) {
         contentDiv.classList.add("other");
     }
 
-    console.log(message.type + " " + message.content);
-
     if (message.type === "text") {
         const contentElement = document.createElement("p");
         contentElement.innerText = message.content;
@@ -238,6 +249,7 @@ function addMessageToUI(message) {
     }
     else {
         const imageElement = document.createElement("img");
+        imageElement.style.userSelect = "none";
         imageElement.src = message.content;
         contentDiv.appendChild(imageElement);
     }
@@ -275,7 +287,7 @@ buttonCloseProfile.addEventListener("click", function () {
 
 async function getRoomIdByName(roomName) {
     let roomIds = await fetch("/api/searchRoom?roomName=" + roomName);
-    return await roomIds.text();
+    return await roomIds.json();
 }
 
 let roomIds = null;
@@ -284,18 +296,15 @@ searchForm.addEventListener("submit", async function (event) {
     event.preventDefault();
 
     let roomName = searchInput.value.trim();
-    searchInput.value = "";
     if (roomName === "") return;
 
-    roomIds = await getRoomIdByName(roomName);
-    roomIds = roomIds.substring(2, roomIds.length - 2).split(",").filter(Boolean);
+    let response = await getRoomIdByName(roomName);
+    roomIds = response.roomIds;
 
-    if (roomIds.length === 0 || roomIds[0] === "[]") {
+    if (roomIds.length === 0) {
         alert("Không tìm thấy kết quả");
         return;
     }
-
-    closeSearchBtn.classList.remove("hide");
 
     listRoom.forEach(room => {
         let roomId = room.dataset.roomId;
@@ -303,6 +312,8 @@ searchForm.addEventListener("submit", async function (event) {
             room.style.backgroundColor = "#A9A9A9";
         }
     });
+
+    closeSearchBtn.classList.remove("hide");
 });
 
 closeSearchBtn.addEventListener("click", function (event) {
@@ -316,4 +327,6 @@ closeSearchBtn.addEventListener("click", function (event) {
             room.style.backgroundColor = "";
         }
     });
+
+    searchInput.value = "";
 });

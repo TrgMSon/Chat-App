@@ -5,9 +5,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class ChatappApplication { 
-	// chuyển hướng http sang https, check account có bị banned không, thêm bạn tạo nhóm tìm kiếm bạn và nhóm.
-	// tìm kiếm kênh nhắn tin đã có
-	// gửi ảnh
+	// chuyển hướng http sang https, check account có bị banned không
+	// xem thành viên nhóm
 	public static void main(String[] args) {
 		SpringApplication.run(ChatappApplication.class, args);
 	}

@@ -44,7 +44,7 @@ public class MainController {
             if (role.equals("user")) {
                 if (status.equals("allowed")) return "redirect:/home";
                 else {
-                    ra.addAttribute("message", "Tài khoản của bạn đang bị khóa");
+                    ra.addAttribute("error", "Tài khoản của bạn đang bị khóa");
                     return "redirect:/login";
                 }
             }
@@ -54,7 +54,7 @@ public class MainController {
 
             return "redirect:/login";
         } else {
-            ra.addFlashAttribute("message", "Email hoặc mật khẩu không đúng, vui lòng thử lại.");
+            ra.addFlashAttribute("error", "Email hoặc mật khẩu không đúng, vui lòng thử lại.");
             return "redirect:/login";
         }
     }
@@ -88,7 +88,7 @@ public class MainController {
             if (userService.saveUser(user)) {
                 return "redirect:/login";
             } else {
-                model.addAttribute("message", "Tài khoản đã tồn tại, vui lòng thử lại.");
+                model.addAttribute("error", "Tài khoản đã tồn tại, vui lòng thử lại.");
                 return "signup";
             }
         }

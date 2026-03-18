@@ -15,7 +15,8 @@ body {
 /* Sidebar */
 
 .sidebar {
-    width: 350px;
+    min-width: 330px;
+    width: 330px;
     margin-left: 0px;
     border-right: 1px solid black;
 }
@@ -141,7 +142,6 @@ body {
     flex-direction: column;
     width: 100%;
     border-top: 1px solid black;
-    /* position: relative; */
 }
 
 .message-form {
@@ -182,7 +182,6 @@ body {
     margin-top: 25px;
     padding: 10px 10px 10px 0px;
     border-radius: 4px;
-    /* position: relative; */
 }
 
 .message img {
@@ -224,7 +223,7 @@ body {
     padding: 12px;
     width: 350px;
     height: 250px;
-    left: 450px;
+    left: 250px;
     top: 100px;
 }
 
@@ -237,10 +236,6 @@ body {
     margin-top: 10px;
     margin-bottom: 10px;
     justify-content: left;
-}
-
-.user-profile label {
-    margin-left: 4px;
 }
 
 .user-profile button {

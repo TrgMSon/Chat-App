@@ -1,18 +1,41 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <title>chat app</title>
-    </head>
-    <body>
-        <form method="post" id="formLogin">
-            <label>Email: </label>
-            <input type="text" name="email" id="emailInput" value="abc@mail.com"> <br>
-            <label>Mật khẩu: </label>
-            <input type="password" name="password" id="passwordInput" value="12345"> <br>
-            <button>Gửi</button>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Chat App</title>
+    <link rel="stylesheet" th:href="@{/styleLogin.css}">
+</head>
+
+<body>
+
+    <div class="container">
+        <h3>Đăng nhập vào hệ thống</h3>
+
+        <form method="post">
+
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" placeholder="abc@gmail.com" value="abc@mail.com" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Mật khẩu:</label>
+                <input type="password" id="password" name="password" value="12345" required>
+            </div>
+
+            <button type="submit">Đăng nhập</button>
         </form>
-        <button id="signupBtn">Đăng ký</button>
-        <p th:text="${message}"></p>
-    </body>
-    <script th:src="@{/scriptLogin.js}"></script>
+
+        <div class="redirect-link">
+            Chưa có tài khoản? <a th:href="@{/signup}">Đăng ký ngay</a>
+        </div>
+
+        <div class="error-msg">
+            <span th:text="${error}"></span>
+        </div>
+    </div>
+
+</body>
+
 </html>

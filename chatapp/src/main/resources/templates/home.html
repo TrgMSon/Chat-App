@@ -85,28 +85,60 @@
 
             <div>
                 <label>Tên đăng nhập: </label>
-                <label th:text="${user.userName}" id="lbName"></label>
+                <label th:text="${user.userName}"></label>
             </div>
             <div>
                 <label>Giới thiệu: </label>
-                <label th:text="${user.bio}" id="lbBio"></label>
+                <label th:text="${user.bio}"></label>
             </div>
 
             <button id="closeUserProfileBtn">Đóng</button>
         </div>
 
-        <div id="addFriendDiv">
+        <div class="user-profile" id="viewUserBio">
+            <h3>Thông tin người dùng: </h3> <br>
+
+            <div>
+                <label>Tên đăng nhập: </label>
+                <label id="lbName"></label>
+            </div>
+            <div>
+                <label>Giới thiệu: </label>
+                <label id="lbBio"></label>
+            </div>
+
+            <button id="closeviewBioBtn">Đóng</button>
+        </div>
+
+        <div id="addFriendDiv" class="createBox">
             <p>Thêm bạn</p>
-            <form id="formAF">
+            <form id="formAF" class="createForm">
                 <input type="text" placeholder="Tìm kiếm" id="searchInputAF">
             </form>
-            <div id="listUserArea">
+            <div class="listUserArea">
                 <ul id="listUserInfor">
                     <li class="userInforDiv">
                     </li>
                 </ul>
             </div>
             <button id="closeAFBtn">Đóng</button>
+        </div>
+
+        <div id="addGroupDiv" class="createBox">
+            <p>Tạo nhóm</p>
+            <form id="formGroup" class="createForm">
+                <input type="text" placeholder="Nhập tên nhóm" id="nameGroupInput">
+                <input type="text" placeholder="Tìm kiếm" id="searchInputMember">
+            </form>
+            
+            <div class="listUserArea">
+                <ul id="listUserInforToGroup">
+                    <li class="userInforDiv">
+                    </li>
+                </ul>
+            </div>
+            <button id="acptCreateGroup">Xác nhận</button>
+            <button id="closeCreateGroupBtn">Đóng</button>
         </div>
 
     </div>

@@ -1,11 +1,11 @@
-.addFriendDiv {
+.createBox {
     display: flex;
     flex-direction: column;
     position: absolute;
     left: 500px;
     top: 100px;
     width: 500px;
-    height: 500px;
+    height: 550px;
     border: 1px solid black;
     border-radius: 4px;
     background-color: white;
@@ -13,22 +13,30 @@
     font-size: 20px;
 }
 
-.addFriendDiv input {
-    width: 90%;
-    font-size: 20px;
-}
-
-#listUserArea {
+.listUserArea {
     flex: 1;
     display: flex;
     flex-direction: column;
     overflow-y: scroll;
     overflow: auto;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    margin-bottom: 10px;
 }
 
-#closeAFBtn {
+#nameGroupInput, #searchInputMember, #searchInputAF {
+    margin-bottom: 10px;
+    width: 90%;
+    font-size: 20px;
+}
+
+#closeAFBtn, #closeCreateGroupBtn, #acptCreateGroup {
     width: 40%;
     align-self: center;
+}
+
+#acptCreateGroup {
+    margin-bottom: 10px;
 }
 
 #listUserInfor {
@@ -45,8 +53,16 @@
     flex: 1;
 }
 
+.userInforDiv
+
 .userInforDiv:hover {
     background-color: #A9A9A9;
+}
+
+.addBtn {
+    width: 20px;
+    height: 20px;
+    align-self: center;
 }
 
 .viewBio {
@@ -74,4 +90,11 @@
 
 #fileName {
     height: fit-content;
+}
+
+.viewMemberBtn {
+    justify-self: right;
+    padding-right: 15px;
+    height: 30%;
+    align-self: center;
 }
