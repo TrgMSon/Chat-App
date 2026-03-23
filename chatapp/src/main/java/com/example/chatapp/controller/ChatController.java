@@ -21,6 +21,7 @@ import com.example.chatapp.model.User;
 import com.example.chatapp.service.MessageService;
 import com.example.chatapp.service.UserService;
 import com.example.chatapp.dto.MessageDTO;
+import com.example.chatapp.dto.ReportDTO;
 import com.example.chatapp.dto.RoomDTO2;
 import com.example.chatapp.dto.RoomMemberDTO;
 import com.example.chatapp.dto.UserDTO;
@@ -39,13 +40,20 @@ public class ChatController {
 
     @GetMapping("/getMessages")
     public ArrayList<MessageDTO> getMessages(@RequestParam String roomId) {
-        ArrayList<MessageDTO> messageDTOs = messageService.getMessagesByRoom(roomId);
+        ArrayList<MessageDTO> messageDTOs = messageService.getMessagesByRoom(roomId, 0);
+        return messageDTOs;
+    }
+
+    @GetMapping("/getPreMessage")
+    public ArrayList<MessageDTO> getPreMess(@RequestParam String roomId, @RequestParam int pageIndex) {
+        ArrayList<MessageDTO> messageDTOs = messageService.getMessagesByRoom(roomId, pageIndex * 10);
         return messageDTOs;
     }
 
     @GetMapping("/getSession")
     public String getSession(HttpSession session) {
-        return (String) session.getAttribute("userId");
+        String userId = (String) session.getAttribute("userId");
+        return userId;
     }
 
     @GetMapping("/getUserInfor")
@@ -87,25 +95,40 @@ public class ChatController {
         return "/uploads/" + fileName;
     }
 
-    @PostMapping("/createDirectRoom")
-    public void createDirectRoom(@RequestBody UserDTO user, HttpSession session) {
-        String userId = user.getUserId();
-        String userId1 = (String) session.getAttribute("userId");
+    // @PostMapping("/createDirectRoom")
+    // public void createDirectRoom(@RequestBody UserDTO user, HttpSession session) {
+    //     String userId = user.getUserId();
+    //     String userId1 = (String) session.getAttribute("userId");
 
-        Room room = userService.createRoom("direct");
-        userService.createDirectRoomMember(userId1, userId, room);
-        userService.createDirectRoomMember(userId, userId1, room);
+    //     Room room = userService.createRoom("direct");
+    //     userService.createDirectRoomMember(userId1, userId, room);
+    //     userService.createDirectRoomMember(userId, userId1, room);
+    // }
+
+    // @PostMapping("/createGroup")
+    // public void createGroup(@RequestBody RoomMemberDTO room, HttpSession session) {
+    //     Room group = userService.createRoom("group");
+    //     String userIdLogin = (String) session.getAttribute("userId");
+
+    //     ArrayList<String> userIds = room.getUserIds();
+    //     userIds.add(userIdLogin);
+    //     for (String userId : userIds) {
+    //         userService.createGroupMember(userId, group, room.getRoomName());
+    //     }
+    // }
+
+    @GetMapping("/viewMember")
+    public ArrayList<UserDTO2> viewMember(@RequestParam String roomId) {
+        return userService.viewMember(roomId);
     }
 
-    @PostMapping("/createGroup")
-    public void createGroup(@RequestBody RoomMemberDTO room, HttpSession session) {
-        Room group = userService.createRoom("group");
-        String userIdLogin = (String) session.getAttribute("userId");
+    @PostMapping("/sendReport")
+    public boolean sendReport(@RequestBody ReportDTO report) {
+        return userService.sendReport(report);
+    }
 
-        ArrayList<String> userIds = room.getUserIds();
-        userIds.add(userIdLogin);
-        for (String userId : userIds) {
-            userService.createGroupMember(userId, group, room.getRoomName());
-        }
+    @GetMapping("/viewUserDirectRoom")
+    public User findUserInDirectRoom(@RequestParam String roomId, @RequestParam String userLoginId) {
+        return userService.findUserInDirectRoom(roomId, userLoginId);
     }
 }

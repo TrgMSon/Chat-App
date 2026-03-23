@@ -1,5 +1,6 @@
 package com.example.chatapp.controller;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.chatapp.model.User;
+import com.example.chatapp.service.ManageService;
 import com.example.chatapp.service.UserService;
 import com.example.chatapp.dto.RoomDTO;
 
@@ -21,6 +23,9 @@ import jakarta.servlet.http.HttpSession;
 public class MainController {
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ManageService manageService;
 
     @GetMapping("/login")
     public String login(Model model) {
@@ -37,18 +42,21 @@ public class MainController {
 
         if (userService.authUser(user)) {
             user = userService.findUserByEmail(email);
-            session.setAttribute("userId", user.getUserId());
             
             String role = user.getRole();
             String status = user.getStatus();
             if (role.equals("user")) {
-                if (status.equals("allowed")) return "redirect:/home";
+                if (status.equals("allowed")) {
+                    session.setAttribute("userId", user.getUserId());
+                    return "redirect:/home";
+                }
                 else {
-                    ra.addAttribute("error", "Tài khoản của bạn đang bị khóa");
+                    ra.addFlashAttribute("error", "Tài khoản của bạn đang bị khóa");
                     return "redirect:/login";
                 }
             }
             else if (role.equals("admin")) {
+                session.setAttribute("userId", user.getUserId());
                 return "redirect:/manage";
             }
 
@@ -60,12 +68,22 @@ public class MainController {
     }
 
     @GetMapping("/manage")
-    public String manage(HttpSession session) {
+    public String manage(HttpSession session, Model model) {
         String userId = (String) session.getAttribute("userId");
 
         if (userId == null) {
             return "redirect:/login";
         }
+
+        int qtyUser = manageService.getQtyUser();
+        int qtyReport = manageService.getQtyReport();
+        String current_datetime = LocalDateTime.now() + "";
+        String labelQtyReport = "Số lượng báo cáo trong tháng " + current_datetime.substring(6, 7) + ": " + qtyReport;
+        String labelQtyUser = "Số lượng người dùng: " + qtyUser;
+        
+        model.addAttribute("qtyUserReport", labelQtyUser);
+        model.addAttribute("qtyMonthReport", labelQtyReport);
+
         return "management";
     }
 
@@ -75,7 +93,7 @@ public class MainController {
     }
 
     @PostMapping("/signup")
-    public String checkSignup(@ModelAttribute User user, Model model, @RequestParam String action) {
+    public String checkSignup(@ModelAttribute User user, Model model, @RequestParam String action, RedirectAttributes ra) {
         if (action.equals("register")) {
             String email = user.getEmail();
 
@@ -86,9 +104,10 @@ public class MainController {
             user.setStatus("allowed");
 
             if (userService.saveUser(user)) {
+                ra.addFlashAttribute("message", "Đăng ký tài khoản thành công");
                 return "redirect:/login";
             } else {
-                model.addAttribute("error", "Tài khoản đã tồn tại, vui lòng thử lại.");
+                ra.addFlashAttribute("error", "Tài khoản đã tồn tại, vui lòng thử lại.");
                 return "signup";
             }
         }
@@ -112,7 +131,14 @@ public class MainController {
     }
 
     @PostMapping("/logout")
-    public String logout() {
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/login";
+    }
+
+    @GetMapping("/logout")
+    public String showlogout(HttpSession session) {
+        session.invalidate();
         return "redirect:/login";
     }
 }

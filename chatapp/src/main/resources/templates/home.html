@@ -71,7 +71,7 @@
                 <input type="file" id="imageInput" accept="image/*" multiple hidden>
                 <label for="imageInput" id="lbUploadImg">Gửi hình ảnh</label>
                 <span id="fileName"></span>
-                <input type="text" placeholder="Nhập tin nhắn..." id="messageInput">
+                <textarea placeholder="Nhập tin nhắn..." id="messageInput"></textarea>
                 <button type="submit" hidden></button>
             </form>
         </main>
@@ -141,10 +141,33 @@
             <button id="closeCreateGroupBtn">Đóng</button>
         </div>
 
+        <div id="viewMemberDiv" class="createBox">
+            <p>Thành viên nhóm</p>
+            
+            <div class="listUserArea">
+                <ul id="listUserInforInGroup">
+                    <li class="userInforDiv">
+                    </li>
+                </ul>
+            </div>
+
+            <button id="closeViewMemberBtn">Đóng</button>
+        </div>
+
+        <div id="reportWritter" class="hide">
+            <p>Tạo báo cáo</p>
+            <p id="reportedUserInfor"></p>
+            <textarea id="reportContentInput" placeholder="Nhập nội dung báo cáo..."></textarea>
+            <button id="sendReportBtn">Gửi</button>
+            <button id="closeWritter">Đóng</button>
+        </div>
+
     </div>
 
     <script th:src="@{/scriptChat.js}"></script>
     <script th:src="@{/scriptModul.js}"></script>
+    <script th:src="@{/scriptPaging.js}"></script>
+    <!-- <script th:src="@{/scriptManage.js}"></script> -->
 </body>
 
 </html>

@@ -15,8 +15,8 @@ public class MessageService {
     @Autowired
     private MessageRepo messageRepo;
 
-    public ArrayList<MessageDTO> getMessagesByRoom(String roomId) {
-        ArrayList<Message> messages = messageRepo.findMessagesByRoom(roomId);
+    public ArrayList<MessageDTO> getMessagesByRoom(String roomId, int index) {
+        ArrayList<Message> messages = messageRepo.findMessagesByRoom(roomId, index);
         ArrayList<MessageDTO> messageDTOs = new ArrayList<>();
 
         for (Message message : messages) {

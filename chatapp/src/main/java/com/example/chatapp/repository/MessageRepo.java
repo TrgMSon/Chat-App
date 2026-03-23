@@ -16,9 +16,11 @@ import jakarta.transaction.Transactional;
 public interface MessageRepo extends JpaRepository<Message, Long> {
     @Query(value = """
             SELECT m.* FROM message AS m
-            WHERE m.room_id = ?1
+            WHERE m.room_id = ?1 
+            ORDER BY m.created_at DESC
+            LIMIT ?2 , 10
             """, nativeQuery=true)
-    ArrayList<Message> findMessagesByRoom(String roomId);
+    ArrayList<Message> findMessagesByRoom(String roomId, int index);
 
     @Transactional
     @Modifying

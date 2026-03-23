@@ -30,12 +30,12 @@
     font-size: 20px;
 }
 
-#closeAFBtn, #closeCreateGroupBtn, #acptCreateGroup {
+#closeAFBtn, #closeCreateGroupBtn, #acptCreateGroup, #closeViewMemberBtn, #closeWritter, #sendReportBtn {
     width: 40%;
     align-self: center;
 }
 
-#acptCreateGroup {
+#acptCreateGroup, #sendReportBtn {
     margin-bottom: 10px;
 }
 
@@ -46,14 +46,11 @@
 
 .userInforDiv {
     display: flex;
-
 }
 
 .userInforDiv p {
     flex: 1;
 }
-
-.userInforDiv
 
 .userInforDiv:hover {
     background-color: #A9A9A9;
@@ -71,7 +68,7 @@
     height: 50%;
 }
 
-.chatOption {
+.chatOption, .reportBtn {
     align-self: center;
     height: 50%;
 }
@@ -97,4 +94,14 @@
     padding-right: 15px;
     height: 30%;
     align-self: center;
+}
+
+#reportContentInput {
+    flex: 1;
+    resize: none;
+    width: 100%;
+    height: 90%;
+    font-size: 18px;
+    white-space: pre-line;
+    margin-bottom: 10px;
 }

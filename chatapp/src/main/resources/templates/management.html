@@ -1,26 +1,46 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <title>Quản lý Chat App</title>
-        <link rel="stylesheet" th:href="@{/styleManage.css}">
-    </head>
-    <body>
-        <div class="main">
-            <div class="top-taskbar">
-                <button id="goHomeBtn">Quản lý Chat App</button>
+
+<head>
+    <title>Quản lý Chat App</title>
+    <link rel="stylesheet" th:href="@{/styleManage.css}">
+    
+    <!-- https://cdnjs.com/libraries/sockjs-client -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
+    <!-- https://cdnjs.com/libraries/stomp.js/ -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+</head>
+
+<body>
+    <div class="main">
+        <div class="top-taskbar">
+            <button id="goHomeBtn">Quản lý Chat App</button>
+            <form id="searchForm">
                 <input type="text" placeholder="Tìm kiếm" id="searchInput">
-                <button id="logoutBtn">Đăng xuất</button>
+            </form>
+            <button id="logoutBtn">Đăng xuất</button>
+        </div>
+
+        <div class="main-view">
+            <div class="sidebar">
+                <p id="manageUserBtn">Quản lý người dùng</p>
+                <p id="manageReportBtn">Quản lý báo cáo</p>
             </div>
 
-            <div class="main-view">
-                <div class="sidebar">
-                    <p>Quản lý người dùng</p>
-                    <p>Quản lý báo cáo</p>
+            <div class="main-view2">
+                <div id="qtyUserDiv">
+                    <p th:text="${qtyUserReport}"></p>
                 </div>
-                <div class="main-view2">
+                <div id="qtyReportDiv">
+                    <p th:text="${qtyMonthReport}"></p>
                 </div>
+
             </div>
+
         </div>
-    </body>
+    </div>
+
     <script th:src="@{scriptManage.js}"></script>
+</body>
+
 </html>

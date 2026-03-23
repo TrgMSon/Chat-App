@@ -16,7 +16,7 @@
 
             <div class="form-group">
                 <label for="email">Email:</label>
-                <input type="email" id="email" name="email" placeholder="abc@gmail.com" value="abc@mail.com" required>
+                <input type="email" id="email" name="email" placeholder="ab@gmail.com" value="ab@mail.com" required>
             </div>
 
             <div class="form-group">
@@ -33,6 +33,10 @@
 
         <div class="error-msg">
             <span th:text="${error}"></span>
+        </div>
+
+        <div class="ok-msg">
+            <span th:text="${message}"></span>
         </div>
     </div>
 

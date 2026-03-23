@@ -16,42 +16,114 @@ const searchForm = document.getElementById("searchFormInput");
 const searchInput = document.getElementById("searchInput");
 const closeSearchBtn = document.getElementById("closeSearchBtn");
 const fileName = document.getElementById("fileName");
+
+let userLoginId = null;
+let roomType = null;
+let roomId = null;
+let tmpDate = null;
 const userLoginName = userIcon.dataset.userName;
+
+async function initUserId() {
+    let userId = await fetch("/api/getSession");
+    userLoginId = await userId.text();
+    connect();
+}
+
+initUserId();
 
 let stompClient = null;
 
 function connect() {
     let socket = new SockJS("/ws");
     stompClient = Stomp.over(socket);
-    stompClient.connect({}, onConnected, onError);
+    stompClient.connect({
+        userId: userLoginId
+    },
+        onConnected, onError);
 }
-
-connect();
 
 function onConnected() {
     console.log("Kết nối WebSocket thành công");
 
     listRoom.forEach(room => {
-        let roomId = room.dataset.roomId;
-        stompClient.subscribe("/topic/room/" + roomId, onMessageReceived); // tin nhắn realtime
+        stompClient.subscribe("/topic/room/" + room.dataset.roomId, onMessageReceived); // tin nhắn realtime
     });
-}
 
-function onMessageReceived(payload) {
-    let messageData = JSON.parse(payload.body);
-    addMessageToUI(messageData);
+    stompClient.subscribe("/users/queue/new-room", onRoomReceived);
+    stompClient.subscribe("/users/queue/force-logout", onStatusReceived);
 }
 
 function onError() {
     alert("Lỗi kết nối WebSocket");
 }
 
-closeSearchBtn.classList.add("hide");
+function onStatusReceived(payload) {
+    let data = JSON.parse(payload.body);
+    if (data.status === "banned") {
+        alert("Tài khoản của bạn đã bị khóa");
+        setTimeout(() => {
+            window.location.href = "/logout";
+        }, 3000);
+    }
+}
 
-let userLoginId = null;
-let roomType = null;
-let roomId = null;
-let tmpDate = null;
+function addRoomToUI(roomData) {
+    let roomList = document.getElementById("listRoom");
+    let roomElement = document.createElement("li");
+    roomElement.classList.add("room");
+
+    roomElement.dataset.roomId = roomData.roomId;
+    roomElement.dataset.roomName = roomData.roomName;
+    roomElement.dataset.type = roomData.type;
+    roomElement.dataset.firstChar = (roomData.roomName).toUpperCase().substring(0, 1);
+
+    let avatarDiv = document.createElement("div");
+    avatarDiv.classList.add("avatar");
+    let iconElement = document.createElement("h1");
+    iconElement.innerText = roomElement.dataset.firstChar;
+    avatarDiv.style.backgroundColor = getColorCode(roomElement.dataset.firstChar);
+    avatarDiv.appendChild(iconElement);
+
+    let roomNameElement = document.createElement("p");
+    roomNameElement.innerText = roomElement.dataset.roomName;
+
+    roomElement.appendChild(avatarDiv);
+    roomElement.appendChild(roomNameElement);
+
+    roomList.appendChild(roomElement);
+}
+
+function onRoomReceived(payload) {
+    let roomData = JSON.parse(payload.body);
+    addRoomToUI(roomData);
+    stompClient.subscribe("/topic/room/" + roomData.roomId, onMessageReceived);
+}
+
+function isNearBottom() {
+    return messageArea.scrollTop + messageArea.clientHeight >= messageArea.scrollHeight - 50;
+}
+
+function onMessageReceived(payload) {
+    let messageData = JSON.parse(payload.body);
+
+    if (roomId === messageData.roomId) addMessageToUI(messageData);
+
+    listRoom.forEach(room => {
+        if (room.dataset.roomId === messageData.roomId && messageData.userId != userLoginId) {
+            room.style.fontWeight = "bold";
+
+            if (isNearBottom()) {
+                scrollToBottom();
+                room.style.fontWeight = "";
+            }
+        }
+        if (room.dataset.roomId === messageData.roomId && messageData.userId === userLoginId) {
+            scrollToBottom();
+        }
+    });
+}
+
+closeSearchBtn.classList.add("hide");
 
 chatTitle.classList.add("hide");
 messageForm.classList.add("hide");
@@ -70,7 +142,12 @@ function getColorCode(firstChar) {
 userIcon.style.backgroundColor = getColorCode(userIcon.dataset.firstChar);
 
 listRoom.forEach(room => {
-    room.addEventListener("click", function () {
+    room.addEventListener("click", async function () {
+        room.style.fontWeight = "";
+        messageInput.value = "";
+        imageInput.value = "";
+        fileName.innerHTML = "";
+
         chatTitle.classList.remove("hide");
         messageForm.classList.remove("hide");
         welcomePage.classList.add("hide");
@@ -81,38 +158,56 @@ listRoom.forEach(room => {
         viewMemberBtn.innerText = "Xem thành viên";
         viewMemberBtn.classList.add("viewMemberBtn");
 
+        let reportBtn = document.createElement("button");
+        reportBtn.innerText = "Báo cáo";
+        reportBtn.classList.add("reportBtn");
+        reportBtn.style.height = "30%";
+
+        roomId = this.dataset.roomId;
         roomType = this.dataset.roomType;
-        if (roomType === "group" && chatTitle.querySelector(".viewMemberBtn") === null) {
-            chatTitle.appendChild(viewMemberBtn);
+        if (roomType === "group") {
+            if (chatTitle.querySelector(".viewMemberBtn") === null) {
+                viewMemberBtn.dataset.roomId = this.dataset.roomId;
+                chatTitle.appendChild(viewMemberBtn);
+            }
+            if (chatTitle.querySelector(".reportBtn") != null) {
+                chatTitle.removeChild(chatTitle.querySelector(".reportBtn"));
+            }
         }
-        if (roomType === "direct" && chatTitle.querySelector(".viewMemberBtn") !== null) {
-            chatTitle.removeChild(chatTitle.querySelector(".viewMemberBtn"));
+        if (roomType === "direct") {
+            if (chatTitle.querySelector(".viewMemberBtn") != null) {
+                chatTitle.removeChild(chatTitle.querySelector(".viewMemberBtn"));
+            }
+            if (chatTitle.querySelector(".reportBtn") === null) {
+                reportBtn.dataset.roomId = roomId;
+                chatTitle.appendChild(reportBtn);
+            }
         }
 
         let roomName = this.dataset.roomName;
         let firstChar = this.dataset.firstChar;
         chatTitleText.innerText = roomName;
         chatTitleIcon.innerText = firstChar;
+        chatTitleIcon.style.fontWeight = "";
+        chatTitle.dataset.roomId = this.dataset.roomId;
 
         let chatTitleAvatar = chatTitle.querySelector(".avatar");
         chatTitleAvatar.style.backgroundColor = getColorCode(firstChar);
 
-        roomId = this.dataset.roomId;
-        loadMessages(roomId);
+        await loadMessages(roomId);
+
+        scrollToBottom();
     });
 });
+
+function scrollToBottom() {
+    messageArea.scrollTop = messageArea.scrollHeight - messageArea.clientHeight;
+}
 
 listRoom.forEach(room => {
     let avatarDiv = room.querySelector(".avatar");
     avatarDiv.style.backgroundColor = getColorCode(room.dataset.firstChar);
 });
-
-async function initUserId() {
-    const userId = await fetch("/api/getSession");
-    userLoginId = await userId.text();
-}
-
-initUserId();
 
 function getCurrentDateTime() {
     let currentDateTime = new Date();
@@ -150,6 +245,11 @@ async function sendMessage() {
                 body: formData
             });
 
+            if (!response.ok) {
+                alert("Ảnh gửi lên quá 20MB, vui lòng thử lại");
+                return;
+            }
+
             let urlImg = await response.text();
 
             let messageData = {
@@ -163,6 +263,7 @@ async function sendMessage() {
             stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(messageData));
         }
         fileName.innerHTML = "";
+        imageInput.value = "";
     }
 }
 
@@ -206,8 +307,8 @@ function addMessageToUI(message) {
     datetime.innerText = message.createdAt.substring(11, 16);
 
     let dateFromDB = formatDate(message.createdAt.substring(0, 10));
+    const dateElement = document.createElement("small");
     if (checkDate(dateFromDB) === true && tmpDate != dateFromDB) {
-        const dateElement = document.createElement("small");
         dateElement.innerText = dateFromDB;
         dateElement.classList.add("dateTag");
 
@@ -251,6 +352,9 @@ function addMessageToUI(message) {
         const imageElement = document.createElement("img");
         imageElement.style.userSelect = "none";
         imageElement.src = message.content;
+        imageElement.onload = function () {
+            scrollToBottom();
+        };
         contentDiv.appendChild(imageElement);
     }
 
@@ -261,6 +365,10 @@ function addMessageToUI(message) {
 
 messageForm.addEventListener("keydown", function (e) {
     if (e.key === "Enter") {
+        if (e.shiftKey) {
+            return;
+        }
+
         e.preventDefault();
         sendMessage();
     }
@@ -270,9 +378,9 @@ async function loadMessages(roomId) {
     const res = await fetch("/api/getMessages?roomId=" + roomId);
     const messages = await res.json();
 
-    messages.forEach(message => {
+    (messages.reverse()).forEach(message => {
         addMessageToUI(message);
-    })
+    });
 }
 
 buttonProfile.addEventListener("click", function () {

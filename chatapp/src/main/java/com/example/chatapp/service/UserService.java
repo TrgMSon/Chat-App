@@ -1,6 +1,7 @@
 package com.example.chatapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -10,7 +11,9 @@ import java.util.Random;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 
+import com.example.chatapp.dto.ReportDTO;
 import com.example.chatapp.dto.RoomDTO;
+import com.example.chatapp.dto.RoomDTO4;
 import com.example.chatapp.dto.UserDTO2;
 import com.example.chatapp.model.Room;
 import com.example.chatapp.model.RoomMember;
@@ -22,6 +25,9 @@ import com.example.chatapp.repository.UserRepo;
 public class UserService {
     @Autowired
     private UserRepo userRepo;
+
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
     public boolean saveUser(User user) {
         String email = user.getEmail().trim();
@@ -101,11 +107,11 @@ public class UserService {
     }
 
     public ArrayList<UserDTO2> findRoomToAF(String name, String userId) {
-        return userRepo.findListRoom(name, userId);
+        return userRepo.findListRoom("%" + name + "%", userId);
     }
 
     public ArrayList<UserDTO2> findChattingUser(String name, String userId) {
-        return userRepo.findChattingUser(name, userId);
+        return userRepo.findChattingUser("%" + name + "%", userId);
     }
 
     public Room createRoom(String type) {
@@ -128,7 +134,7 @@ public class UserService {
         return room;
     }
 
-    public void createDirectRoomMember(String userId, String userId1, Room room) {
+    public RoomDTO4 createDirectRoomMember(String userId, String userId1, Room room) {
         Optional<User> user = userRepo.findById(userId);
         Optional<User> user1 = userRepo.findById(userId1);
 
@@ -144,9 +150,11 @@ public class UserService {
         rm.setJoinedAt(room.getCreatedAt());
 
         userRepo.saveRoomMember(rm.getUser().getUserId(), rm.getRoom().getRoomId(), rm.getRoomName(), rm.getJoinedAt());
+
+        return new RoomDTO4(rm.getRoom().getRoomId(), rm.getRoomName(), rm.getRoom().getType());
     }
 
-    public void createGroupMember(String userId, Room room, String roomName) {
+    public RoomDTO4 createGroupMember(String userId, Room room, String roomName) {
         Optional<User> user = userRepo.findById(userId);
 
         RoomMemberId rmId = new RoomMemberId();
@@ -161,5 +169,20 @@ public class UserService {
         rm.setJoinedAt(room.getCreatedAt());
 
         userRepo.saveRoomMember(rm.getUser().getUserId(), rm.getRoom().getRoomId(), rm.getRoomName(), rm.getJoinedAt());
+
+        return new RoomDTO4(rm.getRoom().getRoomId(), rm.getRoomName(), rm.getRoom().getType());
+    }
+
+    public ArrayList<UserDTO2> viewMember(String roomId) {
+        return userRepo.viewMemberInGroup(roomId);
+    }
+
+    public boolean sendReport(ReportDTO report) {
+        int rows = userRepo.sendReport(report.getUserIdSend(), report.getReportedUserId(), report.getContent(), LocalDateTime.now());
+        return rows > 0;
+    }
+
+    public User findUserInDirectRoom(String roomId, String userLoginId) {
+        return userRepo.findUserInDirectRoom(roomId, userLoginId);
     }
 }

@@ -7,6 +7,7 @@ const searchInputAF = document.getElementById("searchInputAF");
 const searchInputMember = document.getElementById("searchInputMember");
 const listUserInfor = document.getElementById("listUserInfor");
 const listUserInforToGroup = document.getElementById("listUserInforToGroup");
+const listUserInforInGroup = document.getElementById("listUserInforInGroup");
 const viewBios = document.querySelectorAll(".viewBio");
 const chatOptions = document.querySelectorAll(".chatOption");
 const viewUserBio = document.getElementById("viewUserBio");
@@ -17,6 +18,11 @@ const closeCreateGroupBtn = document.getElementById("closeCreateGroupBtn");
 const acptCreateGroup = document.getElementById("acptCreateGroup");
 const nameGroupInput = document.getElementById("nameGroupInput");
 const viewMemberBtn = document.querySelector(".viewMemberBtn");
+const viewMemberDiv = document.getElementById("viewMemberDiv");
+const closeViewMemberBtn = document.getElementById("closeViewMemberBtn");
+const reportWritter = document.getElementById("reportWritter");
+const acptSendReport = document.getElementById("sendReportBtn");
+const closeWritterBtn = document.getElementById("closeWritter");
 
 viewUserBio.classList.add("hide");
 
@@ -30,6 +36,8 @@ imageInput.addEventListener("change", function () {
     }
 });
 
+viewMemberDiv.classList.remove("createBox");
+viewMemberDiv.classList.add("hide");
 
 addFriendDiv.classList.remove("createBox");
 addFriendDiv.classList.add("hide");
@@ -43,6 +51,7 @@ addFriendBtn.addEventListener("click", function () {
 });
 
 closeAFBtn.addEventListener("click", function () {
+    searchInputAF.value = "";
     addFriendDiv.classList.remove("createBox");
     addFriendDiv.classList.add("hide");
 });
@@ -100,6 +109,8 @@ createGroupBtn.addEventListener("click", async function (e) {
 });
 
 closeCreateGroupBtn.addEventListener("click", function () {
+    searchInputMember.value = "";
+    nameGroupInput.value = "";
     addGroupDiv.classList.remove("createBox");
     addGroupDiv.classList.add("hide");
 });
@@ -166,21 +177,24 @@ listUserInfor.addEventListener("click", async function (e) {
     else if (e.target.classList.contains("chatOption")) {
         e.preventDefault();
 
-        await fetch("/api/createDirectRoom", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                userId: e.target.dataset.userId
-            })
-        });
+        // await fetch("/api/createDirectRoom", {
+        //     method: "POST",
+        //     headers: {
+        //         "Content-Type": "application/json"
+        //     },
+        //     body: JSON.stringify({
+        //         userId: e.target.dataset.userId
+        //     })
+        // });
+
+        stompClient.send("/app/chat.newDirectRoom", {}, JSON.stringify({
+            userId1: e.target.dataset.userId,
+            userLoginId: userLoginId
+        }));
 
         addFriendDiv.classList.remove("addFriendDiv");
         addFriendDiv.classList.add("hide");
         viewUserBio.classList.add("hide");
-
-        window.location.href = "/home";
     }
 });
 
@@ -206,12 +220,12 @@ listUserInforToGroup.addEventListener("click", function (e) {
 
 acptCreateGroup.addEventListener("click", async function () {
     let roomName = nameGroupInput.value.trim();
-    
+
     if (roomName === "") {
         alert("Vui lòng nhập tên nhóm");
         return;
     }
-    
+
     addGroupDiv.classList.remove("createBox");
     addGroupDiv.classList.add("hide");
 
@@ -224,22 +238,151 @@ acptCreateGroup.addEventListener("click", async function () {
         }
     }
 
-    await fetch("/api/createGroup", {
+    // await fetch("/api/createGroup", {
+    //     method: "POST",
+    //     headers: {
+    //         "Content-Type": "application/json"
+    //     },
+    //     body: JSON.stringify({
+    //         userIds: userIds,
+    //         roomName: roomName
+    //     })
+    // });
+
+    stompClient.send("/app/chat.newGroup", {}, JSON.stringify({
+        userLoginId: userLoginId,
+        userIds: userIds,
+        roomName: roomName
+    }));
+});
+
+async function getMember(roomId) {
+    let members = await fetch("/api/viewMember?roomId=" + roomId);
+    return members.json();
+}
+
+chatTitle.addEventListener("click", async function (e) {
+    if (e.target.classList.contains("viewMemberBtn")) {
+        let members = await getMember(chatTitle.dataset.roomId);
+
+        listUserInforInGroup.innerHTML = "";
+
+        for (let i = 0; i < members.length; i++) {
+            let userInforDiv = document.createElement("div");
+            let userNameElement = document.createElement("p");
+            let viewBio = document.createElement("button");
+            let reportBtn = document.createElement("button");
+
+            userNameElement.innerText = members[i].userName;
+            if (members[i].userId === userLoginId) {
+                userNameElement.innerText = members[i].userName + " (Bạn)";
+            }
+
+            viewBio.classList.add("viewBio");
+            viewBio.innerText = "Xem giới thiệu";
+            viewBio.dataset.userId = members[i].userId;
+            viewBio.dataset.userName = members[i].userName;
+            viewBio.dataset.bio = members[i].bio;
+
+            reportBtn.classList.add("reportBtn");
+            reportBtn.innerText = "Báo cáo";
+            reportBtn.dataset.userId = members[i].userId;
+            reportBtn.dataset.userName = members[i].userName;
+
+            userInforDiv.classList.add("userInforDiv");
+            userInforDiv.appendChild(userNameElement);
+            userInforDiv.appendChild(viewBio);
+
+            if (members[i].userId != userLoginId) userInforDiv.appendChild(reportBtn);
+
+            listUserInforInGroup.appendChild(userInforDiv);
+        }
+
+        viewMemberDiv.classList.add("createBox");
+        viewMemberDiv.classList.remove("hide");
+    }
+
+    else if (e.target.classList.contains("reportBtn")) {
+        let response = await fetch("/api/viewUserDirectRoom?roomId=" + chatTitle.dataset.roomId + "&userLoginId=" + userLoginId);
+        let userInfor = await response.json();
+
+        console.log(typeof(userInfor));
+
+        let reportedUserName = document.getElementById("reportedUserInfor");
+        reportedUserName.innerText = "Người dùng vi phạm: " + userInfor.userName;
+
+        let sendReportBtn = document.getElementById("sendReportBtn");
+        sendReportBtn.dataset.userIdSend = userLoginId;
+        sendReportBtn.dataset.reportedUserId = userInfor.userId;
+
+        reportWritter.classList.remove("hide");
+        reportWritter.classList.add("createBox");
+    }
+});
+
+listUserInforInGroup.addEventListener("click", async function (e) {
+    if (e.target.classList.contains("viewBio")) {
+        viewUserBio.style.left = "450px";
+        viewUserBio.classList.toggle("show");
+
+        userProfile.style.zIndex = 3;
+        viewUserBio.style.zIndex = 2;
+        addGroupDiv.style.zIndex = 1;
+
+        viewUserBio.querySelector("#lbName").innerText = e.target.dataset.userName;
+        viewUserBio.querySelector("#lbBio").innerText = e.target.dataset.bio;
+    }
+    else if (e.target.classList.contains("reportBtn")) {
+        let reportedUserName = document.getElementById("reportedUserInfor");
+        reportedUserName.innerText = "Người dùng vi phạm: " + e.target.dataset.userName;
+
+        let sendReportBtn = document.getElementById("sendReportBtn");
+        sendReportBtn.dataset.userIdSend = userLoginId;
+        sendReportBtn.dataset.reportedUserId = e.target.dataset.userId;
+
+        reportWritter.classList.remove("hide");
+        reportWritter.classList.add("createBox");
+    }
+});
+
+acptSendReport.addEventListener("click", async function () {
+    let reportContentInput = document.getElementById("reportContentInput");
+    let content = reportContentInput.value.trim();
+    if (content === "") {
+        alert("Vui lòng nhập nội dung báo cáo");
+        return;
+    }
+
+    let response = await fetch("/api/sendReport", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            userIds: userIds,
-            roomName: roomName
+            userIdSend: userLoginId,
+            reportedUserId: acptSendReport.dataset.reportedUserId,
+            content: content
         })
     });
 
-    window.location.href = "/home";
+    let res = await response.text();
+
+    if (res === "true") {
+        alert("Gửi báo cáo thành công");
+        reportWritter.classList.remove("createBox");
+        reportWritter.classList.add("hide");
+        reportWritter.querySelector("#reportContentInput").value = "";
+    }
+    else alert("Có lỗi xảy ra khi gửi báo cáo");
 });
 
-chatTitle.addEventListener("click", function (e) {
-    if (e.target.classList.contains("viewMemberBtn")) {
-        
-    }
+closeWritterBtn.addEventListener("click", function () {
+    reportWritter.classList.remove("createBox");
+    reportWritter.classList.add("hide");
+    reportWritter.querySelector("#reportContentInput").value = "";
+});
+
+closeViewMemberBtn.addEventListener("click", function () {
+    viewMemberDiv.classList.remove("createBox");
+    viewMemberDiv.classList.add("hide");
 });

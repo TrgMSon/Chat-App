@@ -25,11 +25,6 @@ body {
     font-size: 16px;
 }
 
-.sidebar ul {
-    padding: 0;
-    list-style: none;
-}
-
 .sidebar li {
     cursor: pointer;
 }
@@ -67,8 +62,11 @@ body {
 }
 
 .list-room {
-    margin-left: 10px;
-    overflow-y: auto;
+    overflow: auto;
+    overflow-y: scroll;
+    padding-left: 10px;
+    height: 78%;
+    list-style: none;
 }
 
 .room {
@@ -82,7 +80,6 @@ body {
 
 .room p {
     font-style: normal;
-    font-weight: bold;
     font-size: 20px;
     flex: 1;
     padding-left: 15px;
@@ -163,6 +160,7 @@ body {
     border-left: 0;
     border-right: 0;
     justify-self: center;
+    white-space: pre-line;
 }
 
 #imageInput {
@@ -177,15 +175,16 @@ body {
 .message {
     display: flex;
     max-width: 60%;
-    max-height: 70%;
-    height: auto;
+    height: fit-content;
     margin-top: 25px;
+    margin-bottom: 15px;
     padding: 10px 10px 10px 0px;
     border-radius: 4px;
 }
 
 .message img {
-    max-height: 92%;
+    height: 500px;
+    max-height: 500px;
 }
 
 .message.me {
@@ -298,6 +297,7 @@ body {
 .content-div {
     display: flex;
     flex-direction: column;
+    height: fit-content;
 }
 
 .content-div p, img {

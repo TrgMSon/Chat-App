@@ -30,7 +30,7 @@ public interface UserRepo extends JpaRepository<User, String> {
         ArrayList<String> findRoomIdByName(String roomName, String userId);
 
         @Query(value = """
-                        SELECT u.user_id, u.user_name, u.bio FROM user AS u WHERE user_name LIKE %?1%
+                        SELECT u.user_id, u.user_name, u.bio FROM user AS u WHERE user_name LIKE ?1
                         AND u.user_id <> ?2 AND NOT EXISTS (SELECT rm1.user_id FROM room_member AS rm1
                         JOIN room_member AS rm2 ON rm1.room_id = rm2.room_id
                         WHERE rm1.user_id = ?2 AND rm2.user_id = u.user_id)
@@ -39,7 +39,7 @@ public interface UserRepo extends JpaRepository<User, String> {
         ArrayList<UserDTO2> findListRoom(String name, String userId);
 
         @Query(value = """
-                        SELECT u.user_id, u.user_name, u.bio FROM user AS u WHERE user_name LIKE %?1%
+                        SELECT u.user_id, u.user_name, u.bio FROM user AS u WHERE user_name LIKE ?1
                         AND u.user_id <> ?2 AND EXISTS (SELECT rm1.user_id FROM room_member AS rm1
                         JOIN room_member AS rm2 ON rm1.room_id = rm2.room_id
                         WHERE rm1.user_id = ?2 AND rm2.user_id = u.user_id)
@@ -66,4 +66,23 @@ public interface UserRepo extends JpaRepository<User, String> {
         @Modifying
         @Query(value = "INSERT INTO room(room_id, type, created_at) VALUES(?1, ?2, ?3)", nativeQuery = true)
         void saveRoom(String roomId, String type, LocalDateTime createdAt);
+
+        @Query(value = """
+                        SELECT rm.user_id, u.user_name, u.bio FROM room_member AS rm 
+                        JOIN user AS u ON u.user_id = rm.user_id
+                        WHERE room_id=?1
+                        """, nativeQuery = true)
+        ArrayList<UserDTO2> viewMemberInGroup(String roomId);
+
+        @Transactional
+        @Modifying
+        @Query(value = "INSERT INTO report(user_send_id, reported_user_id, content, created_at) VALUES(?1, ?2, ?3, ?4)", nativeQuery = true)
+        int sendReport(String userSendId, String reportedUserId, String content, LocalDateTime createdAt);
+
+        @Query(value = """
+                        SELECT u.* FROM user AS u 
+                        JOIN room_member AS rm ON u.user_id = rm.user_id
+                        WHERE rm.room_id=?1 AND u.user_id <> ?2
+                        """, nativeQuery = true)
+        User findUserInDirectRoom(String roomId, String userLoginId);
 }
