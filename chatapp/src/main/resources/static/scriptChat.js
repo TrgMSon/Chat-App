@@ -141,6 +141,24 @@ function getColorCode(firstChar) {
 
 userIcon.style.backgroundColor = getColorCode(userIcon.dataset.firstChar);
 
+messageInput.addEventListener("input", function () {
+    this.style.height = "auto";
+
+    const maxHeight = 150;
+
+    if (!this.value.trim()) {
+        this.style.minHeight = "60px";
+        this.style.maxHeight = "60px";
+        return;
+    }
+
+    if (this.scrollHeight > maxHeight) {
+        this.style.minHeight = maxHeight + "px";
+    } else {
+        this.style.minHeight = this.scrollHeight + "px";
+    }
+});
+
 listRoom.forEach(room => {
     room.addEventListener("click", async function () {
         room.style.fontWeight = "";
@@ -186,6 +204,7 @@ listRoom.forEach(room => {
 
         let roomName = this.dataset.roomName;
         let firstChar = this.dataset.firstChar;
+        chatTitle.dataset.roomType = roomType;
         chatTitleText.innerText = roomName;
         chatTitleIcon.innerText = firstChar;
         chatTitleIcon.style.fontWeight = "";
@@ -210,15 +229,22 @@ listRoom.forEach(room => {
 });
 
 function getCurrentDateTime() {
-    let currentDateTime = new Date();
-    let tmp = currentDateTime.toLocaleString().substring(0, 9).split("/");
-    return tmp[1].padStart(2, '0') + "/" + tmp[0].padStart(2, '0') + "/" + tmp[2];
+    // let currentDateTime = new Date();
+    // let tmp = currentDateTime.toLocaleString().substring(0, 9).split("/");
+    // return tmp[1].padStart(2, '0') + "/" + tmp[0].padStart(2, '0') + "/" + tmp[2];
+
+    let now = new Date();
+
+    let day = String(now.getDate()).padStart(2, '0');
+    let month = String(now.getMonth() + 1).padStart(2, '0');
+    let year = now.getFullYear();
+
+    return `${day}/${month}/${year}`;
 }
 
 async function sendMessage() {
     let images = imageInput.files;
     let content = messageInput.value.trim();
-
 
     if (content === "" && images.length === 0) return;
 
@@ -233,6 +259,9 @@ async function sendMessage() {
 
         stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(messageData));
         messageInput.value = "";
+
+        messageInput.style.minHeight = "60px";
+        messageInput.style.maxHeight = "60px";
     }
 
     if (images.length > 0) {
@@ -269,9 +298,10 @@ async function sendMessage() {
 
 function formatDate(date) {
     let array = date.split("-");
-    let ans = "";
-    ans = array[2] + "/" + array[1] + "/" + array[0];
-    return ans;
+    // let ans = "";
+    // ans = array[2] + "/" + array[1] + "/" + array[0];
+    // return ans;
+    return `${array[2]}/${array[1]}/${array[0]}`;
 }
 
 function checkDate(date) {

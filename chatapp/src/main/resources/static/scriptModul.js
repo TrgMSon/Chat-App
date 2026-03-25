@@ -23,7 +23,9 @@ const closeViewMemberBtn = document.getElementById("closeViewMemberBtn");
 const reportWritter = document.getElementById("reportWritter");
 const acptSendReport = document.getElementById("sendReportBtn");
 const closeWritterBtn = document.getElementById("closeWritter");
+const cancelSendImg = document.getElementById("cancelSendImg");
 
+cancelSendImg.classList.add("hide");
 viewUserBio.classList.add("hide");
 
 imageInput.addEventListener("change", function () {
@@ -34,6 +36,17 @@ imageInput.addEventListener("change", function () {
         }
         fileName.innerText = listFile;
     }
+});
+
+imageInput.addEventListener("click", function () {
+    if (cancelSendImg.classList.contains("hide")) cancelSendImg.classList.remove("hide");
+});
+
+cancelSendImg.addEventListener("click", function (e) {
+    e.preventDefault();
+    imageInput.value = "";
+    fileName.innerText = "";
+    cancelSendImg.classList.add("hide");
 });
 
 viewMemberDiv.classList.remove("createBox");
@@ -54,6 +67,7 @@ closeAFBtn.addEventListener("click", function () {
     searchInputAF.value = "";
     addFriendDiv.classList.remove("createBox");
     addFriendDiv.classList.add("hide");
+    listUserInfor.innerHTML = "";
 });
 
 async function getChattingUser(name) {
@@ -61,9 +75,7 @@ async function getChattingUser(name) {
     return await users.json();
 }
 
-async function loadChattingUser(e) {
-    e.preventDefault();
-
+async function loadChattingUser() {
     let name = searchInputMember.value.trim();
     searchInputMember.value = name;
 
@@ -113,6 +125,7 @@ closeCreateGroupBtn.addEventListener("click", function () {
     nameGroupInput.value = "";
     addGroupDiv.classList.remove("createBox");
     addGroupDiv.classList.add("hide");
+    listUserInforToGroup.innerHTML = "";
 });
 
 async function getListRoom(name) {
@@ -122,6 +135,8 @@ async function getListRoom(name) {
 
 formAF.addEventListener("submit", async function (event) {
     event.preventDefault();
+
+    console.log("hi");
 
     let userName = searchInputAF.value.trim();
     searchInputAF.value = userName;
@@ -202,7 +217,10 @@ closeViewBio.addEventListener("click", function () {
     viewUserBio.classList.toggle("show");
 });
 
-formGroup.addEventListener("submit", loadChattingUser);
+formGroup.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    await loadChattingUser();
+});
 
 listUserInforToGroup.addEventListener("click", function (e) {
     if (e.target.classList.contains("viewBio")) {
@@ -306,8 +324,6 @@ chatTitle.addEventListener("click", async function (e) {
         let response = await fetch("/api/viewUserDirectRoom?roomId=" + chatTitle.dataset.roomId + "&userLoginId=" + userLoginId);
         let userInfor = await response.json();
 
-        console.log(typeof(userInfor));
-
         let reportedUserName = document.getElementById("reportedUserInfor");
         reportedUserName.innerText = "Người dùng vi phạm: " + userInfor.userName;
 
@@ -317,6 +333,16 @@ chatTitle.addEventListener("click", async function (e) {
 
         reportWritter.classList.remove("hide");
         reportWritter.classList.add("createBox");
+    }
+
+    else {
+        let response = await fetch("/api/viewUserDirectRoom?roomId=" + chatTitle.dataset.roomId + "&userLoginId=" + userLoginId);
+        let userInfor = await response.json();
+
+        viewUserBio.querySelector("#lbName").innerText = userInfor.userName;
+        viewUserBio.querySelector("#lbBio").innerText = userInfor.bio;
+
+        viewUserBio.classList.toggle("show");
     }
 });
 

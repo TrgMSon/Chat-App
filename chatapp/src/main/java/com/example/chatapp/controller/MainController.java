@@ -95,11 +95,15 @@ public class MainController {
     @PostMapping("/signup")
     public String checkSignup(@ModelAttribute User user, Model model, @RequestParam String action, RedirectAttributes ra) {
         if (action.equals("register")) {
-            String email = user.getEmail();
+            String email = user.getEmail().trim();
 
             if (email.equals(""))
                 return "redirect:/signup";
 
+            user.setBio(user.getBio().trim());
+            user.setEmail(email);
+            user.setPassword(user.getPassword().trim());
+            user.setUserName(user.getUserName().trim());
             user.setRole("user");
             user.setStatus("allowed");
 

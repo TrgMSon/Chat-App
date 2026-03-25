@@ -1,7 +1,6 @@
 package com.example.chatapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,9 +24,6 @@ import com.example.chatapp.repository.UserRepo;
 public class UserService {
     @Autowired
     private UserRepo userRepo;
-
-    @Autowired
-    private SimpMessagingTemplate messagingTemplate;
 
     public boolean saveUser(User user) {
         String email = user.getEmail().trim();

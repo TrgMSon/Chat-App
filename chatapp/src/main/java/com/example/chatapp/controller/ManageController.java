@@ -4,15 +4,12 @@ import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.chatapp.dto.ReportDTO2;
 import com.example.chatapp.dto.UserDTO2;
-import com.example.chatapp.dto.UserDTO4;
 import com.example.chatapp.model.User;
 import com.example.chatapp.service.ManageService;
 

@@ -101,6 +101,7 @@ body {
     border-left: 0;
     top: 0;
     padding-left: 5px;
+    cursor: pointer;
 }
 
 .chat-title h2 {
@@ -151,6 +152,14 @@ body {
     border-top: 1px solid black;
 }
 
+#optionImgDiv {
+    display: flex;
+}
+
+#cancelSendImg {
+    margin-left: 15px;
+}
+
 #messageInput {
     flex: 1;
     height: 60px;
@@ -161,6 +170,7 @@ body {
     border-right: 0;
     justify-self: center;
     white-space: pre-line;
+    resize: none;
 }
 
 #imageInput {
