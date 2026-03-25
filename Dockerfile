@@ -13,7 +13,7 @@ COPY . .
 RUN mvn clean package -DskipTests
 
 # ===== Run stage =====
-FROM eclipse-temurin:17-jdk-jammy
+FROM eclipse-temurin:21-jdk-jammy
 WORKDIR /app
 
 # Copy file jar
