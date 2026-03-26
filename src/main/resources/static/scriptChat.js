@@ -34,7 +34,7 @@ initUserId();
 let stompClient = null;
 
 function connect() {
-    let socket = new SockJS("/ws");
+    let socket = new SockJS("/wss");
     stompClient = Stomp.over(socket);
     stompClient.connect({
         userId: userLoginId
