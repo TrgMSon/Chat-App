@@ -112,7 +112,7 @@ public class MainController {
                 return "redirect:/login";
             } else {
                 ra.addFlashAttribute("error", "Tài khoản đã tồn tại, vui lòng thử lại.");
-                return "signup";
+                return "redirect:/signup";
             }
         }
         return "redirect:/login";
