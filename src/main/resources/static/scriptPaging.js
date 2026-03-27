@@ -68,6 +68,7 @@ function addPreMessageToUI(message) {
 
     if (document.querySelector(".dateTag") != null) {
         let tmpDate1 = (document.querySelector(".dateTag")).innerText;
+        if (tmpDate1 === "Hôm nay") tmpDate1 = getCurrentDateTime();
         if (tmpDate1 === dateFromDB) messageArea.removeChild(document.querySelector(".dateTag"));
     }
 
@@ -115,7 +116,7 @@ function addPreMessageToUI(message) {
         dateElement.innerText = tmpDate;
         dateElement.classList.add("dateTag");
 
-        // if (dateFromDB === getCurrentDateTime()) dateElement.innerText = "Hôm nay"; 
+        if (dateFromDB === getCurrentDateTime()) dateElement.innerText = "Hôm nay"; 
         // // sửa load tin nhắn cũ của cùng 1 ngày nhưng khác page, ví dụ ngày 14/3/2026
 
         messageArea.prepend(dateElement);
@@ -126,6 +127,7 @@ function addPreMessageToUI(message) {
 
     if (message === lastMessage) {
         dateElement.innerText = dateFromDB;
+        if (dateFromDB === getCurrentDateTime()) dateElement.innerText = "Hôm nay"; 
         dateElement.classList.add("dateTag");
         messageArea.prepend(dateElement);
     }

@@ -5,7 +5,7 @@ const messageForm = document.getElementById("messageForm");
 const chatTitle = document.getElementById("chatTitle");
 const chatTitleText = document.getElementById("chatTitleText");
 const chatTitleIcon = document.getElementById("chatTitleIcon");
-const listRoom = document.querySelectorAll("#listRoom li");
+let listRoom = document.querySelectorAll("#listRoom li");
 const welcomePage = document.getElementById("welcomePage");
 const userIcon = document.getElementById("userIcon");
 const menuUserInfor = document.getElementById("menu");
@@ -16,6 +16,8 @@ const searchForm = document.getElementById("searchFormInput");
 const searchInput = document.getElementById("searchInput");
 const closeSearchBtn = document.getElementById("closeSearchBtn");
 const fileName = document.getElementById("fileName");
+const hiddenDiv = document.getElementById("hiddenDiv");
+const cancelSendImg = document.getElementById("cancelSendImg");
 
 let userLoginId = null;
 let roomType = null;
@@ -34,7 +36,7 @@ initUserId();
 let stompClient = null;
 
 function connect() {
-    let socket = new SockJS("/wss");
+    let socket = new SockJS("/ws");
     stompClient = Stomp.over(socket);
     stompClient.connect({
         userId: userLoginId
@@ -97,6 +99,15 @@ function onRoomReceived(payload) {
     let roomData = JSON.parse(payload.body);
     addRoomToUI(roomData);
     stompClient.subscribe("/topic/room/" + roomData.roomId, onMessageReceived);
+    listRoom = document.querySelectorAll("#listRoom li");
+    listRoom.forEach(room => {
+        if (room.dataset.roomId === roomData.roomId) {
+            room.addEventListener("click", function () {
+                loadRoom(room);
+            });
+            return;
+        }
+    })
 }
 
 function isNearBottom() {
@@ -111,12 +122,13 @@ function onMessageReceived(payload) {
     listRoom.forEach(room => {
         if (room.dataset.roomId === messageData.roomId && messageData.userId != userLoginId) {
             room.style.fontWeight = "bold";
-
-            if (isNearBottom()) {
-                scrollToBottom();
-                room.style.fontWeight = "";
-            }
         }
+
+        if (isNearBottom() && roomId === messageData.roomId) {
+            scrollToBottom();
+            room.style.fontWeight = "";
+        }
+
         if (room.dataset.roomId === messageData.roomId && messageData.userId === userLoginId) {
             scrollToBottom();
         }
@@ -142,80 +154,76 @@ function getColorCode(firstChar) {
 userIcon.style.backgroundColor = getColorCode(userIcon.dataset.firstChar);
 
 messageInput.addEventListener("input", function () {
-    this.style.height = "auto";
+    let content = messageInput.value;
+    hiddenDiv.innerHTML = content.replace(/\n/g, "<br>") + "<br>";
 
-    const maxHeight = 150;
-
-    if (!this.value.trim()) {
-        this.style.minHeight = "60px";
-        this.style.maxHeight = "60px";
-        return;
-    }
-
-    if (this.scrollHeight > maxHeight) {
-        this.style.minHeight = maxHeight + "px";
-    } else {
-        this.style.minHeight = this.scrollHeight + "px";
-    }
+    let newHeight = hiddenDiv.scrollHeight;
+    if (newHeight >= 150) messageInput.style.minHeight = "150px";
+    else if (newHeight > 60) messageInput.style.minHeight = newHeight + "px";
+    else messageInput.style.minHeight = "60px";
 });
 
+async function loadRoom(room) {
+    room.style.fontWeight = "";
+    messageInput.value = "";
+    imageInput.value = "";
+    fileName.innerHTML = "";
+
+    chatTitle.classList.remove("hide");
+    messageForm.classList.remove("hide");
+    welcomePage.classList.add("hide");
+
+    messageArea.innerHTML = "";
+
+    let viewMemberBtn = document.createElement("button");
+    viewMemberBtn.innerText = "Xem thành viên";
+    viewMemberBtn.classList.add("viewMemberBtn");
+
+    let reportBtn = document.createElement("button");
+    reportBtn.innerText = "Báo cáo";
+    reportBtn.classList.add("reportBtn");
+    reportBtn.style.height = "30%";
+
+    roomId = room.dataset.roomId;
+    roomType = room.dataset.roomType;
+    if (roomType === "group") {
+        if (chatTitle.querySelector(".viewMemberBtn") === null) {
+            viewMemberBtn.dataset.roomId = room.dataset.roomId;
+            chatTitle.appendChild(viewMemberBtn);
+        }
+        if (chatTitle.querySelector(".reportBtn") != null) {
+            chatTitle.removeChild(chatTitle.querySelector(".reportBtn"));
+        }
+    }
+    if (roomType === "direct") {
+        if (chatTitle.querySelector(".viewMemberBtn") != null) {
+            chatTitle.removeChild(chatTitle.querySelector(".viewMemberBtn"));
+        }
+        if (chatTitle.querySelector(".reportBtn") === null) {
+            reportBtn.dataset.roomId = roomId;
+            chatTitle.appendChild(reportBtn);
+        }
+    }
+
+    let roomName = room.dataset.roomName;
+    let firstChar = room.dataset.firstChar;
+    chatTitle.dataset.roomType = roomType;
+    chatTitleText.innerText = roomName;
+    chatTitleIcon.innerText = firstChar;
+    chatTitleIcon.style.fontWeight = "";
+    chatTitle.dataset.roomId = room.dataset.roomId;
+
+    let chatTitleAvatar = chatTitle.querySelector(".avatar");
+    chatTitleAvatar.style.backgroundColor = getColorCode(firstChar);
+
+    await loadMessages(roomId);
+
+    scrollToBottom();
+}
+
 listRoom.forEach(room => {
-    room.addEventListener("click", async function () {
-        room.style.fontWeight = "";
-        messageInput.value = "";
-        imageInput.value = "";
-        fileName.innerHTML = "";
-
-        chatTitle.classList.remove("hide");
-        messageForm.classList.remove("hide");
-        welcomePage.classList.add("hide");
-
-        messageArea.innerHTML = "";
-
-        let viewMemberBtn = document.createElement("button");
-        viewMemberBtn.innerText = "Xem thành viên";
-        viewMemberBtn.classList.add("viewMemberBtn");
-
-        let reportBtn = document.createElement("button");
-        reportBtn.innerText = "Báo cáo";
-        reportBtn.classList.add("reportBtn");
-        reportBtn.style.height = "30%";
-
-        roomId = this.dataset.roomId;
-        roomType = this.dataset.roomType;
-        if (roomType === "group") {
-            if (chatTitle.querySelector(".viewMemberBtn") === null) {
-                viewMemberBtn.dataset.roomId = this.dataset.roomId;
-                chatTitle.appendChild(viewMemberBtn);
-            }
-            if (chatTitle.querySelector(".reportBtn") != null) {
-                chatTitle.removeChild(chatTitle.querySelector(".reportBtn"));
-            }
-        }
-        if (roomType === "direct") {
-            if (chatTitle.querySelector(".viewMemberBtn") != null) {
-                chatTitle.removeChild(chatTitle.querySelector(".viewMemberBtn"));
-            }
-            if (chatTitle.querySelector(".reportBtn") === null) {
-                reportBtn.dataset.roomId = roomId;
-                chatTitle.appendChild(reportBtn);
-            }
-        }
-
-        let roomName = this.dataset.roomName;
-        let firstChar = this.dataset.firstChar;
-        chatTitle.dataset.roomType = roomType;
-        chatTitleText.innerText = roomName;
-        chatTitleIcon.innerText = firstChar;
-        chatTitleIcon.style.fontWeight = "";
-        chatTitle.dataset.roomId = this.dataset.roomId;
-
-        let chatTitleAvatar = chatTitle.querySelector(".avatar");
-        chatTitleAvatar.style.backgroundColor = getColorCode(firstChar);
-
-        await loadMessages(roomId);
-
-        scrollToBottom();
+    room.addEventListener("click", function () {
+        loadRoom(room);
     });
 });
 
@@ -262,11 +270,12 @@ async function sendMessage() {
 
         messageInput.style.minHeight = "60px";
         messageInput.style.maxHeight = "60px";
+        hiddenDiv.innerHTML = "";
     }
 
     if (images.length > 0) {
-        let formData = new FormData();
         for (let image of images) {
+            let formData = new FormData();
             formData.append("image", image);
 
             let response = await fetch("/api/upload-image", {
@@ -293,6 +302,7 @@ async function sendMessage() {
         }
         fileName.innerHTML = "";
         imageInput.value = "";
+        cancelSendImg.classList.add("hide");
     }
 }
 

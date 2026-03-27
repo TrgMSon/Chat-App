@@ -5,7 +5,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class ChatappApplication { 
-	// làm phần xem bio ở direct room
 	
 	public static void main(String[] args) {
 		SpringApplication.run(ChatappApplication.class, args);

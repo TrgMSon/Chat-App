@@ -161,7 +161,6 @@ body {
 }
 
 #messageInput {
-    flex: 1;
     height: 60px;
     min-height: 60px;
     font-size: 18px;
@@ -169,7 +168,7 @@ body {
     border-left: 0;
     border-right: 0;
     justify-self: center;
-    white-space: pre-line;
+    white-space: pre-wrap;
     resize: none;
 }
 
@@ -336,3 +335,24 @@ body {
     align-self: center;
 }
 
+#hiddenDiv {
+    position: absolute;
+    top: 0;
+    left: -9999px; /* đẩy ra ngoài màn hình */
+
+    visibility: hidden; /* vẫn render nhưng không thấy */
+
+    white-space: pre-wrap;   /* giữ xuống dòng */
+    word-wrap: break-word;   /* tránh tràn chữ */
+
+    width: 100%;
+    
+    font: inherit;        /* giống textarea */
+    line-height: inherit;
+    padding: 8px;
+    border: 1px solid transparent;
+
+    box-sizing: border-box;
+
+    overflow: hidden;
+}

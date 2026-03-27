@@ -33,8 +33,9 @@ public interface UserRepo extends JpaRepository<User, String> {
                         SELECT u.user_id, u.user_name, u.bio FROM user AS u WHERE user_name LIKE ?1
                         AND u.user_id <> ?2 AND NOT EXISTS (SELECT rm1.user_id FROM room_member AS rm1
                         JOIN room_member AS rm2 ON rm1.room_id = rm2.room_id
-                        WHERE rm1.user_id = ?2 AND rm2.user_id = u.user_id)
-                        AND u.role = 'user' 
+                        JOIN room AS r ON r.room_id = rm1.room_id
+                        WHERE rm1.user_id = ?2 AND rm2.user_id = u.user_id AND r.type = "direct")
+                        AND u.role = 'user'
                                           """, nativeQuery = true)
         ArrayList<UserDTO2> findListRoom(String name, String userId);
 

@@ -17,7 +17,7 @@ public interface MessageRepo extends JpaRepository<Message, Long> {
     @Query(value = """
             SELECT m.* FROM message AS m
             WHERE m.room_id = ?1 
-            ORDER BY m.created_at DESC
+            ORDER BY m.created_at DESC, m.message_id DESC
             LIMIT ?2 , 10
             """, nativeQuery=true)
     ArrayList<Message> findMessagesByRoom(String roomId, int index);

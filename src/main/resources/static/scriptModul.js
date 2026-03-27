@@ -23,7 +23,6 @@ const closeViewMemberBtn = document.getElementById("closeViewMemberBtn");
 const reportWritter = document.getElementById("reportWritter");
 const acptSendReport = document.getElementById("sendReportBtn");
 const closeWritterBtn = document.getElementById("closeWritter");
-const cancelSendImg = document.getElementById("cancelSendImg");
 
 cancelSendImg.classList.add("hide");
 viewUserBio.classList.add("hide");
@@ -35,11 +34,9 @@ imageInput.addEventListener("change", function () {
             listFile += this.files[i].name + "\n";
         }
         fileName.innerText = listFile;
-    }
-});
 
-imageInput.addEventListener("click", function () {
-    if (cancelSendImg.classList.contains("hide")) cancelSendImg.classList.remove("hide");
+        if (cancelSendImg.classList.contains("hide")) cancelSendImg.classList.remove("hide");
+    }
 });
 
 cancelSendImg.addEventListener("click", function (e) {
@@ -135,8 +132,6 @@ async function getListRoom(name) {
 
 formAF.addEventListener("submit", async function (event) {
     event.preventDefault();
-
-    console.log("hi");
 
     let userName = searchInputAF.value.trim();
     searchInputAF.value = userName;

@@ -95,28 +95,6 @@ public class ChatController {
         return "/uploads/" + fileName;
     }
 
-    // @PostMapping("/createDirectRoom")
-    // public void createDirectRoom(@RequestBody UserDTO user, HttpSession session) {
-    //     String userId = user.getUserId();
-    //     String userId1 = (String) session.getAttribute("userId");
-
-    //     Room room = userService.createRoom("direct");
-    //     userService.createDirectRoomMember(userId1, userId, room);
-    //     userService.createDirectRoomMember(userId, userId1, room);
-    // }
-
-    // @PostMapping("/createGroup")
-    // public void createGroup(@RequestBody RoomMemberDTO room, HttpSession session) {
-    //     Room group = userService.createRoom("group");
-    //     String userIdLogin = (String) session.getAttribute("userId");
-
-    //     ArrayList<String> userIds = room.getUserIds();
-    //     userIds.add(userIdLogin);
-    //     for (String userId : userIds) {
-    //         userService.createGroupMember(userId, group, room.getRoomName());
-    //     }
-    // }
-
     @GetMapping("/viewMember")
     public ArrayList<UserDTO2> viewMember(@RequestParam String roomId) {
         return userService.viewMember(roomId);
