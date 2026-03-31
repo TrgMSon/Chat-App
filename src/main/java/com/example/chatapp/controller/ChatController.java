@@ -33,6 +33,9 @@ public class ChatController {
     private MessageService messageService;
 
     @Autowired
+    private Cloudinary cloudinary;
+
+    @Autowired
     private UserService userService;
 
     @GetMapping("/getMessages")
