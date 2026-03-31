@@ -75,6 +75,10 @@ public class MainController {
             return "redirect:/login";
         }
 
+        User user = userService.findUserById(userId);
+
+        if (user.getRole().equals("user")) return "redirect:/login";
+
         int qtyUser = manageService.getQtyUser();
         int qtyReport = manageService.getQtyReport();
         String current_datetime = LocalDateTime.now() + "";
@@ -141,7 +145,7 @@ public class MainController {
     }
 
     @GetMapping("/logout")
-    public String showlogout(HttpSession session) {
+    public String doLogout(HttpSession session) {
         session.invalidate();
         return "redirect:/login";
     }

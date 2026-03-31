@@ -16,15 +16,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.chatapp.model.Room;
 import com.example.chatapp.model.User;
 import com.example.chatapp.service.MessageService;
 import com.example.chatapp.service.UserService;
 import com.example.chatapp.dto.MessageDTO;
 import com.example.chatapp.dto.ReportDTO;
 import com.example.chatapp.dto.RoomDTO2;
-import com.example.chatapp.dto.RoomMemberDTO;
-import com.example.chatapp.dto.UserDTO;
 import com.example.chatapp.dto.UserDTO2;
 
 import jakarta.servlet.http.HttpSession;
@@ -102,7 +99,7 @@ public class ChatController {
 
     @PostMapping("/sendReport")
     public boolean sendReport(@RequestBody ReportDTO report) {
-        return userService.sendReport(report);
+        return userService.saveReport(report);
     }
 
     @GetMapping("/viewUserDirectRoom")

@@ -117,7 +117,6 @@ function addPreMessageToUI(message) {
         dateElement.classList.add("dateTag");
 
         if (dateFromDB === getCurrentDateTime()) dateElement.innerText = "Hôm nay"; 
-        // // sửa load tin nhắn cũ của cùng 1 ngày nhưng khác page, ví dụ ngày 14/3/2026
 
         messageArea.prepend(dateElement);
         tmpDate = dateFromDB;
@@ -131,8 +130,6 @@ function addPreMessageToUI(message) {
         dateElement.classList.add("dateTag");
         messageArea.prepend(dateElement);
     }
-
-    //messageArea.appendChild(newMessage);
 }
 
 messageArea.addEventListener("scroll", function () {

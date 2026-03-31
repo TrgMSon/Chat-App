@@ -90,12 +90,16 @@ body {
 #qtyReportDiv {
     height: 40%;
     display: flex;
+    background-color: antiquewhite;
+    margin-top: 20px;
 }
 
 #qtyUserDiv {
     height: 40%;
     display: flex;
     border-bottom: 1px solid black;
+    background-color: aliceblue;
+    margin-top: 20px;
 }
 
 .item {

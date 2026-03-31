@@ -92,7 +92,7 @@ function addRoomToUI(roomData) {
     roomElement.appendChild(avatarDiv);
     roomElement.appendChild(roomNameElement);
 
-    roomList.appendChild(roomElement);
+    roomList.prepend(roomElement);
 }
 
 function onRoomReceived(payload) {
@@ -196,6 +196,8 @@ async function loadRoom(room) {
         }
     }
     if (roomType === "direct") {
+        chatTitle.style.cursor = "pointer";
+        
         if (chatTitle.querySelector(".viewMemberBtn") != null) {
             chatTitle.removeChild(chatTitle.querySelector(".viewMemberBtn"));
         }
@@ -224,6 +226,10 @@ async function loadRoom(room) {
 listRoom.forEach(room => {
     room.addEventListener("click", function () {
         loadRoom(room);
+        room.style.backgroundColor = "#A9A9A9";
+        listRoom.forEach(room1 => {
+            if (room1.dataset.roomId != room.dataset.roomId) room1.style.backgroundColor = "";
+        });
     });
 });
 
@@ -237,10 +243,6 @@ listRoom.forEach(room => {
 });
 
 function getCurrentDateTime() {
-    // let currentDateTime = new Date();
-    // let tmp = currentDateTime.toLocaleString().substring(0, 9).split("/");
-    // return tmp[1].padStart(2, '0') + "/" + tmp[0].padStart(2, '0') + "/" + tmp[2];
-
     let now = new Date();
 
     let day = String(now.getDate()).padStart(2, '0');
@@ -308,9 +310,6 @@ async function sendMessage() {
 
 function formatDate(date) {
     let array = date.split("-");
-    // let ans = "";
-    // ans = array[2] + "/" + array[1] + "/" + array[0];
-    // return ans;
     return `${array[2]}/${array[1]}/${array[0]}`;
 }
 

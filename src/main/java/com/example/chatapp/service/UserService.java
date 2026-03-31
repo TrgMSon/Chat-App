@@ -173,8 +173,8 @@ public class UserService {
         return userRepo.viewMemberInGroup(roomId);
     }
 
-    public boolean sendReport(ReportDTO report) {
-        int rows = userRepo.sendReport(report.getUserIdSend(), report.getReportedUserId(), report.getContent(), LocalDateTime.now());
+    public boolean saveReport(ReportDTO report) {
+        int rows = userRepo.saveReport(report.getUserIdSend(), report.getReportedUserId(), report.getContent(), LocalDateTime.now());
         return rows > 0;
     }
 

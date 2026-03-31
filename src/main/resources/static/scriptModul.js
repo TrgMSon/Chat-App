@@ -187,16 +187,6 @@ listUserInfor.addEventListener("click", async function (e) {
     else if (e.target.classList.contains("chatOption")) {
         e.preventDefault();
 
-        // await fetch("/api/createDirectRoom", {
-        //     method: "POST",
-        //     headers: {
-        //         "Content-Type": "application/json"
-        //     },
-        //     body: JSON.stringify({
-        //         userId: e.target.dataset.userId
-        //     })
-        // });
-
         stompClient.send("/app/chat.newDirectRoom", {}, JSON.stringify({
             userId1: e.target.dataset.userId,
             userLoginId: userLoginId
@@ -239,8 +229,10 @@ acptCreateGroup.addEventListener("click", async function () {
         return;
     }
 
-    addGroupDiv.classList.remove("createBox");
-    addGroupDiv.classList.add("hide");
+    if (roomName.length > 65) {
+        alert("Tên nhóm quá dài, vui lòng đặt tên ngắn hơn");
+        return;
+    }
 
     let addBtns = document.querySelectorAll(".addBtn");
     let userIds = [];
@@ -251,16 +243,13 @@ acptCreateGroup.addEventListener("click", async function () {
         }
     }
 
-    // await fetch("/api/createGroup", {
-    //     method: "POST",
-    //     headers: {
-    //         "Content-Type": "application/json"
-    //     },
-    //     body: JSON.stringify({
-    //         userIds: userIds,
-    //         roomName: roomName
-    //     })
-    // });
+    if (userIds.length < 2) {
+        alert("Nhóm cần có ít nhất 3 thành viên");
+        return;
+    }
+
+    addGroupDiv.classList.remove("createBox");
+    addGroupDiv.classList.add("hide");
 
     stompClient.send("/app/chat.newGroup", {}, JSON.stringify({
         userLoginId: userLoginId,
@@ -322,15 +311,14 @@ chatTitle.addEventListener("click", async function (e) {
         let reportedUserName = document.getElementById("reportedUserInfor");
         reportedUserName.innerText = "Người dùng vi phạm: " + userInfor.userName;
 
-        let sendReportBtn = document.getElementById("sendReportBtn");
-        sendReportBtn.dataset.userIdSend = userLoginId;
-        sendReportBtn.dataset.reportedUserId = userInfor.userId;
+        acptSendReport.dataset.userIdSend = userLoginId;
+        acptSendReport.dataset.reportedUserId = userInfor.userId;
 
         reportWritter.classList.remove("hide");
         reportWritter.classList.add("createBox");
     }
 
-    else {
+    else if (chatTitle.dataset.roomType === "direct") {
         let response = await fetch("/api/viewUserDirectRoom?roomId=" + chatTitle.dataset.roomId + "&userLoginId=" + userLoginId);
         let userInfor = await response.json();
 
@@ -357,9 +345,8 @@ listUserInforInGroup.addEventListener("click", async function (e) {
         let reportedUserName = document.getElementById("reportedUserInfor");
         reportedUserName.innerText = "Người dùng vi phạm: " + e.target.dataset.userName;
 
-        let sendReportBtn = document.getElementById("sendReportBtn");
-        sendReportBtn.dataset.userIdSend = userLoginId;
-        sendReportBtn.dataset.reportedUserId = e.target.dataset.userId;
+        acptSendReport.dataset.userIdSend = userLoginId;
+        acptSendReport.dataset.reportedUserId = e.target.dataset.userId;
 
         reportWritter.classList.remove("hide");
         reportWritter.classList.add("createBox");

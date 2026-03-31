@@ -120,9 +120,7 @@ manageReportBtn.addEventListener("click", async function () {
 
 function formatDate(date) {
     let array = date.split("-");
-    let ans = "";
-    ans = array[2] + "/" + array[1] + "/" + array[0];
-    return ans;
+    return `${array[2]}/${array[1]}/${array[0]}`;
 }
 
 logoutBtn.addEventListener("click", function () {
@@ -172,6 +170,7 @@ async function loadUserDetail() {
                 status: "allowed",
                 userId: userInfor.userId
             }));
+            alert("Mở khóa tài khoản thành công");
             mainView2.removeChild(document.querySelector(".detailBox"));
         });
     }
@@ -182,6 +181,7 @@ async function loadUserDetail() {
                 status: "banned",
                 userId: userInfor.userId
             }));
+            alert("Khóa tài khoản thành công");
             mainView2.removeChild(document.querySelector(".detailBox"));
         });
     }

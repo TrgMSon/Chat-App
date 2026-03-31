@@ -20,7 +20,7 @@ public interface UserRepo extends JpaRepository<User, String> {
         User findByEmail(String email);
 
         @Query(value = """
-                        SELECT rm.* FROM room_member AS rm WHERE rm.user_id = ?1
+                        SELECT rm.* FROM room_member AS rm WHERE rm.user_id = ?1 ORDER BY rm.room_name
                         """, nativeQuery = true)
         ArrayList<RoomMember> getListRoom(String userId);
 
@@ -79,7 +79,7 @@ public interface UserRepo extends JpaRepository<User, String> {
         @Transactional
         @Modifying
         @Query(value = "INSERT INTO report(user_send_id, reported_user_id, content, created_at) VALUES(?1, ?2, ?3, ?4)", nativeQuery = true)
-        int sendReport(String userSendId, String reportedUserId, String content, LocalDateTime createdAt);
+        int saveReport(String userSendId, String reportedUserId, String content, LocalDateTime createdAt);
 
         @Query(value = """
                         SELECT u.* FROM user AS u 
@@ -87,6 +87,4 @@ public interface UserRepo extends JpaRepository<User, String> {
                         WHERE rm.room_id=?1 AND u.user_id <> ?2
                         """, nativeQuery = true)
         User findUserInDirectRoom(String roomId, String userLoginId);
-
-        
 }
