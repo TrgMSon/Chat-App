@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.chatapp.model.User;
 import com.example.chatapp.service.MessageService;
 import com.example.chatapp.service.UserService;
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.example.chatapp.dto.MessageDTO;
 import com.example.chatapp.dto.ReportDTO;
 import com.example.chatapp.dto.RoomDTO2;
