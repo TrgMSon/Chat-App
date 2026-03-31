@@ -78,18 +78,21 @@ public class ChatController {
 
     @PostMapping("/upload-image")
     public String uploadImage(@RequestParam("image") MultipartFile file) throws IOException {
-        String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
-        Path uploadDir = Paths.get("uploads");
+        // String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+        // Path uploadDir = Paths.get("uploads");
 
-        if (!Files.exists(uploadDir)) {
-            Files.createDirectories(uploadDir);
-        }
+        // if (!Files.exists(uploadDir)) {
+        //     Files.createDirectories(uploadDir);
+        // }
 
-        Path path = uploadDir.resolve(fileName);
+        // Path path = uploadDir.resolve(fileName);
 
-        Files.copy(file.getInputStream(), path);
+        // Files.copy(file.getInputStream(), path);
 
-        return "/uploads/" + fileName;
+        // return "/uploads/" + fileName;
+
+        Map<?, ?> uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+        return uploadResult.get("url").toString();
     }
 
     @GetMapping("/viewMember")
