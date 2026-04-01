@@ -43,7 +43,7 @@
             <div class="line">
                 <label></label>
             </div>
-            <ul id="listRoom" name="listRoom" class="list-room">
+            <ul id="listRoom" class="list-room">
                 <li class="room" th:each="room : ${rooms}" th:data-room-id="${room.roomId}"
                     th:data-room-name="${room.roomName}" th:data-room-type="${room.type}"
                     th:data-first-char="${room.roomName.toUpperCase().substring(0, 1)}">
@@ -66,6 +66,7 @@
             </div>
 
             <div class="messages" id="messageArea"></div>
+            <div class="loader hide"></div>
 
             <form class="message-form" id="messageForm">
                 <input type="file" id="imageInput" accept="image/*" multiple hidden>

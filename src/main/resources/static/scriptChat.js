@@ -18,9 +18,7 @@ const closeSearchBtn = document.getElementById("closeSearchBtn");
 const fileName = document.getElementById("fileName");
 const hiddenDiv = document.getElementById("hiddenDiv");
 const cancelSendImg = document.getElementById("cancelSendImg");
-
-let loader = document.createElement("div");
-loader.classList.add("loader");
+const loader = document.querySelector(".loader");
 
 let userLoginId = null;
 let roomType = null;
@@ -73,6 +71,10 @@ function onStatusReceived(payload) {
 }
 
 function addRoomToUI(roomData) {
+    loader.classList.remove("hide");
+    loader.style.left = "40px";
+    loader.style.top = "130px";
+
     let roomList = document.getElementById("listRoom");
     let roomElement = document.createElement("li");
     roomElement.classList.add("room");
@@ -96,12 +98,18 @@ function addRoomToUI(roomData) {
     roomElement.appendChild(roomNameElement);
 
     roomList.prepend(roomElement);
+
+    loader.classList.add("hide");
+    loader.style.left = "";
+    loader.style.top = "100px";
 }
 
 function onRoomReceived(payload) {
     let roomData = JSON.parse(payload.body);
+
     addRoomToUI(roomData);
     stompClient.subscribe("/topic/room/" + roomData.roomId, onMessageReceived);
+    
     listRoom = document.querySelectorAll("#listRoom li");
     listRoom.forEach(room => {
         if (room.dataset.roomId === roomData.roomId) {
@@ -110,7 +118,11 @@ function onRoomReceived(payload) {
             });
             return;
         }
-    })
+    });
+
+    loader.classList.add("hide");
+    loader.style.left = "";
+    loader.style.top = "100px";
 }
 
 function isNearBottom() {
@@ -121,7 +133,9 @@ function onMessageReceived(payload) {
     let messageData = JSON.parse(payload.body);
 
     if (roomId === messageData.roomId) {
+        loader.classList.remove("hide");
         addMessageToUI(messageData);
+        loader.classList.add("hide");
     }
 
     listRoom.forEach(room => {
@@ -223,9 +237,11 @@ async function loadRoom(room) {
     let chatTitleAvatar = chatTitle.querySelector(".avatar");
     chatTitleAvatar.style.backgroundColor = getColorCode(firstChar);
 
+    loader.classList.remove("hide");
     await loadMessages(roomId);
 
     scrollToBottom();
+    loader.classList.add("hide");
 }
 
 listRoom.forEach(room => {
@@ -239,6 +255,7 @@ listRoom.forEach(room => {
 });
 
 function scrollToBottom() {
+    loader.classList.remove("hide");
     messageArea.scrollTop = messageArea.scrollHeight - messageArea.clientHeight;
 }
 
@@ -263,9 +280,12 @@ async function sendMessage() {
 
     if (content === "" && images.length === 0) return;
 
-    messageArea.appendChild(loader);
+    loader.classList.remove("hide");
 
     if (images.length > 0) {
+        fileName.innerHTML = "";
+        cancelSendImg.classList.add("hide");
+
         for (let image of images) {
             let formData = new FormData();
             formData.append("image", image);
@@ -292,12 +312,16 @@ async function sendMessage() {
 
             stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(messageData));
         }
-        fileName.innerHTML = "";
+
         imageInput.value = "";
-        cancelSendImg.classList.add("hide");
     }
 
     if (content != "") {
+        messageInput.value = "";
+        messageInput.style.minHeight = "60px";
+        messageInput.style.maxHeight = "60px";
+        hiddenDiv.innerHTML = "";
+
         let messageData = {
             userId: userLoginId,
             roomId: roomId,
@@ -307,12 +331,9 @@ async function sendMessage() {
         };
 
         stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(messageData));
-        
-        messageInput.value = "";
-        messageInput.style.minHeight = "60px";
-        messageInput.style.maxHeight = "60px";
-        hiddenDiv.innerHTML = "";
     }
+
+    loader.classList.add("hide");
 }
 
 function formatDate(date) {
@@ -339,11 +360,6 @@ function checkDate(date) {
 }
 
 function addMessageToUI(message) {
-    if (document.querySelector(".loader") === null) {
-        messageArea.appendChild(loader);
-        console.log("waiting");
-    }
-
     const newMessage = document.createElement("div");
     newMessage.classList.add("message");
 
@@ -408,7 +424,7 @@ function addMessageToUI(message) {
         imageElement.src = message.content;
         imageElement.onload = function () {
             scrollToBottom();
-            if (document.querySelector(".loader")) messageArea.removeChild(loader);
+            loader.classList.add("hide");
         };
         contentDiv.appendChild(imageElement);
     }

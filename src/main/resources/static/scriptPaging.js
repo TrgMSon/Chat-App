@@ -24,6 +24,7 @@ async function loadMessagePrevious() {
     if (!hasMore || isLoading) return;
 
     isLoading = true;
+    loader.classList.remove("hide");
 
     let oldHeight = messageArea.scrollHeight;
 
@@ -33,6 +34,7 @@ async function loadMessagePrevious() {
 
     if (messages.length === 0) {
         hasMore = false;
+        loader.classList.add("hide");
         return;
     }
 
@@ -44,6 +46,7 @@ async function loadMessagePrevious() {
     let newHeight = messageArea.scrollHeight;
     messageArea.scrollTop = newHeight - oldHeight;
 
+    loader.classList.add("hide");
     isLoading = false;
 
     pageIndex++;

@@ -187,6 +187,10 @@ listUserInfor.addEventListener("click", async function (e) {
     else if (e.target.classList.contains("chatOption")) {
         e.preventDefault();
 
+        loader.classList.remove("hide");
+        loader.style.left = "120px";
+        loader.style.top = "160px";
+
         stompClient.send("/app/chat.newDirectRoom", {}, JSON.stringify({
             userId1: e.target.dataset.userId,
             userLoginId: userLoginId
@@ -248,14 +252,18 @@ acptCreateGroup.addEventListener("click", async function () {
         return;
     }
 
-    addGroupDiv.classList.remove("createBox");
-    addGroupDiv.classList.add("hide");
+    loader.classList.remove("hide");
+    loader.style.left = "120px";
+    loader.style.top = "160px";
 
     stompClient.send("/app/chat.newGroup", {}, JSON.stringify({
         userLoginId: userLoginId,
         userIds: userIds,
         roomName: roomName
     }));
+
+    addGroupDiv.classList.remove("createBox");
+    addGroupDiv.classList.add("hide");
 });
 
 async function getMember(roomId) {
