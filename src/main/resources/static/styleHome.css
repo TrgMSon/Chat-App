@@ -10,6 +10,7 @@ body {
 .app {
     display: flex;
     height: 100vh;
+    overflow: hidden;
 }
 
 /* Sidebar */
@@ -151,7 +152,6 @@ body {
     margin-top: 20px;
     min-height: 80px;
     height: fit-content;
-    max-height: 180px;
     border-top: 1px solid black;
 }
 

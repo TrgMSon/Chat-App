@@ -74,6 +74,7 @@
 }
 
 #lbUploadImg {
+    border-bottom: 1px solid black;
     font-size: 18px;
     padding-left: 10px;
     padding-right: 10px;
@@ -86,7 +87,11 @@
 }
 
 #fileName {
+    max-height: 60px;
+    overflow: auto;
+    overflow-y: scroll;
     height: fit-content;
+    margin: 5px;
 }
 
 .viewMemberBtn {
@@ -104,4 +109,22 @@
     font-size: 18px;
     white-space: pre-line;
     margin-bottom: 10px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(90deg);}
+    50% { transform: rotate(180deg);}
+    100% { transform: rotate(360deg); }
+}
+
+.loader {
+    position: fixed;
+    align-self: center;
+    width: 60px;
+    height: 60px;
+    border: 8px solid #f3f3f3;
+    border-top: 8px solid #3498db;
+    border-radius: 50%;
+    animation: spin 3s linear infinite;
 }

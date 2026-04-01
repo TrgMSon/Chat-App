@@ -19,6 +19,9 @@ const fileName = document.getElementById("fileName");
 const hiddenDiv = document.getElementById("hiddenDiv");
 const cancelSendImg = document.getElementById("cancelSendImg");
 
+let loader = document.createElement("div");
+loader.classList.add("loader");
+
 let userLoginId = null;
 let roomType = null;
 let roomId = null;
@@ -117,7 +120,9 @@ function isNearBottom() {
 function onMessageReceived(payload) {
     let messageData = JSON.parse(payload.body);
 
-    if (roomId === messageData.roomId) addMessageToUI(messageData);
+    if (roomId === messageData.roomId) {
+        addMessageToUI(messageData);
+    }
 
     listRoom.forEach(room => {
         if (room.dataset.roomId === messageData.roomId && messageData.userId != userLoginId) {
@@ -258,6 +263,8 @@ async function sendMessage() {
 
     if (content === "" && images.length === 0) return;
 
+    messageArea.appendChild(loader);
+
     if (images.length > 0) {
         for (let image of images) {
             let formData = new FormData();
@@ -300,8 +307,8 @@ async function sendMessage() {
         };
 
         stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(messageData));
+        
         messageInput.value = "";
-
         messageInput.style.minHeight = "60px";
         messageInput.style.maxHeight = "60px";
         hiddenDiv.innerHTML = "";
@@ -332,6 +339,8 @@ function checkDate(date) {
 }
 
 function addMessageToUI(message) {
+    if (document.querySelector(".loader") === null) messageArea.appendChild(loader);
+
     const newMessage = document.createElement("div");
     newMessage.classList.add("message");
 
@@ -351,7 +360,10 @@ function addMessageToUI(message) {
         dateElement.innerText = dateFromDB;
         dateElement.classList.add("dateTag");
 
-        if (dateFromDB === getCurrentDateTime()) dateElement.innerText = "Hôm nay";
+        if (dateFromDB === getCurrentDateTime()) {
+            dateElement.innerText = "Hôm nay";
+            tmpDate = "Hôm nay";
+        }
 
         messageArea.appendChild(dateElement);
         tmpDate = dateFromDB;
@@ -393,6 +405,7 @@ function addMessageToUI(message) {
         imageElement.src = message.content;
         imageElement.onload = function () {
             scrollToBottom();
+            if (document.querySelector(".loader")) messageArea.removeChild(loader);
         };
         contentDiv.appendChild(imageElement);
     }
