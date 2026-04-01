@@ -197,7 +197,7 @@ async function loadRoom(room) {
     }
     if (roomType === "direct") {
         chatTitle.style.cursor = "pointer";
-        
+
         if (chatTitle.querySelector(".viewMemberBtn") != null) {
             chatTitle.removeChild(chatTitle.querySelector(".viewMemberBtn"));
         }
@@ -258,23 +258,6 @@ async function sendMessage() {
 
     if (content === "" && images.length === 0) return;
 
-    if (content != "") {
-        let messageData = {
-            userId: userLoginId,
-            roomId: roomId,
-            userName: userLoginName,
-            content: content,
-            type: "text"
-        };
-
-        stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(messageData));
-        messageInput.value = "";
-
-        messageInput.style.minHeight = "60px";
-        messageInput.style.maxHeight = "60px";
-        hiddenDiv.innerHTML = "";
-    }
-
     if (images.length > 0) {
         for (let image of images) {
             let formData = new FormData();
@@ -305,6 +288,23 @@ async function sendMessage() {
         fileName.innerHTML = "";
         imageInput.value = "";
         cancelSendImg.classList.add("hide");
+    }
+
+    if (content != "") {
+        let messageData = {
+            userId: userLoginId,
+            roomId: roomId,
+            userName: userLoginName,
+            content: content,
+            type: "text"
+        };
+
+        stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(messageData));
+        messageInput.value = "";
+
+        messageInput.style.minHeight = "60px";
+        messageInput.style.maxHeight = "60px";
+        hiddenDiv.innerHTML = "";
     }
 }
 
