@@ -1,12 +1,8 @@
 package com.example.chatapp.controller;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -84,19 +80,6 @@ public class ChatController {
 
     @PostMapping("/upload-image")
     public String uploadImage(@RequestParam("image") MultipartFile file) throws IOException {
-        // String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
-        // Path uploadDir = Paths.get("uploads");
-
-        // if (!Files.exists(uploadDir)) {
-        //     Files.createDirectories(uploadDir);
-        // }
-
-        // Path path = uploadDir.resolve(fileName);
-
-        // Files.copy(file.getInputStream(), path);
-
-        // return "/uploads/" + fileName;
-
         Map<?, ?> uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
         return uploadResult.get("url").toString();
     }
