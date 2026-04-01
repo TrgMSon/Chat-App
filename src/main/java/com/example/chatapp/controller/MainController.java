@@ -27,9 +27,13 @@ public class MainController {
     @Autowired
     private ManageService manageService;
 
+    @GetMapping("/")
+    public String firstPage() {
+        return "login";
+    }
+    
     @GetMapping("/login")
-    public String login(Model model) {
-        model.addAttribute("user", new User());
+    public String login() {
         return "login";
     }
 
