@@ -2,24 +2,26 @@
 FROM maven:3.9.6-eclipse-temurin-21 AS build
 WORKDIR /app
 
-# Copy toàn bộ code vào
+# Copy pom.xml và source code
 COPY . .
 
-# Build ra file JAR (bỏ qua test để nhanh hơn)
+# Build ra file JAR (bỏ qua test)
 RUN mvn clean package -DskipTests
 
-# Stage 2: Run stage
+# Stage 2: Run stage (Sử dụng Alpine cho nhẹ)
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 
-# SỬA LỖI TẠI ĐÂY: Sử dụng dấu * để tự động lấy file JAR trong thư mục target
-# Cách này giúp tránh lỗi gõ sai tên file hoặc sai version (0.0.1-SNAPSHOT)
-COPY --from=build /app/target/*.jar app.jar
+# --- QUAN TRỌNG: Thiết lập múi giờ tại đây ---
+RUN apk add --no-cache tzdata
+ENV TZ=Asia/Ho_Chi_Minh
 
-# Kiểm tra xem file đã được copy vào chưa (Dòng này để debug)
-RUN ls -l /app
+# Copy file JAR từ Stage 1 sang Stage 2
+# Lưu ý: Nếu có nhiều file .jar trong target, lệnh này có thể gây lỗi. 
+# Tốt nhất là chỉ định rõ hoặc dùng lệnh rename ở stage 1.
+COPY --from=build /app/target/*.jar app.jar
 
 EXPOSE 8080
 
-# Chạy ứng dụng bằng tên file đã được đổi thành app.jar cho ngắn gọn
+# Chạy ứng dụng
 ENTRYPOINT ["java", "-jar", "app.jar"]
