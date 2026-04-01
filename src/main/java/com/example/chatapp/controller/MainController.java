@@ -26,18 +26,13 @@ public class MainController {
 
     @Autowired
     private ManageService manageService;
-
-    @GetMapping("/")
-    public String firstPage() {
-        return "login";
-    }
     
-    @GetMapping("/login")
+    @GetMapping(value = {"/login", "/"})
     public String login() {
         return "login";
     }
 
-    @PostMapping("/login")
+    @PostMapping(value = {"/login", "/"})
     public String checkLogin(@ModelAttribute User user, RedirectAttributes ra, HttpSession session) {
         String email = user.getEmail();
 
