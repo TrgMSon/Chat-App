@@ -339,7 +339,10 @@ function checkDate(date) {
 }
 
 function addMessageToUI(message) {
-    if (document.querySelector(".loader") === null) messageArea.appendChild(loader);
+    if (document.querySelector(".loader") === null) {
+        messageArea.appendChild(loader);
+        console.log("waiting");
+    }
 
     const newMessage = document.createElement("div");
     newMessage.classList.add("message");

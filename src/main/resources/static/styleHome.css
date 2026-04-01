@@ -201,7 +201,7 @@ body {
 
 .message.me {
     align-self: flex-end;
-    margin-right: 18px;
+    margin-right: 200px;
     border: 1px solid black;
     padding-left: 10px;
     max-width: 70%;
