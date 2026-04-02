@@ -2,6 +2,7 @@ package com.example.chatapp.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,10 +79,31 @@ public class ChatController {
         return userService.findChattingUser(name, userId);
     }
 
-    @PostMapping("/upload-image")
-    public String uploadImage(@RequestParam("image") MultipartFile file) throws IOException {
-        Map<?, ?> uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
-        return uploadResult.get("url").toString();
+    // @PostMapping("/upload-image")
+    // public String uploadImage(@RequestParam("image") MultipartFile file) throws
+    // IOException {
+    // Map<?, ?> uploadResult = cloudinary.uploader().upload(file.getInputStream(),
+    // ObjectUtils.emptyMap());
+
+    // return uploadResult.get("url").toString();
+    // }
+
+    @GetMapping("/generate-signature")
+    public Map<String, Object> generateSignature() {
+        long timestamp = System.currentTimeMillis() / 1000;
+        Map<String, Object> params = new HashMap<>();
+        params.put("timestamp", timestamp);
+        // Bạn có thể thêm folder, public_id... vào đây nếu muốn
+
+        // Hàm này của Cloudinary SDK sẽ tự lấy API_SECRET để ký
+        String signature = cloudinary.apiSignRequest(params, cloudinary.config.apiSecret, 1);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("signature", signature);
+        response.put("timestamp", timestamp);
+        response.put("api_key", cloudinary.config.apiKey);
+        response.put("cloud_name", cloudinary.config.cloudName);
+        return response;
     }
 
     @GetMapping("/viewMember")

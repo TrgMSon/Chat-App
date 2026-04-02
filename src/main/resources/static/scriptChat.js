@@ -109,7 +109,7 @@ function onRoomReceived(payload) {
 
     addRoomToUI(roomData);
     stompClient.subscribe("/topic/room/" + roomData.roomId, onMessageReceived);
-    
+
     listRoom = document.querySelectorAll("#listRoom li");
     listRoom.forEach(room => {
         if (room.dataset.roomId === roomData.roomId) {
@@ -143,7 +143,7 @@ function onMessageReceived(payload) {
             room.style.fontWeight = "bold";
         }
 
-        if (isNearBottom() && roomId === messageData.roomId) {
+        if (isNearBottom() && roomId === messageData.roomId && messageData.userId != userLoginId) {
             scrollToBottom();
             loader.classList.add("hide");
             room.style.fontWeight = "";
@@ -284,15 +284,30 @@ async function sendMessage() {
 
     loader.classList.remove("hide");
 
+    messageInput.value = "";
+
     if (images.length > 0) {
         fileName.innerHTML = "";
         cancelSendImg.classList.add("hide");
 
         for (let image of images) {
-            let formData = new FormData();
-            formData.append("image", image);
+            // let formData = new FormData();
+            // formData.append("image", image);
 
-            let response = await fetch("/api/upload-image", {
+            // let response = await fetch("/api/upload-image", {
+            //     method: "POST",
+            //     body: formData
+            // });
+            const authData = await fetch('/api/generate-signature').then(res => res.json());
+
+            const formData = new FormData();
+            formData.append("file", image);
+            formData.append("api_key", authData.api_key);
+            formData.append("timestamp", authData.timestamp);
+            formData.append("signature", authData.signature);
+
+            // 3. Upload thẳng (Không qua server Java nữa)
+            const response = await fetch("https://api.cloudinary.com/v1_1/" + authData.cloud_name + "/image/upload", {
                 method: "POST",
                 body: formData
             });
@@ -302,7 +317,8 @@ async function sendMessage() {
                 return;
             }
 
-            let urlImg = await response.text();
+            let result = await response.json();
+            let urlImg = result.url;
 
             let messageData = {
                 userId: userLoginId,
@@ -319,7 +335,7 @@ async function sendMessage() {
     }
 
     if (content != "") {
-        messageInput.value = "";
+        // messageInput.value = "";
         messageInput.style.minHeight = "60px";
         messageInput.style.maxHeight = "60px";
         hiddenDiv.innerHTML = "";
@@ -383,7 +399,6 @@ function addMessageToUI(message) {
 
         if (dateFromDB === getCurrentDateTime()) {
             dateElement.innerText = "Hôm nay";
-            tmpDate = "Hôm nay";
         }
 
         messageArea.appendChild(dateElement);
