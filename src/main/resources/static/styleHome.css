@@ -186,7 +186,7 @@ body {
 
 .message {
     display: flex;
-    max-width: 60%;
+    max-width: 70%;
     height: fit-content;
     margin-top: 25px;
     margin-bottom: 15px;
