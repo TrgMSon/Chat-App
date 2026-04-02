@@ -145,11 +145,13 @@ function onMessageReceived(payload) {
 
         if (isNearBottom() && roomId === messageData.roomId) {
             scrollToBottom();
+            loader.classList.add("hide");
             room.style.fontWeight = "";
         }
 
         if (room.dataset.roomId === messageData.roomId && messageData.userId === userLoginId) {
             scrollToBottom();
+            loader.classList.add("hide");
         }
     });
 }
