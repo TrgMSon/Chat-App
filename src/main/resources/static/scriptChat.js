@@ -208,6 +208,8 @@ async function loadRoom(room) {
     roomId = room.dataset.roomId;
     roomType = room.dataset.roomType;
     if (roomType === "group") {
+        chatTitle.style.cursor = "";
+
         if (chatTitle.querySelector(".viewMemberBtn") === null) {
             viewMemberBtn.dataset.roomId = room.dataset.roomId;
             chatTitle.appendChild(viewMemberBtn);
