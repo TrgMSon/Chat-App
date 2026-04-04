@@ -54,7 +54,7 @@ public interface UserRepo extends JpaRepository<User, String> {
         @Query(value = """
                         INSERT INTO room(room_id, type, created_at) VALUES(?1, ?2, ?3);
                         """, nativeQuery = true)
-        void createRoom(String room_id, String type, LocalDateTime createdAt);
+        void createRoom(String roomId, String type, LocalDateTime createdAt);
 
         @Query(value = "SELECT * FROM room WHERE room_id = ?1", nativeQuery = true)
         Room isExistRoom(String roomId);
@@ -62,7 +62,7 @@ public interface UserRepo extends JpaRepository<User, String> {
         @Transactional
         @Modifying
         @Query(value = "INSERT INTO room_member(user_id, room_id, room_name, joined_at) VALUES(?1, ?2, ?3, ?4)", nativeQuery = true)
-        void saveRoomMember(String user_id, String room_id, String room_name, LocalDateTime joinedAt);
+        void saveRoomMember(String userId, String roomId, String roomName, LocalDateTime joinedAt);
 
         @Transactional
         @Modifying

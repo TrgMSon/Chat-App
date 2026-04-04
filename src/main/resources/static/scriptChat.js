@@ -308,7 +308,6 @@ async function sendMessage() {
             formData.append("timestamp", authData.timestamp);
             formData.append("signature", authData.signature);
 
-            // 3. Upload thẳng (Không qua server Java nữa)
             const response = await fetch("https://api.cloudinary.com/v1_1/" + authData.cloud_name + "/image/upload", {
                 method: "POST",
                 body: formData
@@ -438,14 +437,24 @@ function addMessageToUI(message) {
         contentDiv.appendChild(contentElement);
     }
     else {
-        const imageElement = document.createElement("img");
-        imageElement.style.userSelect = "none";
-        imageElement.src = message.content;
-        imageElement.onload = function () {
+        const realImg = document.createElement("img");
+        realImg.style.userSelect = "none";
+        realImg.src = "https://res.cloudinary.com/dsrecf30u/image/upload/v1775311940/id-loading-1_tptr6p.gif";
+        realImg.style.height = "500px";
+        realImg.style.width = "100%";
+
+        const waitingImg = document.createElement("img");
+        waitingImg.src = message.content;
+        waitingImg.style.userSelect = "none";
+        waitingImg.style.height = "500px";
+        waitingImg.style.width = "100%";
+
+        waitingImg.onload = function () {
+            realImg.src = message.content;
             scrollToBottom();
             loader.classList.add("hide");
         };
-        contentDiv.appendChild(imageElement);
+        contentDiv.appendChild(realImg);
     }
 
     contentDiv.appendChild(datetime);
