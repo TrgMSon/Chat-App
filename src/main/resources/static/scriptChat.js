@@ -287,6 +287,7 @@ async function sendMessage() {
     loader.classList.remove("hide");
 
     messageInput.value = "";
+    hiddenDiv.innerHTML = "";
 
     if (images.length > 0) {
         fileName.innerHTML = "";
@@ -339,7 +340,6 @@ async function sendMessage() {
         // messageInput.value = "";
         messageInput.style.minHeight = "60px";
         messageInput.style.maxHeight = "60px";
-        hiddenDiv.innerHTML = "";
 
         let messageData = {
             userId: userLoginId,
