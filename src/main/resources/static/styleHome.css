@@ -157,6 +157,13 @@ body {
 
 #optionImgDiv {
     display: flex;
+    width: 100%;
+}
+
+#sendMessBtn {
+    font-size: 16px; 
+    margin-right: 5px;
+    margin-left: 80%;  
 }
 
 #cancelSendImg {

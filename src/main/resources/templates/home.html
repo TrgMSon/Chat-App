@@ -71,8 +71,9 @@
             <form class="message-form" id="messageForm">
                 <input type="file" id="imageInput" accept="image/*" multiple hidden>
                 <div id="optionImgDiv">
-                    <label for="imageInput" id="lbUploadImg">Gửi hình ảnh</label>
+                    <label for="imageInput" id="lbUploadImg">Đính kèm hình ảnh</label>
                     <button id="cancelSendImg">Hủy</button>
+                    <button id="sendMessBtn" class="hide">Gửi</button>
                 </div>
 
                 <span id="fileName"></span>
@@ -135,7 +136,7 @@
             <form id="formGroup" class="createForm">
                 <input type="text" placeholder="Nhập tên nhóm" id="nameGroupInput">
                 <input type="text" placeholder="Tìm kiếm" id="searchInputMember">
-                <button type="submit" style="display: none"></button>
+                <button type="submit" hidden></button>
             </form>
             
             <div class="listUserArea">

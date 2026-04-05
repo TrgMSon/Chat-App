@@ -29,6 +29,8 @@ viewUserBio.classList.add("hide");
 
 imageInput.addEventListener("change", function () {
     if (this.files.length > 0) {
+        sendMessBtn.classList.remove("hide");
+
         let listFile = "";
         for (let i = 0; i < this.files.length; i++) {
             listFile += this.files[i].name + "\n";
@@ -41,6 +43,7 @@ imageInput.addEventListener("change", function () {
 
 cancelSendImg.addEventListener("click", function (e) {
     e.preventDefault();
+    sendMessBtn.classList.add("hide");
     imageInput.value = "";
     fileName.innerText = "";
     cancelSendImg.classList.add("hide");

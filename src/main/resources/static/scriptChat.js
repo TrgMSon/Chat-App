@@ -19,6 +19,7 @@ const fileName = document.getElementById("fileName");
 const hiddenDiv = document.getElementById("hiddenDiv");
 const cancelSendImg = document.getElementById("cancelSendImg");
 const loader = document.querySelector(".loader");
+const sendMessBtn = document.getElementById("sendMessBtn");
 
 let userLoginId = null;
 let roomType = null;
@@ -175,8 +176,12 @@ function getColorCode(firstChar) {
 userIcon.style.backgroundColor = getColorCode(userIcon.dataset.firstChar);
 
 messageInput.addEventListener("input", function () {
+    sendMessBtn.classList.remove("hide");
+
     let content = messageInput.value;
     hiddenDiv.innerHTML = content.replace(/\n/g, "<br>") + "<br>";
+
+    if (content === "") sendMessBtn.classList.add("hide");
 
     let newHeight = hiddenDiv.scrollHeight;
     if (newHeight >= 150) messageInput.style.minHeight = "150px";
@@ -294,13 +299,6 @@ async function sendMessage() {
         cancelSendImg.classList.add("hide");
 
         for (let image of images) {
-            // let formData = new FormData();
-            // formData.append("image", image);
-
-            // let response = await fetch("/api/upload-image", {
-            //     method: "POST",
-            //     body: formData
-            // });
             const authData = await fetch('/api/generate-signature').then(res => res.json());
 
             const formData = new FormData();
@@ -468,9 +466,17 @@ messageForm.addEventListener("keydown", function (e) {
             return;
         }
 
+        sendMessBtn.classList.add("hide");
+        
         e.preventDefault();
         sendMessage();
     }
+});
+
+messageForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    sendMessBtn.classList.add("hide");
+    sendMessage();
 });
 
 async function loadMessages(roomId) {
