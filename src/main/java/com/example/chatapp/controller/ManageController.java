@@ -25,7 +25,7 @@ public class ManageController {
     }
 
     @GetMapping("/viewReportDetail")
-    public ReportDTO2 viewReport(@RequestParam String reportId) {
+    public ReportDTO2 viewReport(@RequestParam int reportId) {
         return manageService.findReportById(reportId);
     }
 

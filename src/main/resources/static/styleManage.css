@@ -17,8 +17,10 @@ body {
 }
 
 .top-taskbar p {
-    width: 100px;
+    flex: 1;
     margin: 20px;
+    font-size: 20px;
+    text-align: right;
 }
 
 .main-view {
@@ -29,14 +31,33 @@ body {
 }
 
 #searchForm {
-    margin-left: 50%;
+    width: 1000px;
+    display: flex;
+    justify-content: right;
+}
+
+#searchInput {
+    width: 50%;
+    height: 60%;
+    font-size: 18px;
+}
+
+.optionDiv {
+    border: 1px solid black;
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+    border-radius: 4px;
+    font-size: 18px;
 }
 
 #logoutBtn {
-    margin-left: 5%;
-    border: none;
-    background-color: white;
-    cursor: pointer;
+    font-size: 18px;
+    margin-top: 300px;
+    height: fit-content;
+    width: 180px;
+    border: 1px solid black;
+    text-align: center;
 }
 
 #logoutBtn:hover {
@@ -54,7 +75,6 @@ body {
 
 .sidebar {
     width: 300px;
-    border: 1px solid black;
     height: fit-content;
     margin-right: 10px;
     margin-left: 10px;

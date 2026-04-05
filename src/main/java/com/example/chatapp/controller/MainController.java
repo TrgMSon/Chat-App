@@ -86,6 +86,7 @@ public class MainController {
         
         model.addAttribute("qtyUserReport", labelQtyUser);
         model.addAttribute("qtyMonthReport", labelQtyReport);
+        model.addAttribute("userName", user.getUserName());
 
         return "management";
     }

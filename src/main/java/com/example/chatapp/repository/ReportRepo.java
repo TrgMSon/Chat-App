@@ -25,7 +25,7 @@ public interface ReportRepo extends JpaRepository<Report, Integer> {
     int getQtyUser();
 
     @Query(value = "SELECT * FROM report WHERE report_id = ?1", nativeQuery = true)
-    Report findReportById(String reportId);
+    Report findReportById(int reportId);
 
     @Query(value = "SELECT * FROM user WHERE role='user'", nativeQuery = true)
     ArrayList<User> findAllUser();

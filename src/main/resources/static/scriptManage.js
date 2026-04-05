@@ -37,8 +37,7 @@ function onError() {
     console.log("Lỗi kết nối websocket cho admin");
 }
 
-searchForm.classList.add("hide");
-logoutBtn.style.marginLeft = "1000px";
+searchInput.classList.add("hide");
 
 goHomeBtn.addEventListener("click", function () {
     window.location.href = "/manage";
@@ -61,7 +60,7 @@ async function loadReportDetail() {
     content.innerText = "Nội dung: " + reportInfor.content;
 
     let createdAt = document.createElement("small");
-    createdAt.innerText = "Ngày gửi: " + formatDate(reportInfor.createdAt.substring(0, 10));
+    createdAt.innerText = "Ngày gửi: " + formatDate(reportInfor.createdAt.substring(0, 10)) + " " + reportInfor.createdAt.substring(11);
 
     let closeBtn = document.createElement("button");
     closeBtn.classList.add("closeBtn");
@@ -80,8 +79,8 @@ async function loadReportDetail() {
 }
 
 manageReportBtn.addEventListener("click", async function () {
-    searchForm.classList.add("hide");
-    logoutBtn.style.marginLeft = "1000px";
+    searchInput.value = "";
+    searchInput.classList.add("hide");
 
     manageReportBtn.style.backgroundColor = "#A9A9A9";
     manageUserBtn.style.backgroundColor = "";
@@ -198,8 +197,8 @@ async function loadUserDetail() {
 }
 
 manageUserBtn.addEventListener("click", async function () {
-    searchForm.classList.remove("hide");
-    logoutBtn.style.marginLeft = "";
+    searchInput.value = "";
+    searchInput.classList.remove("hide");
 
     manageReportBtn.style.backgroundColor = "";
     manageUserBtn.style.backgroundColor = "#A9A9A9";

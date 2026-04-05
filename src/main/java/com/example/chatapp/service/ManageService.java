@@ -35,7 +35,7 @@ public class ManageService {
         return reportRepo.getQtyUser();
     }
 
-    public ReportDTO2 findReportById(String reportId) {
+    public ReportDTO2 findReportById(int reportId) {
         Report report = reportRepo.findReportById(reportId);
         return new ReportDTO2(report.getReportId(), report.getUserSend().getUserId(), report.getUserSend().getUserName(), report.getReportedUserId(), report.getContent(), report.getCreatedAt());
     }

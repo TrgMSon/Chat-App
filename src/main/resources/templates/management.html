@@ -4,7 +4,7 @@
 <head>
     <title>Quản lý Chat App</title>
     <link rel="stylesheet" th:href="@{/styleManage.css}">
-    
+
     <!-- https://cdnjs.com/libraries/sockjs-client -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
     <!-- https://cdnjs.com/libraries/stomp.js/ -->
@@ -16,15 +16,20 @@
         <div class="top-taskbar">
             <button id="goHomeBtn">Quản lý Chat App</button>
             <form id="searchForm">
-                <input type="text" placeholder="Tìm kiếm" id="searchInput">
+                <input type="text" placeholder="Tìm kiếm theo tên" id="searchInput">
             </form>
-            <button id="logoutBtn">Đăng xuất</button>
+
+            <p th:text="${userName}"></p>
         </div>
 
         <div class="main-view">
             <div class="sidebar">
-                <p id="manageUserBtn">Quản lý người dùng</p>
-                <p id="manageReportBtn">Quản lý báo cáo</p>
+                <div class="optionDiv">
+                    <p id="manageUserBtn">Quản lý người dùng</p>
+                    <p id="manageReportBtn">Quản lý báo cáo</p>
+                </div>
+
+                <p id="logoutBtn">Đăng xuất</p>
             </div>
 
             <div class="main-view2">
