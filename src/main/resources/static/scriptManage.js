@@ -123,7 +123,7 @@ function formatDate(date) {
 }
 
 logoutBtn.addEventListener("click", function () {
-    window.location.href = "/login";
+    window.location.href = "/logout";
 });
 
 async function loadUserDetail() {
