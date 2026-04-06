@@ -2,6 +2,7 @@ package com.example.chatapp.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,14 +37,14 @@ public class ChatController {
     private UserService userService;
 
     @GetMapping("/getMessages")
-    public ArrayList<MessageDTO> getMessages(@RequestParam String roomId) {
-        ArrayList<MessageDTO> messageDTOs = messageService.getMessagesByRoom(roomId, 0);
+    public List<MessageDTO> getMessages(@RequestParam String roomId) {
+        List<MessageDTO> messageDTOs = messageService.getMessagesByRoom(roomId, 0);
         return messageDTOs;
     }
 
     @GetMapping("/getPreMessage")
-    public ArrayList<MessageDTO> getPreMess(@RequestParam String roomId, @RequestParam int pageIndex) {
-        ArrayList<MessageDTO> messageDTOs = messageService.getMessagesByRoom(roomId, pageIndex * 10);
+    public List<MessageDTO> getPreMess(@RequestParam String roomId, @RequestParam int pageIndex) {
+        List<MessageDTO> messageDTOs = messageService.getMessagesByRoom(roomId, pageIndex);
         return messageDTOs;
     }
 

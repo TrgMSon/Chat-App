@@ -1,12 +1,13 @@
 package com.example.chatapp.repository;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.example.chatapp.model.Message;
@@ -15,13 +16,8 @@ import jakarta.transaction.Transactional;
 
 @Repository
 public interface MessageRepo extends JpaRepository<Message, Long> {
-        @SuppressWarnings("SqlResolve")
-        @Query(value = """
-                        SELECT m.* FROM message AS m
-                        WHERE m.room_id = ?1
-                        ORDER BY m.created_at DESC, m.message_id DESC
-                        """, nativeQuery = true)
-        ArrayList<Message> findMessagesByRoom(String roomId, Pageable index);
+        @Query("SELECT m FROM Message m WHERE m.room.roomId = :roomId")
+        Page<Message> findMessagesByRoom(@Param("roomId") String roomId, Pageable pageable);
 
         @Transactional
         @Modifying
