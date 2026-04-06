@@ -265,7 +265,7 @@ listRoom.forEach(room => {
 
 function scrollToBottom() {
     loader.classList.remove("hide");
-    messageArea.scrollTop = messageArea.scrollHeight - messageArea.clientHeight;
+    messageArea.scrollTop = messageArea.scrollHeight - messageArea.clientHeight + 50;
 }
 
 listRoom.forEach(room => {
