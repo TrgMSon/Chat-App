@@ -25,7 +25,7 @@ public interface UserRepo extends JpaRepository<User, String> {
         ArrayList<RoomMember> getListRoom(String userId);
 
         @Query(value = """
-                        SELECT rm.room_id FROM room_member AS rm WHERE rm.room_name LIKE %?1% AND rm.user_id = ?2
+                        SELECT rm.room_id FROM room_member AS rm WHERE rm.room_name LIKE ?1 AND rm.user_id = ?2
                         """, nativeQuery = true)
         ArrayList<String> findRoomIdByName(String roomName, String userId);
 
