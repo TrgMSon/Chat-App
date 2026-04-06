@@ -3,6 +3,7 @@ package com.example.chatapp.repository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -14,18 +15,18 @@ import jakarta.transaction.Transactional;
 
 @Repository
 public interface MessageRepo extends JpaRepository<Message, Long> {
-    @Query(value = """
-            SELECT m.* FROM message AS m
-            WHERE m.room_id = ?1 
-            ORDER BY m.created_at DESC, m.message_id DESC
-            LIMIT ?2 , 10
-            """, nativeQuery=true)
-    ArrayList<Message> findMessagesByRoom(String roomId, int index);
+        @SuppressWarnings("SqlResolve")
+        @Query(value = """
+                        SELECT m.* FROM message AS m
+                        WHERE m.room_id = ?1
+                        ORDER BY m.created_at DESC, m.message_id DESC
+                        """, nativeQuery = true)
+        ArrayList<Message> findMessagesByRoom(String roomId, Pageable index);
 
-    @Transactional
-    @Modifying
-    @Query(value = """
-            INSERT INTO message(user_id, room_id, content, created_at, type) VALUES(?1, ?2, ?3, ?4, ?5) 
-            """, nativeQuery=true)
-    void saveMessage(String userId, String roomId, String content, LocalDateTime createdAt, String type);
+        @Transactional
+        @Modifying
+        @Query(value = """
+                        INSERT INTO message(user_id, room_id, content, created_at, type) VALUES(?1, ?2, ?3, ?4, ?5)
+                        """, nativeQuery = true)
+        void saveMessage(String userId, String roomId, String content, LocalDateTime createdAt, String type);
 }

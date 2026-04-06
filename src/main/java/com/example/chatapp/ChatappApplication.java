@@ -9,6 +9,8 @@ import jakarta.annotation.PostConstruct;
 
 @SpringBootApplication
 public class ChatappApplication {
+	// fix tìm kiếm phòng chat
+
 	@PostConstruct
 	public void init() {
 		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Ho_Chi_Minh"));

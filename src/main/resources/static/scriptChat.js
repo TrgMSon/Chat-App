@@ -514,6 +514,8 @@ searchForm.addEventListener("submit", async function (event) {
     let response = await getRoomIdByName(roomName);
     roomIds = response.roomIds;
 
+    console.log(roomIds);
+
     if (roomIds.length === 0) {
         alert("Không tìm thấy kết quả");
         return;
@@ -529,10 +531,8 @@ searchForm.addEventListener("submit", async function (event) {
     closeSearchBtn.classList.remove("hide");
 });
 
-closeSearchBtn.addEventListener("click", function (event) {
-    event.preventDefault;
-
-    closeSearchBtn.classList.add("hide");
+closeSearchBtn.addEventListener("click", function () {
+    if (closeSearchBtn.classList.contains("hide")) return;
 
     listRoom.forEach(room => {
         let roomId = room.dataset.roomId;
@@ -542,4 +542,6 @@ closeSearchBtn.addEventListener("click", function (event) {
     });
 
     searchInput.value = "";
+
+    closeSearchBtn.classList.add("hide");
 });

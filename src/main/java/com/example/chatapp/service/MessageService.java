@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.example.chatapp.repository.MessageRepo;
@@ -16,7 +18,8 @@ public class MessageService {
     private MessageRepo messageRepo;
 
     public ArrayList<MessageDTO> getMessagesByRoom(String roomId, int index) {
-        ArrayList<Message> messages = messageRepo.findMessagesByRoom(roomId, index);
+        Pageable pageable = PageRequest.of(index, 10);
+        ArrayList<Message> messages = messageRepo.findMessagesByRoom(roomId, pageable);
         ArrayList<MessageDTO> messageDTOs = new ArrayList<>();
 
         for (Message message : messages) {

@@ -1,6 +1,5 @@
 package com.example.chatapp.controller;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,13 +11,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.example.chatapp.model.User;
 import com.example.chatapp.service.MessageService;
 import com.example.chatapp.service.UserService;
 import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
 import com.example.chatapp.dto.MessageDTO;
 import com.example.chatapp.dto.ReportDTO;
 import com.example.chatapp.dto.RoomDTO2;
@@ -79,23 +76,12 @@ public class ChatController {
         return userService.findChattingUser(name, userId);
     }
 
-    // @PostMapping("/upload-image")
-    // public String uploadImage(@RequestParam("image") MultipartFile file) throws
-    // IOException {
-    // Map<?, ?> uploadResult = cloudinary.uploader().upload(file.getInputStream(),
-    // ObjectUtils.emptyMap());
-
-    // return uploadResult.get("url").toString();
-    // }
-
     @GetMapping("/generate-signature")
     public Map<String, Object> generateSignature() {
         long timestamp = System.currentTimeMillis() / 1000;
         Map<String, Object> params = new HashMap<>();
         params.put("timestamp", timestamp);
-        // Bạn có thể thêm folder, public_id... vào đây nếu muốn
 
-        // Hàm này của Cloudinary SDK sẽ tự lấy API_SECRET để ký
         String signature = cloudinary.apiSignRequest(params, cloudinary.config.apiSecret, 1);
 
         Map<String, Object> response = new HashMap<>();
