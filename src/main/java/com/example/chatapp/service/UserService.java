@@ -99,7 +99,7 @@ public class UserService {
     }
 
     public ArrayList<String> findRoomIdByName(String roomName, String userId) {
-        return userRepo.findRoomIdByName(roomName, userId);
+        return userRepo.findRoomIdByName("%" + roomName + "%", userId);
     }
 
     public ArrayList<UserDTO2> findRoomToAF(String name, String userId) {
