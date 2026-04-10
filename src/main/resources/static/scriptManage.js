@@ -59,6 +59,8 @@ async function loadReportDetail(liElement) {
     reportedUserInfor.innerText = "ID người vi phạm: " + reportInfor.reportedUserId;
 
     let content = document.createElement("p");
+    content.style.overflow = "auto";
+    content.style.overflowY = "scroll";
     content.innerText = "Nội dung: " + reportInfor.content;
 
     let createdAt = document.createElement("small");
@@ -117,14 +119,25 @@ manageReportBtn.addEventListener("click", async function () {
 
         let reportLabel = document.createElement("p");
         reportLabel.innerText = "Người gửi: " + reports[i].userSendName;
+        reportLabel.style.paddingRight = "50px";
+
+        let createdAt = document.createElement("p");
+        createdAt.innerText = "Ngày gửi: " + formatDateTime(reports[i].createdAt);
 
         reportDiv.appendChild(reportLabel);
+        reportDiv.appendChild(createdAt);
         liElement.appendChild(reportDiv);
         listReport.appendChild(liElement);
     }
 
     mainView2.appendChild(listReport);
 });
+
+function formatDateTime(createdAt) {
+    let date = formatDate(createdAt.split("T")[0]);
+    let time = createdAt.split("T")[1];
+    return `${date} ${time}`;
+}
 
 function formatDate(date) {
     let array = date.split("-");
