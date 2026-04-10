@@ -6,14 +6,15 @@ body {
     display: flex;
     flex-direction: column;
     height: 100vh;
+    overflow: hidden;
 }
 
 .top-taskbar {
     display: flex;
     width: 100%;
-    border-bottom: 1px solid black;
     padding-bottom: 10px;
     padding-top: 20px;
+    background-color: white;
 }
 
 .top-taskbar p {
@@ -21,13 +22,15 @@ body {
     margin: 20px;
     font-size: 20px;
     text-align: right;
+    color: black;
+    font-weight: bold;
 }
 
 .main-view {
     display: flex;
     height: 80%;
     flex: 1;
-    margin-top: 40px;
+    margin-top: 0;
 }
 
 #searchForm {
@@ -43,7 +46,6 @@ body {
 }
 
 .optionDiv {
-    border: 1px solid black;
     display: flex;
     flex-direction: column;
     height: fit-content;
@@ -56,41 +58,41 @@ body {
     margin-top: 300px;
     height: fit-content;
     width: 180px;
-    border: 1px solid black;
     text-align: center;
 }
 
 #logoutBtn:hover {
-    background-color: #A9A9A9;
+    background-color: #1E90FF;
 }
 
 #goHomeBtn {
     font-size: 30px;
     width: auto;
     border: none;
-    background-color: white;
     cursor: pointer;
     padding-left: 10px;
+    margin-top: 0;
+    height: 100%;
 }
 
 .sidebar {
+    background-color: rgb(86, 83, 83);
     width: 300px;
-    height: fit-content;
+    height: 700px;
     margin-right: 10px;
-    margin-left: 10px;
-    border-radius: 4px;
     padding: 20px;
     position: relative;
 }
 
 .sidebar p {
     padding: 20px;
-    border-bottom: 1px solid black;
     cursor: pointer;
+    color: white;
+    font-size: 20px;
 }
 
 .sidebar p:hover {
-    background-color: #A9A9A9;
+    background-color: #1E90FF;
 }
 
 .main-view2 {
@@ -168,4 +170,9 @@ body {
     margin-top: 15px;
     width: 40%;
     align-self: center;
+}
+
+#closeSearch {
+    margin-left: 10px;
+    height: 60%;
 }

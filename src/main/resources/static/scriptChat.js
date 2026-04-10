@@ -335,7 +335,6 @@ async function sendMessage() {
     }
 
     if (content != "") {
-        // messageInput.value = "";
         messageInput.style.minHeight = "60px";
         messageInput.style.maxHeight = "60px";
 

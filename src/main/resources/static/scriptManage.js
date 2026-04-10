@@ -7,7 +7,9 @@ const goHomeBtn = document.getElementById("goHomeBtn");
 const mainView2 = document.querySelector(".main-view2");
 const searchInput = document.getElementById("searchInput");
 const searchForm = document.getElementById("searchForm");
+const closeSearch = document.getElementById("closeSearch");
 
+closeSearch.classList.add("hide");
 let userLoginId = null;
 
 async function initUserId() {
@@ -43,8 +45,8 @@ goHomeBtn.addEventListener("click", function () {
     window.location.href = "/manage";
 });
 
-async function loadReportDetail() {
-    let response = await fetch("/api/manage/viewReportDetail?reportId=" + this.dataset.reportId);
+async function loadReportDetail(liElement) {
+    let response = await fetch("/api/manage/viewReportDetail?reportId=" + liElement.dataset.reportId);
     let reportInfor = await response.json();
 
     let reportBox = document.createElement("div");
@@ -66,6 +68,7 @@ async function loadReportDetail() {
     closeBtn.classList.add("closeBtn");
     closeBtn.innerText = "Đóng";
     closeBtn.addEventListener("click", function () {
+        liElement.style.backgroundColor = "";
         mainView2.removeChild(document.querySelector(".detailBox"));
     });
 
@@ -81,8 +84,9 @@ async function loadReportDetail() {
 manageReportBtn.addEventListener("click", async function () {
     searchInput.value = "";
     searchInput.classList.add("hide");
+    closeSearch.classList.add("hide");
 
-    manageReportBtn.style.backgroundColor = "#A9A9A9";
+    manageReportBtn.style.backgroundColor = "#1E90FF";
     manageUserBtn.style.backgroundColor = "";
 
     mainView2.innerHTML = "";
@@ -101,7 +105,12 @@ manageReportBtn.addEventListener("click", async function () {
     for (let i = 0; i < reports.length; i++) {
         let liElement = document.createElement("li");
         liElement.dataset.reportId = reports[i].reportId;
-        liElement.addEventListener("click", loadReportDetail);
+        liElement.addEventListener("click", function () {
+            if (document.querySelector(".detailBox") === null) {
+                liElement.style.backgroundColor = "#A9A9A9";
+                loadReportDetail(liElement);
+            }
+        });
 
         let reportDiv = document.createElement("div");
         reportDiv.classList.add("item");
@@ -126,8 +135,8 @@ logoutBtn.addEventListener("click", function () {
     window.location.href = "/logout";
 });
 
-async function loadUserDetail() {
-    let response = await fetch("/api/manage/viewUserDetail?userId=" + this.dataset.userId);
+async function loadUserDetail(liElement) {
+    let response = await fetch("/api/manage/viewUserDetail?userId=" + liElement.dataset.userId);
     let userInfor = await response.json();
 
     let userBox = document.createElement("div");
@@ -157,6 +166,7 @@ async function loadUserDetail() {
     closeBtn.classList.add("closeBtn");
     closeBtn.innerText = "Đóng";
     closeBtn.addEventListener("click", function () {
+        liElement.style.backgroundColor = "";
         mainView2.removeChild(document.querySelector(".detailBox"));
     });
 
@@ -196,12 +206,21 @@ async function loadUserDetail() {
     mainView2.appendChild(userBox);
 }
 
+function unMark(userId) {
+    let liElements = document.querySelectorAll(".listUser li");
+    liElements.forEach(li => {
+        if (li.dataset.userId != userId) {
+            li.style.backgroundColor = "";
+        }
+    });
+}
+
 manageUserBtn.addEventListener("click", async function () {
     searchInput.value = "";
     searchInput.classList.remove("hide");
 
     manageReportBtn.style.backgroundColor = "";
-    manageUserBtn.style.backgroundColor = "#A9A9A9";
+    manageUserBtn.style.backgroundColor = "#1E90FF";
 
     mainView2.innerHTML = "";
     listUser.innerHTML = "";
@@ -219,7 +238,13 @@ manageUserBtn.addEventListener("click", async function () {
     for (let i = 0; i < users.length; i++) {
         let liElement = document.createElement("li");
         liElement.dataset.userId = users[i].userId;
-        liElement.addEventListener("click", loadUserDetail);
+        liElement.addEventListener("click", function () {
+            if (document.querySelector(".detailBox") === null) {
+                liElement.style.backgroundColor = "#A9A9A9";
+                unMark(users[i].userId);
+                loadUserDetail(liElement);
+            }
+        });
 
         let userDiv = document.createElement("div");
         userDiv.classList.add("item");
@@ -242,11 +267,14 @@ searchForm.addEventListener("submit", async function (e) {
     searchInput.value = target;
     if (target === "") return;
 
+    closeSearch.classList.remove("hide");
+
     let response = await fetch("/api/manage/searchUser?target=" + target);
     let userIds = await response.json();
 
     if (userIds.length === 0) {
         alert("Không tìm thấy kết quả phù hợp");
+        unMark("");
         return;
     }
 
@@ -257,4 +285,12 @@ searchForm.addEventListener("submit", async function (e) {
         }
     });
 
+});
+
+closeSearch.addEventListener("click", function () {
+    if (!closeSearch.classList.contains("hide")) {
+        unMark("");
+        searchInput.value = "";
+        closeSearch.classList.add("hide");
+    }
 });
