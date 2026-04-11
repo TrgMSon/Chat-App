@@ -307,15 +307,16 @@ async function sendMessage() {
             formData.append("timestamp", authData.timestamp);
             formData.append("signature", authData.signature);
 
+            if (image.size > 20 * 1024 * 1024) {
+                alert("Ảnh gửi lên quá 20MB, vui lòng thử lại");
+                loader.classList.add("hide");
+                return;
+            }
+
             const response = await fetch("https://api.cloudinary.com/v1_1/" + authData.cloud_name + "/image/upload", {
                 method: "POST",
                 body: formData
             });
-
-            if (!response.ok) {
-                alert("Ảnh gửi lên quá 20MB, vui lòng thử lại");
-                return;
-            }
 
             let result = await response.json();
             let urlImg = result.url;
@@ -466,7 +467,7 @@ messageForm.addEventListener("keydown", function (e) {
         }
 
         sendMessBtn.classList.add("hide");
-        
+
         e.preventDefault();
         sendMessage();
     }
