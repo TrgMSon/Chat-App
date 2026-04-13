@@ -1,5 +1,6 @@
 package com.example.chatapp.repository;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -33,8 +34,8 @@ public interface ReportRepo extends JpaRepository<Report, Integer> {
     @Query(value = "SELECT * FROM user WHERE role='user' AND user_id=?1", nativeQuery = true)
     User findUserById(String userId);
 
-    @Query(value = "SELECT user_id FROM user WHERE role='user' AND (user_id=?1 OR user_name LIKE ?2)", nativeQuery = true)
-    ArrayList<String> findUserByTarget(String userId, String userName);
+    @Query(value = "SELECT report_id FROM report WHERE created_at >= ?1 AND created_at < ?2", nativeQuery = true)
+    ArrayList<Integer> findReportByCreatedAt(LocalDateTime start, LocalDateTime end);
 
     @Transactional
     @Modifying

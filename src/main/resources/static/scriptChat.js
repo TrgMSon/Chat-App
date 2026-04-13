@@ -466,7 +466,7 @@ messageForm.addEventListener("keydown", function (e) {
             return;
         }
 
-        sendMessBtn.classList.add("hide");
+        if (messageInput.value.trim() != "") sendMessBtn.classList.add("hide");
 
         e.preventDefault();
         sendMessage();

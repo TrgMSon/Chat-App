@@ -11,6 +11,8 @@ const closeSearch = document.getElementById("closeSearch");
 
 closeSearch.classList.add("hide");
 let userLoginId = null;
+let viewUser = false;
+let viewReport = false;
 
 async function initUserId() {
     let userId = await fetch("/api/getSession");
@@ -43,6 +45,8 @@ searchInput.classList.add("hide");
 
 goHomeBtn.addEventListener("click", function () {
     window.location.href = "/manage";
+    viewReport = false;
+    viewUser = false;
 });
 
 async function loadReportDetail(liElement) {
@@ -85,11 +89,14 @@ async function loadReportDetail(liElement) {
 
 manageReportBtn.addEventListener("click", async function () {
     searchInput.value = "";
-    searchInput.classList.add("hide");
+    searchInput.classList.remove("hide");
     closeSearch.classList.add("hide");
 
     manageReportBtn.style.backgroundColor = "#1E90FF";
     manageUserBtn.style.backgroundColor = "";
+    searchInput.placeholder = "Tìm kiếm theo ngày";
+    viewUser = false;
+    viewReport = true;
 
     mainView2.innerHTML = "";
     listReport.innerHTML = "";
@@ -162,7 +169,7 @@ async function loadUserDetail(liElement) {
     userNameElement.innerText = "Tên đăng nhập: " + userInfor.userName;
 
     let emailElement = document.createElement("p");
-    emailElement.innerText = "Email " + userInfor.email;
+    emailElement.innerText = "Email: " + userInfor.email;
 
     let bioElement = document.createElement("p");
     bioElement.innerText = "Giới thiệu: " + userInfor.bio;
@@ -219,21 +226,34 @@ async function loadUserDetail(liElement) {
     mainView2.appendChild(userBox);
 }
 
-function unMark(userId) {
-    let liElements = document.querySelectorAll(".listUser li");
-    liElements.forEach(li => {
-        if (li.dataset.userId != userId) {
-            li.style.backgroundColor = "";
-        }
-    });
+function unMark(target) {
+    if (viewUser === true) {
+        let liElements = document.querySelectorAll(".listUser li");
+        liElements.forEach(li => {
+            if (li.dataset.userId != target) {
+                li.style.backgroundColor = "";
+            }
+        });
+    }
+    else if (viewReport === true) {
+        let liElements = document.querySelectorAll(".listReport li");
+        liElements.forEach(li => {
+            if (li.dataset.userId != target) {
+                li.style.backgroundColor = "";
+            }
+        });
+    }
 }
 
 manageUserBtn.addEventListener("click", async function () {
     searchInput.value = "";
     searchInput.classList.remove("hide");
+    searchInput.placeholder = "Tìm kiếm theo tên";
 
     manageReportBtn.style.backgroundColor = "";
     manageUserBtn.style.backgroundColor = "#1E90FF";
+    viewReport = false;
+    viewUser = true;
 
     mainView2.innerHTML = "";
     listUser.innerHTML = "";
@@ -282,21 +302,40 @@ searchForm.addEventListener("submit", async function (e) {
 
     closeSearch.classList.remove("hide");
 
-    let response = await fetch("/api/manage/searchUser?target=" + target);
-    let userIds = await response.json();
+    if (viewUser === true) {
+        let response = await fetch("/api/manage/searchUser?target=" + target);
+        let userIds = await response.json();
 
-    if (userIds.length === 0) {
-        alert("Không tìm thấy kết quả phù hợp");
-        unMark("");
-        return;
-    }
-
-    let liElements = document.querySelectorAll(".listUser li");
-    liElements.forEach(liElement => {
-        if (userIds.includes(liElement.dataset.userId)) {
-            liElement.style.backgroundColor = "#A9A9A9";
+        if (userIds.length === 0) {
+            alert("Không tìm thấy kết quả phù hợp");
+            unMark("");
+            return;
         }
-    });
+
+        let liElements = document.querySelectorAll(".listUser li");
+        liElements.forEach(liElement => {
+            if (userIds.includes(liElement.dataset.userId)) {
+                liElement.style.backgroundColor = "#A9A9A9";
+            }
+        });
+    }
+    else if (viewReport === true) {
+        let response = await fetch("/api/manage/searchReport?target=" + target);
+        let reportIds = await response.json();
+
+        if (reportIds.length === 0) {
+            alert("Không tìm thấy kết quả phù hợp");
+            unMark("");
+            return;
+        }
+
+        let liElements = document.querySelectorAll(".listReport li");
+        liElements.forEach(liElement => {
+            if (reportIds.includes(liElement.dataset.reportId)) {
+                liElement.style.backgroundColor = "#A9A9A9";
+            }
+        });
+    }
 
 });
 

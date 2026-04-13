@@ -11,11 +11,15 @@ import com.example.chatapp.dto.UserDTO2;
 import com.example.chatapp.model.Report;
 import com.example.chatapp.model.User;
 import com.example.chatapp.repository.ReportRepo;
+import com.example.chatapp.repository.UserRepo;
 
 @Service
 public class ManageService {
     @Autowired
     private ReportRepo reportRepo;
+
+    @Autowired
+    private UserRepo userRepo;
 
     public ArrayList<ReportDTO2> getAllReports() {
         ArrayList<Report> reports = reportRepo.getAllReports();
@@ -54,7 +58,20 @@ public class ManageService {
     }
 
     public ArrayList<String> searchUser(String target) {
-        return reportRepo.findUserByTarget(target, "%" + target + "%");
+        return userRepo.findUserByTarget(target, "%" + target + "%");
+    }
+
+    public ArrayList<String> searchReport(String target) {
+        String[] tmp = target.split("/");
+        LocalDateTime start = LocalDateTime.of(Integer.parseInt(tmp[2]), Integer.parseInt(tmp[1]), Integer.parseInt(tmp[0]), 0, 0);
+        LocalDateTime end = start.plusDays(1);
+        ArrayList<Integer> results = reportRepo.findReportByCreatedAt(start, end);
+
+        ArrayList<String> reportIds = new ArrayList<>();
+        for (Integer i : results) {
+            reportIds.add(i + "");
+        }
+        return reportIds;
     }
 
     public void changeStatusUser(String status, String userId) {

@@ -43,4 +43,10 @@ public class ManageController {
     public ArrayList<String> searchUser(@RequestParam String target) {
         return manageService.searchUser(target);
     }
+
+    @GetMapping("/searchReport")
+    public ArrayList<String> searchReport(@RequestParam String target) {
+        return manageService.searchReport(target);
+    }
+    
 }

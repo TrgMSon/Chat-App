@@ -45,7 +45,7 @@ public interface UserRepo extends JpaRepository<User, String> {
                         JOIN room_member AS rm2 ON rm1.room_id = rm2.room_id
                         JOIN room AS r ON r.room_id = rm1.room_id
                         WHERE rm1.user_id = ?2 AND rm2.user_id = u.user_id AND r.type = "direct")
-                        AND u.role = 'user' 
+                        AND u.role = 'user'
                         """, nativeQuery = true)
         ArrayList<UserDTO2> findChattingUser(String name, String userId);
 
@@ -70,7 +70,7 @@ public interface UserRepo extends JpaRepository<User, String> {
         void saveRoom(String roomId, String type, LocalDateTime createdAt);
 
         @Query(value = """
-                        SELECT rm.user_id, u.user_name, u.bio FROM room_member AS rm 
+                        SELECT rm.user_id, u.user_name, u.bio FROM room_member AS rm
                         JOIN user AS u ON u.user_id = rm.user_id
                         WHERE room_id=?1
                         """, nativeQuery = true)
@@ -82,9 +82,12 @@ public interface UserRepo extends JpaRepository<User, String> {
         int saveReport(String userSendId, String reportedUserId, String content, LocalDateTime createdAt);
 
         @Query(value = """
-                        SELECT u.* FROM user AS u 
+                        SELECT u.* FROM user AS u
                         JOIN room_member AS rm ON u.user_id = rm.user_id
                         WHERE rm.room_id=?1 AND u.user_id <> ?2
                         """, nativeQuery = true)
         User findUserInDirectRoom(String roomId, String userLoginId);
+
+        @Query(value = "SELECT user_id FROM user WHERE role='user' AND (user_id=?1 OR user_name LIKE ?2)", nativeQuery = true)
+        ArrayList<String> findUserByTarget(String userId, String userName);
 }
