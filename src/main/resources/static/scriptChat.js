@@ -514,16 +514,13 @@ searchForm.addEventListener("submit", async function (event) {
     let response = await getRoomIdByName(roomName);
     roomIds = response.roomIds;
 
-    console.log(roomIds);
-
     if (roomIds.length === 0) {
         alert("Không tìm thấy kết quả");
         return;
     }
 
     listRoom.forEach(room => {
-        let roomId = room.dataset.roomId;
-        if (roomIds.includes(roomId)) {
+        if (roomIds.includes(room.dataset.roomId)) {
             room.style.backgroundColor = "#A9A9A9";
         }
     });
@@ -535,8 +532,7 @@ closeSearchBtn.addEventListener("click", function () {
     if (closeSearchBtn.classList.contains("hide")) return;
 
     listRoom.forEach(room => {
-        let roomId = room.dataset.roomId;
-        if (roomIds.includes(roomId)) {
+        if (roomIds.includes(room.dataset.roomId) && room.dataset.roomId != roomId) {
             room.style.backgroundColor = "";
         }
     });

@@ -15,8 +15,7 @@ let viewUser = false;
 let viewReport = false;
 
 async function initUserId() {
-    let userId = await fetch("/api/getSession");
-    userLoginId = await userId.text();
+    userLoginId = await fetch("/api/getSession").then(res => res.text());
     connect();
 }
 
@@ -117,6 +116,7 @@ manageReportBtn.addEventListener("click", async function () {
         liElement.addEventListener("click", function () {
             if (document.querySelector(".detailBox") === null) {
                 liElement.style.backgroundColor = "#A9A9A9";
+                unMark(reports[i].reportId);
                 loadReportDetail(liElement);
             }
         });
@@ -238,7 +238,7 @@ function unMark(target) {
     else if (viewReport === true) {
         let liElements = document.querySelectorAll(".listReport li");
         liElements.forEach(li => {
-            if (li.dataset.userId != target) {
+            if (li.dataset.reportId != target) {
                 li.style.backgroundColor = "";
             }
         });
