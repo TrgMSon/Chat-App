@@ -212,8 +212,9 @@ async function loadRoom(room) {
 
     roomId = room.dataset.roomId;
     roomType = room.dataset.roomType;
+    let chatTitleAvatar = chatTitle.querySelector(".avatar");
     if (roomType === "group") {
-        chatTitle.style.cursor = "";
+        chatTitleAvatar.style.cursor = "";
 
         if (chatTitle.querySelector(".viewMemberBtn") === null) {
             viewMemberBtn.dataset.roomId = room.dataset.roomId;
@@ -224,7 +225,7 @@ async function loadRoom(room) {
         }
     }
     if (roomType === "direct") {
-        chatTitle.style.cursor = "pointer";
+        chatTitleAvatar.style.cursor = "pointer";
 
         if (chatTitle.querySelector(".viewMemberBtn") != null) {
             chatTitle.removeChild(chatTitle.querySelector(".viewMemberBtn"));
@@ -243,7 +244,6 @@ async function loadRoom(room) {
     chatTitleIcon.style.fontWeight = "";
     chatTitle.dataset.roomId = room.dataset.roomId;
 
-    let chatTitleAvatar = chatTitle.querySelector(".avatar");
     chatTitleAvatar.style.backgroundColor = getColorCode(firstChar);
 
     loader.classList.remove("hide");

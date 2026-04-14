@@ -329,7 +329,7 @@ chatTitle.addEventListener("click", async function (e) {
         reportWritter.classList.add("createBox");
     }
 
-    else if (chatTitle.dataset.roomType === "direct") {
+    else if (chatTitle.dataset.roomType === "direct" && e.target.closest(".avatar")) {
         let response = await fetch("/api/viewUserDirectRoom?roomId=" + chatTitle.dataset.roomId + "&userLoginId=" + userLoginId);
         let userInfor = await response.json();
 
