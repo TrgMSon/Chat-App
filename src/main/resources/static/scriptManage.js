@@ -293,6 +293,14 @@ manageUserBtn.addEventListener("click", async function () {
     mainView2.appendChild(listUser);
 });
 
+function validDate(date) {
+    if (!date.includes("/")) return false;
+    tmp = date.split("/");
+    if (tmp.length != 3) return false;
+    if (tmp[2].length != 4 || tmp[0].length != 2 || tmp[1].length != 2) return false;
+    return true;
+}
+
 searchForm.addEventListener("submit", async function (e) {
     e.preventDefault();
 
@@ -300,9 +308,9 @@ searchForm.addEventListener("submit", async function (e) {
     searchInput.value = target;
     if (target === "") return;
 
-    closeSearch.classList.remove("hide");
-
     if (viewUser === true) {
+        closeSearch.classList.remove("hide");
+
         let response = await fetch("/api/manage/searchUser?target=" + target);
         let userIds = await response.json();
 
@@ -320,6 +328,13 @@ searchForm.addEventListener("submit", async function (e) {
         });
     }
     else if (viewReport === true) {
+        if (!validDate(target)) {
+            alert("Vui lòng nhập đúng định dạng dd/MM/yyyy");
+            return;
+        }
+
+        closeSearch.classList.remove("hide");
+        
         let response = await fetch("/api/manage/searchReport?target=" + target);
         let reportIds = await response.json();
 
