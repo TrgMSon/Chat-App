@@ -293,12 +293,18 @@ manageUserBtn.addEventListener("click", async function () {
     mainView2.appendChild(listUser);
 });
 
-function validDate(date) {
-    if (!date.includes("/")) return false;
-    tmp = date.split("/");
-    if (tmp.length != 3) return false;
-    if (tmp[2].length != 4 || tmp[0].length != 2 || tmp[1].length != 2) return false;
-    return true;
+function validDate(dateString) {
+    let regex = /^\d{2}\/\d{2}\/\d{4}$/;
+    if (!regex.test(dateString)) return false;
+
+    let parts = dateString.split("/");
+    let day = parseInt(parts[0], 10);
+    let month = parseInt(parts[1], 10);
+    let year = parseInt(parts[2], 10);
+
+    let d = new Date(year, month - 1, day);
+
+    return d.getFullYear() === year && (d.getMonth() + 1) === month && d.getDate() === day;
 }
 
 searchForm.addEventListener("submit", async function (e) {
@@ -334,7 +340,7 @@ searchForm.addEventListener("submit", async function (e) {
         }
 
         closeSearch.classList.remove("hide");
-        
+
         let response = await fetch("/api/manage/searchReport?target=" + target);
         let reportIds = await response.json();
 

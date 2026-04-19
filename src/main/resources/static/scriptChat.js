@@ -307,8 +307,8 @@ async function sendMessage() {
             formData.append("timestamp", authData.timestamp);
             formData.append("signature", authData.signature);
 
-            if (image.size > 20 * 1024 * 1024) {
-                alert("Ảnh gửi lên quá 20MB, vui lòng thử lại");
+            if (image.size > 10 * 1024 * 1024) {
+                alert("Ảnh gửi lên quá 10MB, vui lòng thử lại");
                 loader.classList.add("hide");
                 return;
             }
