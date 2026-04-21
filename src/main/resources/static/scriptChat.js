@@ -470,6 +470,7 @@ messageForm.addEventListener("keydown", function (e) {
         if (messageInput.value.trim() != "") sendMessBtn.classList.add("hide");
 
         e.preventDefault();
+        sendMessBtn.classList.add("hide");
         sendMessage();
     }
 });
