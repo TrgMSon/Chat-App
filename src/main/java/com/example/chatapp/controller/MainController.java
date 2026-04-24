@@ -26,7 +26,7 @@ public class MainController {
     private UserService userService;
 
     @Autowired
-    private ReportService manageService;
+    private ReportService reportService;
 
     @Autowired
     private RoomService roomService;
@@ -83,7 +83,7 @@ public class MainController {
         if (user.getRole().equals("user")) return "redirect:/login";
 
         int qtyUser = userService.getQtyUser();
-        int qtyReport = manageService.getQtyReport();
+        int qtyReport = reportService.getQtyReport();
         String current_datetime = LocalDateTime.now() + "";
         String labelQtyReport = "Số lượng báo cáo trong tháng " + current_datetime.substring(6, 7) + ": " + qtyReport;
         String labelQtyUser = "Số lượng người dùng: " + qtyUser;
