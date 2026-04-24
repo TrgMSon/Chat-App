@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.chatapp.model.User;
 import com.example.chatapp.service.MessageService;
+import com.example.chatapp.service.RoomService;
 import com.example.chatapp.service.UserService;
 import com.cloudinary.Cloudinary;
 import com.example.chatapp.dto.MessageDTO;
@@ -35,6 +36,9 @@ public class ChatController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private RoomService roomService;
 
     @GetMapping("/getMessages")
     public List<MessageDTO> getMessages(@RequestParam String roomId) {
@@ -62,13 +66,13 @@ public class ChatController {
     @GetMapping("/searchRoom")
     public RoomDTO2 searchRoom(@RequestParam String roomName, HttpSession session) {
         String userId = (String) session.getAttribute("userId");
-        return new RoomDTO2(userService.findRoomIdByName(roomName, userId));
+        return new RoomDTO2(roomService.findRoomIdByName(roomName, userId));
     }
 
     @GetMapping("/addFriendSearch")
     public ArrayList<UserDTO2> searchToAddFriend(@RequestParam String name, HttpSession session) {
         String userId = (String) session.getAttribute("userId");
-        return userService.findRoomToAF(name, userId);
+        return roomService.findRoomToAF(name, userId);
     }
 
     @GetMapping("/addMemberSearch")
@@ -95,7 +99,7 @@ public class ChatController {
 
     @GetMapping("/viewMember")
     public ArrayList<UserDTO2> viewMember(@RequestParam String roomId) {
-        return userService.viewMember(roomId);
+        return roomService.viewMember(roomId);
     }
 
     @PostMapping("/sendReport")

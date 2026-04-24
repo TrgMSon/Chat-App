@@ -199,9 +199,10 @@ listUserInfor.addEventListener("click", async function (e) {
             userLoginId: userLoginId
         }));
 
-        addFriendDiv.classList.remove("addFriendDiv");
+        searchInputAF.value = "";
+        addFriendDiv.classList.remove("createBox");
         addFriendDiv.classList.add("hide");
-        viewUserBio.classList.add("hide");
+        listUserInfor.innerHTML = "";
     }
 });
 

@@ -14,6 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.chatapp.model.User;
 import com.example.chatapp.service.ManageService;
+import com.example.chatapp.service.RoomService;
 import com.example.chatapp.service.UserService;
 import com.example.chatapp.dto.RoomDTO;
 
@@ -26,6 +27,9 @@ public class MainController {
 
     @Autowired
     private ManageService manageService;
+
+    @Autowired
+    private RoomService roomService;
     
     @GetMapping(value = {"/login", "/"})
     public String login() {
@@ -130,7 +134,7 @@ public class MainController {
             return "redirect:/login";
         }
 
-        ArrayList<RoomDTO> rooms = userService.getListRoom(userId);
+        ArrayList<RoomDTO> rooms = roomService.getListRoom(userId);
         User user = (User) userService.findUserById(userId);
 
         model.addAttribute("user", user);

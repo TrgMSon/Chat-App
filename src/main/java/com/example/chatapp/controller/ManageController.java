@@ -12,12 +12,16 @@ import com.example.chatapp.dto.ReportDTO2;
 import com.example.chatapp.dto.UserDTO2;
 import com.example.chatapp.model.User;
 import com.example.chatapp.service.ManageService;
+import com.example.chatapp.service.UserService;
 
 @RestController
 @RequestMapping("/api/manage")
 public class ManageController {
     @Autowired
     private ManageService manageService;
+
+    @Autowired
+    private UserService userService;
 
     @GetMapping("/getReports")
     public ArrayList<ReportDTO2> getAllReports() {
@@ -36,7 +40,7 @@ public class ManageController {
 
     @GetMapping("/viewUserDetail")
     public User viewUserDetail(@RequestParam String userId) {
-        return manageService.findUserById(userId);
+        return userService.findUserById(userId);
     } 
 
     @GetMapping("/searchUser")

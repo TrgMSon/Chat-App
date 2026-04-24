@@ -36,7 +36,7 @@ public class ManageService {
     }
 
     public int getQtyUser() {
-        return reportRepo.getQtyUser();
+        return userRepo.getQtyUser();
     }
 
     public ReportDTO2 findReportById(int reportId) {
@@ -45,16 +45,12 @@ public class ManageService {
     }
 
     public ArrayList<UserDTO2> findAllUser() {
-        ArrayList<User> users = reportRepo.findAllUser();
+        ArrayList<User> users = userRepo.findAllUser();
         ArrayList<UserDTO2> userDTO2s = new ArrayList<>();
         for (User user : users) {
             userDTO2s.add(new UserDTO2(user.getUserId(), user.getUserName(), user.getBio()));
         }
         return userDTO2s;
-    }
-
-    public User findUserById(String userId) {
-        return reportRepo.findUserById(userId);
     }
 
     public ArrayList<String> searchUser(String target) {
@@ -75,6 +71,6 @@ public class ManageService {
     }
 
     public void changeStatusUser(String status, String userId) {
-        reportRepo.changeStatusUser(status, userId);
+        userRepo.changeStatusUser(status, userId);
     }
 }
