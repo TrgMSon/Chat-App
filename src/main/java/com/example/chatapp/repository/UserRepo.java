@@ -34,11 +34,6 @@ public interface UserRepo extends JpaRepository<User, String> {
                         """, nativeQuery = true)
         void createRoom(String roomId, String type, LocalDateTime createdAt);
 
-        @Transactional
-        @Modifying
-        @Query(value = "INSERT INTO report(user_send_id, reported_user_id, content, created_at) VALUES(?1, ?2, ?3, ?4)", nativeQuery = true)
-        int saveReport(String userSendId, String reportedUserId, String content, LocalDateTime createdAt);
-
         @Query(value = """
                         SELECT u.* FROM user AS u
                         JOIN room_member AS rm ON u.user_id = rm.user_id
@@ -57,6 +52,6 @@ public interface UserRepo extends JpaRepository<User, String> {
         @Query(value = "UPDATE user SET status=?1 WHERE user_id=?2", nativeQuery = true)
         void changeStatusUser(String status, String userId);
 
-        @Query(value = "SELECT * FROM user WHERE role='user'", nativeQuery = true)
+        @Query(value = "SELECT * FROM user WHERE role='user' ORDER BY user_name", nativeQuery = true)
         ArrayList<User> findAllUser();
 }

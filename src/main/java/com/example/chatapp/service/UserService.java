@@ -8,15 +8,8 @@ import java.util.Base64;
 import java.util.Optional;
 import java.util.Random;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
 
-import com.example.chatapp.dto.ReportDTO;
-import com.example.chatapp.dto.RoomDTO;
-import com.example.chatapp.dto.RoomDTO4;
 import com.example.chatapp.dto.UserDTO2;
-import com.example.chatapp.model.Room;
-import com.example.chatapp.model.RoomMember;
-import com.example.chatapp.model.RoomMemberId;
 import com.example.chatapp.model.User;
 import com.example.chatapp.repository.UserRepo;
 
@@ -92,12 +85,28 @@ public class UserService {
         return userRepo.findChattingUser("%" + name + "%", userId);
     }
 
-    public boolean saveReport(ReportDTO report) {
-        int rows = userRepo.saveReport(report.getUserIdSend(), report.getReportedUserId(), report.getContent(), LocalDateTime.now());
-        return rows > 0;
-    }
-
     public User findUserInDirectRoom(String roomId, String userLoginId) {
         return userRepo.findUserInDirectRoom(roomId, userLoginId);
+    }
+
+    public void changeStatusUser(String status, String userId) {
+        userRepo.changeStatusUser(status, userId);
+    }
+
+    public int getQtyUser() {
+        return userRepo.getQtyUser();
+    }
+
+    public ArrayList<UserDTO2> findAllUser() {
+        ArrayList<User> users = userRepo.findAllUser();
+        ArrayList<UserDTO2> userDTO2s = new ArrayList<>();
+        for (User user : users) {
+            userDTO2s.add(new UserDTO2(user.getUserId(), user.getUserName(), user.getBio()));
+        }
+        return userDTO2s;
+    }
+
+    public ArrayList<String> searchUser(String target) {
+        return userRepo.findUserByTarget(target, "%" + target + "%");
     }
 }

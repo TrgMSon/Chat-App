@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.chatapp.model.User;
+import com.example.chatapp.service.ReportService;
 import com.example.chatapp.service.MessageService;
 import com.example.chatapp.service.RoomService;
 import com.example.chatapp.service.UserService;
@@ -39,6 +40,9 @@ public class ChatController {
 
     @Autowired
     private RoomService roomService;
+
+    @Autowired
+    private ReportService reportService;
 
     @GetMapping("/getMessages")
     public List<MessageDTO> getMessages(@RequestParam String roomId) {
@@ -104,7 +108,7 @@ public class ChatController {
 
     @PostMapping("/sendReport")
     public boolean sendReport(@RequestBody ReportDTO report) {
-        return userService.saveReport(report);
+        return reportService.saveReport(report);
     }
 
     @GetMapping("/viewUserDirectRoom")

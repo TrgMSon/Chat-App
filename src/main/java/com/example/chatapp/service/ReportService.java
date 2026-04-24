@@ -6,20 +6,15 @@ import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.chatapp.dto.ReportDTO;
 import com.example.chatapp.dto.ReportDTO2;
-import com.example.chatapp.dto.UserDTO2;
 import com.example.chatapp.model.Report;
-import com.example.chatapp.model.User;
 import com.example.chatapp.repository.ReportRepo;
-import com.example.chatapp.repository.UserRepo;
 
 @Service
-public class ManageService {
+public class ReportService {
     @Autowired
     private ReportRepo reportRepo;
-
-    @Autowired
-    private UserRepo userRepo;
 
     public ArrayList<ReportDTO2> getAllReports() {
         ArrayList<Report> reports = reportRepo.getAllReports();
@@ -35,26 +30,9 @@ public class ManageService {
         return reportRepo.getQtyReport("%" + month + "%");
     }
 
-    public int getQtyUser() {
-        return userRepo.getQtyUser();
-    }
-
     public ReportDTO2 findReportById(int reportId) {
         Report report = reportRepo.findReportById(reportId);
         return new ReportDTO2(report.getReportId(), report.getUserSend().getUserId(), report.getUserSend().getUserName(), report.getReportedUserId(), report.getContent(), report.getCreatedAt());
-    }
-
-    public ArrayList<UserDTO2> findAllUser() {
-        ArrayList<User> users = userRepo.findAllUser();
-        ArrayList<UserDTO2> userDTO2s = new ArrayList<>();
-        for (User user : users) {
-            userDTO2s.add(new UserDTO2(user.getUserId(), user.getUserName(), user.getBio()));
-        }
-        return userDTO2s;
-    }
-
-    public ArrayList<String> searchUser(String target) {
-        return userRepo.findUserByTarget(target, "%" + target + "%");
     }
 
     public ArrayList<String> searchReport(String target) {
@@ -70,7 +48,8 @@ public class ManageService {
         return reportIds;
     }
 
-    public void changeStatusUser(String status, String userId) {
-        userRepo.changeStatusUser(status, userId);
+    public boolean saveReport(ReportDTO report) {
+        int rows = reportRepo.saveReport(report.getUserIdSend(), report.getReportedUserId(), report.getContent(), LocalDateTime.now());
+        return rows > 0;
     }
 }

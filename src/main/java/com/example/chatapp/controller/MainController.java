@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.chatapp.model.User;
-import com.example.chatapp.service.ManageService;
+import com.example.chatapp.service.ReportService;
 import com.example.chatapp.service.RoomService;
 import com.example.chatapp.service.UserService;
 import com.example.chatapp.dto.RoomDTO;
@@ -26,7 +26,7 @@ public class MainController {
     private UserService userService;
 
     @Autowired
-    private ManageService manageService;
+    private ReportService manageService;
 
     @Autowired
     private RoomService roomService;
@@ -82,7 +82,7 @@ public class MainController {
 
         if (user.getRole().equals("user")) return "redirect:/login";
 
-        int qtyUser = manageService.getQtyUser();
+        int qtyUser = userService.getQtyUser();
         int qtyReport = manageService.getQtyReport();
         String current_datetime = LocalDateTime.now() + "";
         String labelQtyReport = "Số lượng báo cáo trong tháng " + current_datetime.substring(6, 7) + ": " + qtyReport;

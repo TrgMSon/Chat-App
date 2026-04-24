@@ -14,9 +14,9 @@ import com.example.chatapp.dto.RoomMemberDTO;
 import com.example.chatapp.dto.UserDTO3;
 import com.example.chatapp.dto.UserDTO4;
 import com.example.chatapp.model.Room;
-import com.example.chatapp.service.ManageService;
 import com.example.chatapp.service.MessageService;
 import com.example.chatapp.service.RoomService;
+import com.example.chatapp.service.UserService;
 
 @Controller
 public class WebSocketController {
@@ -27,7 +27,7 @@ public class WebSocketController {
     private MessageService messageService;
 
     @Autowired
-    private ManageService manageService;
+    private UserService userService;
 
     @Autowired
     private RoomService roomService;
@@ -67,7 +67,7 @@ public class WebSocketController {
 
     @MessageMapping("/manage.changeStatusUser")
     public void changeStatusUser(UserDTO4 user) {
-        manageService.changeStatusUser(user.getStatus(), user.getUserId());
+        userService.changeStatusUser(user.getStatus(), user.getUserId());
         messagingTemplate.convertAndSendToUser(user.getUserId(), "/queue/force-logout", user);
     }
 }
