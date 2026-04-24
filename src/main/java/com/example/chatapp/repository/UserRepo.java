@@ -1,6 +1,5 @@
 package com.example.chatapp.repository;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -26,13 +25,6 @@ public interface UserRepo extends JpaRepository<User, String> {
                         AND u.role = 'user'
                         """, nativeQuery = true)
         ArrayList<UserDTO2> findChattingUser(String name, String userId);
-
-        @Transactional
-        @Modifying
-        @Query(value = """
-                        INSERT INTO room(room_id, type, created_at) VALUES(?1, ?2, ?3);
-                        """, nativeQuery = true)
-        void createRoom(String roomId, String type, LocalDateTime createdAt);
 
         @Query(value = """
                         SELECT u.* FROM user AS u
