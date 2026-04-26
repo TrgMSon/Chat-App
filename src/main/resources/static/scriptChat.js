@@ -25,6 +25,7 @@ let userLoginId = null;
 let roomType = null;
 let roomId = null;
 let tmpDate = null;
+let numberMessage = 0;
 const userLoginName = userIcon.dataset.userName;
 
 async function initUserId() {
@@ -134,9 +135,10 @@ function onMessageReceived(payload) {
     let messageData = JSON.parse(payload.body);
 
     if (roomId === messageData.roomId) {
-        loader.classList.remove("hide");
+        if (numberMessage > 0) {
+            numberMessage -= 1;
+        }
         addMessageToUI(messageData);
-        loader.classList.add("hide");
     }
 
     listRoom.forEach(room => {
@@ -146,13 +148,11 @@ function onMessageReceived(payload) {
 
         if (isNearBottom() && roomId === messageData.roomId && messageData.userId != userLoginId) {
             scrollToBottom();
-            loader.classList.add("hide");
             room.style.fontWeight = "";
         }
 
         if (room.dataset.roomId === messageData.roomId && messageData.userId === userLoginId) {
             scrollToBottom();
-            loader.classList.add("hide");
         }
     });
 }
@@ -194,6 +194,7 @@ async function loadRoom(room) {
     messageInput.value = "";
     imageInput.value = "";
     fileName.innerHTML = "";
+    numberMessage = 0;
 
     chatTitle.classList.remove("hide");
     messageForm.classList.remove("hide");
@@ -246,7 +247,6 @@ async function loadRoom(room) {
 
     chatTitleAvatar.style.backgroundColor = getColorCode(firstChar);
 
-    loader.classList.remove("hide");
     await loadMessages(roomId);
 
     scrollToBottom();
@@ -264,7 +264,6 @@ listRoom.forEach(room => {
 });
 
 function scrollToBottom() {
-    loader.classList.remove("hide");
     messageArea.scrollTop = messageArea.scrollHeight - messageArea.clientHeight + 200;
 }
 
@@ -289,16 +288,22 @@ async function sendMessage() {
 
     if (content === "" && images.length === 0) return;
 
-    loader.classList.remove("hide");
-
-    messageInput.value = "";
-    hiddenDiv.innerHTML = "";
+    sendMessBtn.classList.add("hide");
 
     if (images.length > 0) {
-        fileName.innerHTML = "";
-        cancelSendImg.classList.add("hide");
+        let isError = false;
+        let listFile = "";
+        let invalidImgs = new DataTransfer();
 
         for (let image of images) {
+            if (image.size > 10 * 1024 * 1024) {
+                alert("Ảnh gửi lên quá 10MB, vui lòng thử lại");
+                isError = true;
+                listFile += image.name + "\n";
+                invalidImgs.items.add(image);
+                continue;
+            }
+
             const authData = await fetch('/api/generate-signature').then(res => res.json());
 
             const formData = new FormData();
@@ -306,13 +311,6 @@ async function sendMessage() {
             formData.append("api_key", authData.api_key);
             formData.append("timestamp", authData.timestamp);
             formData.append("signature", authData.signature);
-
-            if (image.size > 10 * 1024 * 1024) {
-                loader.classList.add("hide");
-                sendMessBtn.classList.add("hide");
-                alert("Ảnh gửi lên quá 10MB, vui lòng thử lại");
-                return;
-            }
 
             const response = await fetch("https://api.cloudinary.com/v1_1/" + authData.cloud_name + "/image/upload", {
                 method: "POST",
@@ -331,12 +329,24 @@ async function sendMessage() {
             }
 
             stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(messageData));
+            numberMessage += 1;
         }
 
-        imageInput.value = "";
+        if (!isError) {
+            imageInput.value = "";
+            fileName.innerHTML = "";
+            cancelSendImg.classList.add("hide");
+        }
+        else {
+            fileName.innerText = listFile;
+            imageInput.files = invalidImgs.files;
+        }
     }
 
     if (content != "") {
+        messageInput.value = "";
+        hiddenDiv.innerHTML = "";
+
         messageInput.style.minHeight = "60px";
         messageInput.style.maxHeight = "60px";
 
@@ -349,9 +359,8 @@ async function sendMessage() {
         };
 
         stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(messageData));
+        numberMessage += 1;
     }
-
-    loader.classList.add("hide");
 }
 
 function formatDate(date) {
@@ -451,7 +460,6 @@ function addMessageToUI(message) {
         waitingImg.onload = function () {
             realImg.src = message.content;
             scrollToBottom();
-            loader.classList.add("hide");
         };
         contentDiv.appendChild(realImg);
     }
@@ -459,6 +467,7 @@ function addMessageToUI(message) {
     contentDiv.appendChild(datetime);
     newMessage.appendChild(contentDiv);
     messageArea.appendChild(newMessage);
+    if (numberMessage === 0) loader.classList.add("hide");
 }
 
 messageForm.addEventListener("keydown", function (e) {
@@ -471,6 +480,7 @@ messageForm.addEventListener("keydown", function (e) {
 
         e.preventDefault();
         sendMessBtn.classList.add("hide");
+        loader.classList.remove("hide");
         sendMessage();
     }
 });
