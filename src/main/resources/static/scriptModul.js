@@ -231,6 +231,7 @@ listUserInforToGroup.addEventListener("click", function (e) {
 
 acptCreateGroup.addEventListener("click", async function () {
     let roomName = nameGroupInput.value.trim();
+    nameGroupInput.value = "";
 
     if (roomName === "") {
         alert("Vui lòng nhập tên nhóm");
