@@ -65,10 +65,10 @@ function onError() {
 function onStatusReceived(payload) {
     let data = JSON.parse(payload.body);
     if (data.status === "banned") {
-        alert("Tài khoản của bạn đã bị khóa");
         setTimeout(() => {
             window.location.href = "/logout";
         }, 3000);
+        alert("Tài khoản của bạn đã bị khóa");
     }
 }
 
