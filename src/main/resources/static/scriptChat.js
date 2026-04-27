@@ -479,7 +479,7 @@ messageForm.addEventListener("keydown", function (e) {
         e.preventDefault();
         sendMessBtn.classList.add("hide");
 
-        if (messageInput.value.trim() != "") loader.classList.remove("hide");
+        if (messageInput.value.trim() != "" || (imageInput.files).length > 0) loader.classList.remove("hide");
         sendMessage();
     }
 });
