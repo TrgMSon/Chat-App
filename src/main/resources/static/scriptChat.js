@@ -476,11 +476,10 @@ messageForm.addEventListener("keydown", function (e) {
             return;
         }
 
-        if (messageInput.value.trim() != "") sendMessBtn.classList.add("hide");
-
         e.preventDefault();
         sendMessBtn.classList.add("hide");
-        loader.classList.remove("hide");
+
+        if (messageInput.value.trim() != "") loader.classList.remove("hide");
         sendMessage();
     }
 });
