@@ -1,49 +1,59 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>Chat App</title>
     <link rel="stylesheet" th:href="@{/styleSignup.css}">
 </head>
+
 <body>
 
-<div class="container">
-    <h3>Bắt đầu với Chat App</h3>
+    <div class="container">
+        <h3>Bắt đầu với Chat App</h3>
 
-    <form method="post">
+        <form method="post">
 
-        <div class="form-group">
-            <label for="username">Tên người dùng:</label>
-            <input type="text" id="username" name="userName" required>
+            <div class="form-group">
+                <label for="username">Tên người dùng:</label>
+                <input type="text" id="username" name="userName" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Mật khẩu:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+
+            <div class="form-group">
+                <label for="bio">Giới thiệu bản thân (Không bắt buộc):</label>
+                <input type="text" id="bio" name="bio">
+            </div>
+
+            <div class="ruleDiv">
+                <p>Nội quy ứng dụng:</p>
+                <p>• Không nhắn những từ xúc phạm người khác.</p>
+                <p>• Không gửi tin nhắn để làm phiền người khác (spam).</p>
+                <p>• Không dùng các từ ngữ mang nghĩa vi phạm pháp luật.</p>
+            </div>
+
+            <button type="submit" name="action" value="register">Đăng ký</button>
+        </form>
+
+        <div class="error-msg">
+            <span th:text="${error}"></span>
         </div>
 
-        <div class="form-group">
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
+        <div class="login">
+            Đã có tài khoản? <a th:href="@{/login}">Đăng nhập ngay</a>
         </div>
 
-        <div class="form-group">
-            <label for="password">Mật khẩu:</label>
-            <input type="password" id="password" name="password" required>
-        </div>
-
-        <div class="form-group">
-            <label for="bio">Giới thiệu bản thân (Không bắt buộc):</label>
-            <input type="text" id="bio" name="bio">
-        </div>
-
-        <button type="submit" name="action" value="register">Đăng ký</button>
-    </form>
-
-    <div class="error-msg">
-        <span th:text="${error}"></span>
     </div>
-
-    <div class="login">
-        Đã có tài khoản? <a th:href="@{/login}">Đăng nhập ngay</a>
-    </div>
-
-</div>
 
 </body>
+
 </html>
