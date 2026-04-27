@@ -289,6 +289,8 @@ async function sendMessage() {
     if (content === "" && images.length === 0) return;
 
     sendMessBtn.classList.add("hide");
+    messageInput.value = "";
+    hiddenDiv.innerHTML = "";
 
     if (images.length > 0) {
         let isError = false;
@@ -344,9 +346,6 @@ async function sendMessage() {
     }
 
     if (content != "") {
-        messageInput.value = "";
-        hiddenDiv.innerHTML = "";
-
         messageInput.style.minHeight = "60px";
         messageInput.style.maxHeight = "60px";
 
@@ -477,7 +476,7 @@ messageForm.addEventListener("keydown", function (e) {
         }
 
         e.preventDefault();
-        sendMessBtn.classList.add("hide");
+        if (messageInput.value === "") sendMessBtn.classList.add("hide");
 
         if (messageInput.value.trim() != "" || (imageInput.files).length > 0) loader.classList.remove("hide");
         sendMessage();
