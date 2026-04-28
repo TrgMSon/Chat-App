@@ -83,7 +83,7 @@ function addRoomToUI(roomData) {
 
     roomElement.dataset.roomId = roomData.roomId;
     roomElement.dataset.roomName = roomData.roomName;
-    roomElement.dataset.type = roomData.type;
+    roomElement.dataset.roomType = roomData.type;
     roomElement.dataset.firstChar = (roomData.roomName).toUpperCase().substring(0, 1);
 
     let avatarDiv = document.createElement("div");
