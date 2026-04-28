@@ -79,13 +79,13 @@ async function loadChattingUser() {
     let name = searchInputMember.value.trim();
     searchInputMember.value = name;
 
-    listUserInforToGroup.innerHTML = "";
     let users = await getChattingUser(name);
 
     if (users.length === 0) {
-        alert("Không tìm thấy kết quả phù hợp");
+        if (name != "") alert("Không tìm thấy kết quả phù hợp");
         return;
     }
+    listUserInforToGroup.innerHTML = "";
 
     for (let i = 0; i < users.length; i++) {
         let userInforDiv = document.createElement("div");

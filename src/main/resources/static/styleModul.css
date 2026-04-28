@@ -24,6 +24,11 @@
     margin-bottom: 10px;
 }
 
+.listUserArea p {
+    align-self: center;
+    font-style: italic;
+}
+
 #nameGroupInput, #searchInputMember, #searchInputAF {
     margin-bottom: 10px;
     width: 90%;
