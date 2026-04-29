@@ -24,7 +24,7 @@
     margin-bottom: 10px;
 }
 
-.listUserArea p {
+#noUserAFInform {
     align-self: center;
     font-style: italic;
 }
