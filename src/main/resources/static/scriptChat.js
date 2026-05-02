@@ -128,7 +128,7 @@ function onRoomReceived(payload) {
 }
 
 function isNearBottom() {
-    return messageArea.scrollTop + messageArea.clientHeight >= messageArea.scrollHeight - 50;
+    return messageArea.scrollTop + messageArea.clientHeight >= messageArea.scrollHeight - 200;
 }
 
 function onMessageReceived(payload) {
