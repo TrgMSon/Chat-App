@@ -486,7 +486,7 @@ messageForm.addEventListener("keydown", function (e) {
 messageForm.addEventListener("submit", function (e) {
     e.preventDefault();
     if (messageInput.value === "") sendMessBtn.classList.add("hide");
-    loader.classList.remove("hide");
+    if (messageInput.value.trim() != "" || (imageInput.files).length > 0) loader.classList.remove("hide");
     sendMessage();
 });
 
