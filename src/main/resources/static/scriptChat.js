@@ -485,7 +485,8 @@ messageForm.addEventListener("keydown", function (e) {
 
 messageForm.addEventListener("submit", function (e) {
     e.preventDefault();
-    sendMessBtn.classList.add("hide");
+    if (messageInput.value === "") sendMessBtn.classList.add("hide");
+    loader.classList.remove("hide");
     sendMessage();
 });
 
