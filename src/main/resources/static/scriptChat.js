@@ -526,7 +526,7 @@ searchForm.addEventListener("submit", async function (event) {
     roomIds = response.roomIds;
 
     if (roomIds.length === 0) {
-        alert("Không tìm thấy kết quả");
+        alert("Không tìm thấy kết quả phù hợp");
         return;
     }
 
