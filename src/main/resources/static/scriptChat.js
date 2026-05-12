@@ -26,6 +26,7 @@ let roomType = null;
 let roomId = null;
 let tmpDate = null;
 let numberMessage = 0;
+let pasteImg = [];
 const userLoginName = userIcon.dataset.userName;
 
 async function initUserId() {
@@ -181,12 +182,73 @@ messageInput.addEventListener("input", function () {
     let content = messageInput.value;
     hiddenDiv.innerHTML = content.replace(/\n/g, "<br>") + "<br>";
 
-    if (content === "") sendMessBtn.classList.add("hide");
+    if (content === "" && fileName.childNodes.length === 0) sendMessBtn.classList.add("hide");
 
     let newHeight = hiddenDiv.scrollHeight;
     if (newHeight >= 150) messageInput.style.minHeight = "150px";
     else if (newHeight > 60) messageInput.style.minHeight = newHeight + "px";
     else messageInput.style.minHeight = "60px";
+});
+
+function removeImage(file, container) {
+    // xóa khỏi mảng
+    if (pasteImg.length > 0) pasteImg = pasteImg.filter(f => f !== file);
+
+    if (imageInput.files.length > 0) {
+        let files = imageInput.files;
+        let inputFiles = new DataTransfer();
+        for (let tmp of files) {
+            if (tmp != file) inputFiles.items.add(tmp);
+        }
+        imageInput.files = inputFiles.files;
+    }
+
+    // xóa UI
+    container.remove();
+
+    if (pasteImg.length === 0 && imageInput.files.length === 0) {
+        cancelSendImg.classList.add("hide");
+    }
+}
+
+function previewImage(file) {
+    let divPreview = document.createElement("div");
+    divPreview.classList.add("div-preview");
+
+    let img = document.createElement("img");
+    img.src = URL.createObjectURL(file);
+    img.style.width = "100px";
+    img.style.height = "120px";
+    img.style.maxWidth = "100px";
+    img.style.maxHeight = "120px";
+    img.style.margin = "4px";
+
+    let delFileBtn = document.createElement("button");
+    delFileBtn.classList.add("remove-file-btn");
+    delFileBtn.innerText = "x";
+    delFileBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        removeImage(file, divPreview);
+    });
+
+    divPreview.appendChild(img);
+    divPreview.appendChild(delFileBtn);
+
+    fileName.appendChild(divPreview);
+
+    // giải phóng bộ nhớ sau khi load xong
+    img.onload = () => URL.revokeObjectURL(img.src);
+}
+
+messageInput.addEventListener("paste", function (event) {
+    let files = event.clipboardData.files;
+    if (files.length === 0) return;
+    sendMessBtn.classList.remove("hide");
+    cancelSendImg.classList.remove("hide");
+    for (let i=0; i<files.length; i++) {
+        previewImage(files[i]);
+        pasteImg.push(files[i]);
+    }
 });
 
 async function loadRoom(room) {
@@ -283,8 +345,12 @@ function getCurrentDateTime() {
 }
 
 async function sendMessage() {
-    let images = imageInput.files;
+    let images = pasteImg;
     let content = messageInput.value.trim();
+    if (imageInput.files.length > 0) {
+        let files = imageInput.files;
+        for (let file of files) images.push(file);
+    }
 
     if (content === "" && images.length === 0) return;
 
@@ -337,11 +403,12 @@ async function sendMessage() {
         if (!isError) {
             imageInput.value = "";
             fileName.innerHTML = "";
+            pasteImg = "";
             cancelSendImg.classList.add("hide");
         }
         else {
-            fileName.innerText = listFile;
             imageInput.files = invalidImgs.files;
+            if (numberMessage === 0) loader.classList.add("hide");
         }
     }
 
@@ -526,7 +593,7 @@ searchForm.addEventListener("submit", async function (event) {
     roomIds = response.roomIds;
 
     if (roomIds.length === 0) {
-        alert("Không tìm thấy kết quả phù hợp");
+        alert("Không tìm thấy kết quả");
         return;
     }
 

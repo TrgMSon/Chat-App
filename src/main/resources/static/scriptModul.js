@@ -31,11 +31,9 @@ imageInput.addEventListener("change", function () {
     if (this.files.length > 0) {
         sendMessBtn.classList.remove("hide");
 
-        let listFile = "";
         for (let i = 0; i < this.files.length; i++) {
-            listFile += this.files[i].name + "\n";
+            previewImage(this.files[i]);
         }
-        fileName.innerText = listFile;
 
         if (cancelSendImg.classList.contains("hide")) cancelSendImg.classList.remove("hide");
     }
@@ -45,7 +43,8 @@ cancelSendImg.addEventListener("click", function (e) {
     e.preventDefault();
     sendMessBtn.classList.add("hide");
     imageInput.value = "";
-    fileName.innerText = "";
+    fileName.innerHTML = "";
+    pasteImg = [];
     cancelSendImg.classList.add("hide");
 });
 
