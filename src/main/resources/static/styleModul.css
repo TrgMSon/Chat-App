@@ -78,7 +78,7 @@
     height: 50%;
 }
 
-#lbUploadImg {
+#lbUploadFile {
     border-bottom: 1px solid black;
     font-size: 18px;
     padding-left: 10px;
@@ -87,7 +87,7 @@
     width: fit-content;
 }
 
-#lbUploadImg:hover {
+#lbUploadFile:hover {
     background-color: #A9A9A9;
 }
 
@@ -103,6 +103,20 @@
 .div-preview {
     position: relative;
     width: fit-content;
+    display: flex;
+    margin: 4px;
+}
+
+.div-preview p {
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* tối đa 2 dòng */
+    -webkit-box-orient: vertical;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    word-break: break-word;
+    flex: 1;
 }
 
 .remove-file-btn {
@@ -149,4 +163,13 @@
     border-top: 8px solid #3498db;
     border-radius: 50%;
     animation: spin 3s linear infinite;
+}
+
+.file-div {
+    display: flex;
+}
+
+.file-infor {
+    display: flex;
+    flex-direction: column;
 }

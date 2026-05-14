@@ -39,4 +39,7 @@ public class Message {
 
     @Column(nullable=false)
     private String type;
+
+    @Column(name="file_name")
+    private String fileName;
 }

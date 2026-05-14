@@ -22,7 +22,7 @@ public interface MessageRepo extends JpaRepository<Message, Long> {
         @Transactional
         @Modifying
         @Query(value = """
-                        INSERT INTO message(user_id, room_id, content, created_at, type) VALUES(?1, ?2, ?3, ?4, ?5)
+                        INSERT INTO message(user_id, room_id, content, created_at, type, file_name) VALUES(?1, ?2, ?3, ?4, ?5, ?6)
                         """, nativeQuery = true)
-        void saveMessage(String userId, String roomId, String content, LocalDateTime createdAt, String type);
+        void saveMessage(String userId, String roomId, String content, LocalDateTime createdAt, String type, String fileName);
 }

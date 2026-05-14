@@ -101,6 +101,19 @@ public class ChatController {
         return response;
     }
 
+    @GetMapping("/generate-url-dowload-pdf")
+    public Map<String, String> generateDownloadUrl(@RequestParam String publicId) throws Exception {
+        Map<String, Object> options = new HashMap<>();
+
+        options.put("resource_type", "image");
+        options.put("type", "upload");
+        options.put("attachment", true);
+
+        String url = cloudinary.privateDownload(publicId, "pdf", options);
+
+        return Map.of("downloadUrl", url);
+    }
+
     @GetMapping("/viewMember")
     public ArrayList<UserDTO2> viewMember(@RequestParam String roomId) {
         return roomService.viewMember(roomId);

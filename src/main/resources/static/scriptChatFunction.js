@@ -24,28 +24,40 @@ const reportWritter = document.getElementById("reportWritter");
 const acptSendReport = document.getElementById("sendReportBtn");
 const closeWritterBtn = document.getElementById("closeWritter");
 
-cancelSendImg.classList.add("hide");
+cancelSendFile.classList.add("hide");
 viewUserBio.classList.add("hide");
 
-imageInput.addEventListener("change", function () {
+// bản free cloudinary giới hạn tải lên:
+// image: 10MB, video: 100MB, raw file: 10MB
+
+fileInput.addEventListener("change", function () {
     if (this.files.length > 0) {
-        sendMessBtn.classList.remove("hide");
-
         for (let i = 0; i < this.files.length; i++) {
-            previewImage(this.files[i]);
-        }
+            if (!checkType(this.files[i])) {
+                alert("File không hợp lệ");
+                continue;
+            }
 
-        if (cancelSendImg.classList.contains("hide")) cancelSendImg.classList.remove("hide");
+            if (checkSize(this.files[i])) {
+                if (this.files[i].type.startsWith("image")) previewImage(this.files[i]);
+                else preViewFile(this.files[i]);
+                pendingFile.push(this.files[i]);
+
+                sendMessBtn.classList.remove("hide");
+                cancelSendFile.classList.remove("hide");
+            }
+            else alert("File quá dung lượng cho phép, vui lòng thử lại");
+        }
     }
 });
 
-cancelSendImg.addEventListener("click", function (e) {
+cancelSendFile.addEventListener("click", function (e) {
     e.preventDefault();
     sendMessBtn.classList.add("hide");
-    imageInput.value = "";
-    fileName.innerHTML = "";
-    pasteImg = [];
-    cancelSendImg.classList.add("hide");
+    fileInput.value = "";
+    fileNames.innerHTML = "";
+    pendingFile = [];
+    cancelSendFile.classList.add("hide");
 });
 
 viewMemberDiv.classList.remove("createBox");

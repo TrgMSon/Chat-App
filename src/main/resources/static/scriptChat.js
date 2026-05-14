@@ -1,6 +1,6 @@
 const messageArea = document.getElementById("messageArea");
 const messageInput = document.getElementById("messageInput");
-const imageInput = document.getElementById("imageInput");
+const fileInput = document.getElementById("fileInput");
 const messageForm = document.getElementById("messageForm");
 const chatTitle = document.getElementById("chatTitle");
 const chatTitleText = document.getElementById("chatTitleText");
@@ -15,9 +15,9 @@ const userProfile = document.getElementById("userProfile");
 const searchForm = document.getElementById("searchFormInput");
 const searchInput = document.getElementById("searchInput");
 const closeSearchBtn = document.getElementById("closeSearchBtn");
-const fileName = document.getElementById("fileName");
+const fileNames = document.getElementById("fileName");
 const hiddenDiv = document.getElementById("hiddenDiv");
-const cancelSendImg = document.getElementById("cancelSendImg");
+const cancelSendFile = document.getElementById("cancelSendFile");
 const loader = document.querySelector(".loader");
 const sendMessBtn = document.getElementById("sendMessBtn");
 
@@ -26,7 +26,7 @@ let roomType = null;
 let roomId = null;
 let tmpDate = null;
 let numberMessage = 0;
-let pasteImg = [];
+let pendingFile = [];
 const userLoginName = userIcon.dataset.userName;
 
 async function initUserId() {
@@ -182,7 +182,7 @@ messageInput.addEventListener("input", function () {
     let content = messageInput.value;
     hiddenDiv.innerHTML = content.replace(/\n/g, "<br>") + "<br>";
 
-    if (content === "" && fileName.childNodes.length === 0) sendMessBtn.classList.add("hide");
+    if (content === "" && pendingFile.length === 0) sendMessBtn.classList.add("hide");
 
     let newHeight = hiddenDiv.scrollHeight;
     if (newHeight >= 150) messageInput.style.minHeight = "150px";
@@ -190,24 +190,16 @@ messageInput.addEventListener("input", function () {
     else messageInput.style.minHeight = "60px";
 });
 
-function removeImage(file, container) {
+function removeFile(file, container) {
     // xóa khỏi mảng
-    if (pasteImg.length > 0) pasteImg = pasteImg.filter(f => f !== file);
-
-    if (imageInput.files.length > 0) {
-        let files = imageInput.files;
-        let inputFiles = new DataTransfer();
-        for (let tmp of files) {
-            if (tmp != file) inputFiles.items.add(tmp);
-        }
-        imageInput.files = inputFiles.files;
-    }
+    pendingFile = pendingFile.filter(f => f !== file);
 
     // xóa UI
     container.remove();
 
-    if (pasteImg.length === 0 && imageInput.files.length === 0) {
-        cancelSendImg.classList.add("hide");
+    if (pendingFile.length === 0) {
+        cancelSendFile.classList.add("hide");
+        if (messageInput.value === "") sendMessBtn.classList.add("hide");
     }
 }
 
@@ -221,20 +213,52 @@ function previewImage(file) {
     img.style.height = "120px";
     img.style.maxWidth = "100px";
     img.style.maxHeight = "120px";
-    img.style.margin = "4px";
 
     let delFileBtn = document.createElement("button");
     delFileBtn.classList.add("remove-file-btn");
     delFileBtn.innerText = "x";
     delFileBtn.addEventListener("click", function (e) {
         e.preventDefault();
-        removeImage(file, divPreview);
+        removeFile(file, divPreview);
     });
 
     divPreview.appendChild(img);
     divPreview.appendChild(delFileBtn);
 
-    fileName.appendChild(divPreview);
+    fileNames.appendChild(divPreview);
+
+    // giải phóng bộ nhớ sau khi load xong
+    img.onload = () => URL.revokeObjectURL(img.src);
+}
+
+function preViewFile(file) {
+    let divPreview = document.createElement("div");
+    divPreview.classList.add("div-preview");
+    divPreview.style.width = "200px";
+
+    let img = document.createElement("img");
+    img.src = "https://res.cloudinary.com/dgtovt9xh/image/upload/v1778580283/simple-file-icon-the-icon-can-be-used-for-websites-print-templates-presentation-templates-illustrations-etc-free-vector_tqk4dn.webp";
+    img.style.width = "50px";
+    img.style.height = "60px";
+    img.style.maxWidth = "50px";
+    img.style.maxHeight = "60px";
+
+    let fileTitle = document.createElement("p");
+    fileTitle.innerText = file.name;
+
+    let delFileBtn = document.createElement("button");
+    delFileBtn.classList.add("remove-file-btn");
+    delFileBtn.innerText = "x";
+    delFileBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        removeFile(file, divPreview);
+    });
+
+    divPreview.appendChild(img);
+    divPreview.appendChild(fileTitle);
+    divPreview.appendChild(delFileBtn);
+
+    fileNames.appendChild(divPreview);
 
     // giải phóng bộ nhớ sau khi load xong
     img.onload = () => URL.revokeObjectURL(img.src);
@@ -243,19 +267,31 @@ function previewImage(file) {
 messageInput.addEventListener("paste", function (event) {
     let files = event.clipboardData.files;
     if (files.length === 0) return;
-    sendMessBtn.classList.remove("hide");
-    cancelSendImg.classList.remove("hide");
-    for (let i=0; i<files.length; i++) {
-        previewImage(files[i]);
-        pasteImg.push(files[i]);
+
+    for (let i = 0; i < files.length; i++) {
+        if (checkType(files[i])) {
+            sendMessBtn.classList.remove("hide");
+            cancelSendImg.classList.remove("hide");
+        }
+        else {
+            alert("File không hợp lệ");
+            continue;
+        }
+
+        if (checkSize(files[i])) {
+            previewImage(files[i]);
+            pendingFile.push(files[i]);
+        }
+        else alert("File quá dung lượng cho phép, vui lòng thử lại");
     }
 });
 
 async function loadRoom(room) {
     room.style.fontWeight = "";
     messageInput.value = "";
-    imageInput.value = "";
-    fileName.innerHTML = "";
+    fileInput.value = "";
+    fileNames.innerHTML = "";
+    pendingFile = [];
     numberMessage = 0;
 
     chatTitle.classList.remove("hide");
@@ -344,72 +380,92 @@ function getCurrentDateTime() {
     return `${day}/${month}/${year}`;
 }
 
-async function sendMessage() {
-    let images = pasteImg;
-    let content = messageInput.value.trim();
-    if (imageInput.files.length > 0) {
-        let files = imageInput.files;
-        for (let file of files) images.push(file);
-    }
+function checkType(file) {
+    const allowedTypes = [
+        "image/",
+        "video/",
+        "audio/",
+        "application/pdf",
+        "application/x-zip-compressed",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+    ];
 
-    if (content === "" && images.length === 0) return;
+    let isValid = false;
+
+    console.log(file.type);
+
+    allowedTypes.forEach(type => {
+        // các loại có prefix
+        if (type.endsWith("/")) {
+            if (file.type.startsWith(type)) isValid = true;
+        }
+
+        // loại cụ thể
+        if (file.type === type) isValid = true;
+    });
+
+    return isValid;
+}
+
+function checkSize(file) {
+    if (file.type.startsWith("video")) return file.size <= 100 * 1024 * 1024;
+    return file.size <= 10 * 1024 * 1024;
+}
+
+async function sendMessage() {
+    let content = messageInput.value.trim();
+
+    if (content === "" && pendingFile.length === 0) return;
 
     sendMessBtn.classList.add("hide");
     messageInput.value = "";
     hiddenDiv.innerHTML = "";
 
-    if (images.length > 0) {
-        let isError = false;
-        let listFile = "";
-        let invalidImgs = new DataTransfer();
-
-        for (let image of images) {
-            if (image.size > 10 * 1024 * 1024) {
-                alert("Ảnh gửi lên quá 10MB, vui lòng thử lại");
-                isError = true;
-                listFile += image.name + "\n";
-                invalidImgs.items.add(image);
-                continue;
-            }
-
+    if (pendingFile.length > 0) {
+        for (let file of pendingFile) {
             const authData = await fetch('/api/generate-signature').then(res => res.json());
 
             const formData = new FormData();
-            formData.append("file", image);
+            formData.append("file", file);
             formData.append("api_key", authData.api_key);
             formData.append("timestamp", authData.timestamp);
             formData.append("signature", authData.signature);
 
-            const response = await fetch("https://api.cloudinary.com/v1_1/" + authData.cloud_name + "/image/upload", {
+            const response = await fetch("https://api.cloudinary.com/v1_1/" + authData.cloud_name + "/auto/upload", {
                 method: "POST",
                 body: formData
             });
-
             let result = await response.json();
-            let urlImg = result.url;
+            let urlFile = result.secure_url;
+
+            let type = "";
+            let fileName = "";
+            if (file.type.startsWith("image")) type = "image";
+            else {
+                type = "file";
+                fileName = file.name;
+            }
 
             let messageData = {
                 userId: userLoginId,
                 roomId: roomId,
                 userName: userLoginName,
-                content: urlImg,
-                type: "image"
+                content: urlFile,
+                type: type,
+                fileName: file.name
             }
 
             stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(messageData));
             numberMessage += 1;
         }
 
-        if (!isError) {
-            imageInput.value = "";
-            fileName.innerHTML = "";
-            pasteImg = "";
-            cancelSendImg.classList.add("hide");
-        }
-        else {
-            imageInput.files = invalidImgs.files;
-            if (numberMessage === 0) loader.classList.add("hide");
-        }
+        fileInput.value = "";
+        fileNames.innerHTML = "";
+        pendingFile = [];
+        cancelSendFile.classList.add("hide");
+
+        if (numberMessage === 0) loader.classList.add("hide");
     }
 
     if (content != "") {
@@ -421,7 +477,8 @@ async function sendMessage() {
             roomId: roomId,
             userName: userLoginName,
             content: content,
-            type: "text"
+            type: "text",
+            fileName: ""
         };
 
         stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(messageData));
@@ -452,7 +509,12 @@ function checkDate(date) {
     return false;
 }
 
-function addMessageToUI(message) {
+function getPublicId(url) {
+    let fileName = url.split("/").pop();
+    return fileName.split(".")[0] + "";
+}
+
+async function addMessageToUI(message) {
     const newMessage = document.createElement("div");
     newMessage.classList.add("message");
 
@@ -510,7 +572,7 @@ function addMessageToUI(message) {
         contentElement.innerText = message.content;
         contentDiv.appendChild(contentElement);
     }
-    else {
+    else if (message.type === "image") {
         const realImg = document.createElement("img");
         realImg.style.userSelect = "none";
         realImg.src = "https://res.cloudinary.com/dsrecf30u/image/upload/v1775311940/id-loading-1_tptr6p.gif";
@@ -529,6 +591,52 @@ function addMessageToUI(message) {
         };
         contentDiv.appendChild(realImg);
     }
+    else {
+        const fileDiv = document.createElement("div");
+        fileDiv.classList.add("file-div");
+
+        const iconFile = document.createElement("img");
+        iconFile.src = "https://res.cloudinary.com/dgtovt9xh/image/upload/v1778580283/simple-file-icon-the-icon-can-be-used-for-websites-print-templates-presentation-templates-illustrations-etc-free-vector_tqk4dn.webp";
+        iconFile.style.width = "100px";
+        iconFile.style.height = "100px";
+
+        const fileInfor = document.createElement("div");
+        fileInfor.classList.add("file-infor");
+
+        const fileName = document.createElement("p");
+        fileName.innerText = message.fileName;
+
+        const downloadOpt = document.createElement("a");
+        if (message.fileName.includes(".pdf")) {
+            let response = await fetch("/api/generate-url-dowload-pdf?publicId=" + getPublicId(message.content)).then(res => res.json());
+            downloadOpt.href = response.downloadUrl;
+            downloadOpt.innerText = "Tải về";
+        }
+        else {
+            downloadOpt.href = "#";
+            downloadOpt.innerText = "Tải về";
+            downloadOpt.addEventListener("click", async function (e) {
+                e.preventDefault();
+
+                const response = await fetch(message.content);
+                const blob = await response.blob();
+                const blobUrl = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+
+                a.href = blobUrl;
+                a.download = message.fileName;
+                a.click();
+
+                URL.revokeObjectURL(blobUrl);
+            });
+        }
+
+        fileInfor.appendChild(fileName);
+        fileInfor.appendChild(downloadOpt);
+        fileDiv.appendChild(iconFile);
+        fileDiv.appendChild(fileInfor);
+        contentDiv.appendChild(fileDiv);
+    }
 
     contentDiv.appendChild(datetime);
     newMessage.appendChild(contentDiv);
@@ -545,7 +653,7 @@ messageForm.addEventListener("keydown", function (e) {
         e.preventDefault();
         if (messageInput.value === "") sendMessBtn.classList.add("hide");
 
-        if (messageInput.value.trim() != "" || (imageInput.files).length > 0) loader.classList.remove("hide");
+        if (messageInput.value.trim() != "" || pendingFile.length > 0) loader.classList.remove("hide");
         sendMessage();
     }
 });
@@ -553,7 +661,7 @@ messageForm.addEventListener("keydown", function (e) {
 messageForm.addEventListener("submit", function (e) {
     e.preventDefault();
     if (messageInput.value === "") sendMessBtn.classList.add("hide");
-    if (messageInput.value.trim() != "" || (imageInput.files).length > 0) loader.classList.remove("hide");
+    if (messageInput.value.trim() != "" || (fileInput.files).length > 0) loader.classList.remove("hide");
     sendMessage();
 });
 

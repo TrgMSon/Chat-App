@@ -31,7 +31,7 @@ public class MessageService {
         for (Message message : messages) {
             messageDTOs.add(new MessageDTO(message.getUser().getUserId(), message.getRoom().getRoomId(),
                     message.getUser().getUserName(),
-                    message.getContent(), message.getCreatedAt(), message.getType()));
+                    message.getContent(), message.getCreatedAt(), message.getType(), message.getFileName()));
         }
         return messageDTOs;
     }
@@ -39,6 +39,6 @@ public class MessageService {
     public void saveMessage(MessageDTO message) {
         message.setCreatedAt(LocalDateTime.now());
         messageRepo.saveMessage(message.getUserId(), message.getRoomId(), message.getContent(), message.getCreatedAt(),
-                message.getType());
+                message.getType(), message.getFileName());
     }
 }

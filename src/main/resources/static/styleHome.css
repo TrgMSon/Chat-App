@@ -155,7 +155,7 @@ body {
     border-top: 1px solid black;
 }
 
-#optionImgDiv {
+#optionFileDiv {
     display: flex;
     width: 100%;
 }
@@ -166,7 +166,7 @@ body {
     margin-left: 80%;  
 }
 
-#cancelSendImg {
+#cancelSendFile {
     margin-left: 15px;
 }
 

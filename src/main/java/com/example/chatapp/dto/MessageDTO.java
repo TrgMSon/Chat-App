@@ -12,13 +12,15 @@ public class MessageDTO {
     private String roomId;
     private LocalDateTime createdAt;
     private String type;
+    private String fileName;
 
-    public MessageDTO(String userId, String roomId, String userName, String content, LocalDateTime createadAt, String type) {
+    public MessageDTO(String userId, String roomId, String userName, String content, LocalDateTime createadAt, String type, String fileName) {
         this.userId = userId;
         this.roomId = roomId;
         this.userName = userName;
         this.content = content;
         this.createdAt = createadAt;
         this.type = type;
+        this.fileName = fileName;
     }
 }

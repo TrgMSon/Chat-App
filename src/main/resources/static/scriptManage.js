@@ -248,7 +248,7 @@ function unMark(target) {
 manageUserBtn.addEventListener("click", async function () {
     searchInput.value = "";
     searchInput.classList.remove("hide");
-    searchInput.placeholder = "Tìm kiếm theo tên";
+    searchInput.placeholder = "Tìm kiếm theo tên hoặc ID";
 
     manageReportBtn.style.backgroundColor = "";
     manageUserBtn.style.backgroundColor = "#1E90FF";
