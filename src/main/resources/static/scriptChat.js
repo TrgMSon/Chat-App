@@ -23,7 +23,7 @@ const sendMessBtn = document.getElementById("sendMessBtn");
 
 let userLoginId = null;
 let roomType = null;
-let roomId = null;
+let roomViewing = "";
 let tmpDate = null;
 let numberMessage = 0;
 let pendingFile = [];
@@ -116,8 +116,8 @@ function onRoomReceived(payload) {
     listRoom = document.querySelectorAll("#listRoom li");
     listRoom.forEach(room => {
         if (room.dataset.roomId === roomData.roomId) {
-            room.addEventListener("click", function () {
-                loadRoom(room);
+            room.addEventListener("click", async function () {
+                await loadRoom(room);
             });
             return;
         }
@@ -129,32 +129,25 @@ function onRoomReceived(payload) {
 }
 
 function isNearBottom() {
-    return messageArea.scrollTop + messageArea.clientHeight >= messageArea.scrollHeight - 200;
+    return messageArea.scrollTop + messageArea.clientHeight >= messageArea.scrollHeight - 40;
 }
 
-function onMessageReceived(payload) {
+async function onMessageReceived(payload) {
     let messageData = JSON.parse(payload.body);
 
-    if (roomId === messageData.roomId) {
+    if (roomViewing === messageData.roomId) {
         if (numberMessage > 0) {
             numberMessage -= 1;
         }
-        addMessageToUI(messageData);
+        await addMessageToUI(messageData);
+
+        if (userLoginId === messageData.userId || isNearBottom()) scrollToBottom();
     }
 
     listRoom.forEach(room => {
-        if (room.dataset.roomId === messageData.roomId && messageData.userId != userLoginId) {
-            room.style.fontWeight = "bold";
-        }
+        if (room.dataset.roomId === messageData.roomId && messageData.userId != userLoginId) room.style.fontWeight = "bold";
 
-        if (isNearBottom() && roomId === messageData.roomId && messageData.userId != userLoginId) {
-            scrollToBottom();
-            room.style.fontWeight = "";
-        }
-
-        if (room.dataset.roomId === messageData.roomId && messageData.userId === userLoginId) {
-            scrollToBottom();
-        }
+        if (isNearBottom() && roomViewing === messageData.roomId && messageData.userId != userLoginId) room.style.fontWeight = "";
     });
 }
 
@@ -309,7 +302,6 @@ async function loadRoom(room) {
     reportBtn.classList.add("reportBtn");
     reportBtn.style.height = "30%";
 
-    roomId = room.dataset.roomId;
     roomType = room.dataset.roomType;
     let chatTitleAvatar = chatTitle.querySelector(".avatar");
     if (roomType === "group") {
@@ -330,7 +322,7 @@ async function loadRoom(room) {
             chatTitle.removeChild(chatTitle.querySelector(".viewMemberBtn"));
         }
         if (chatTitle.querySelector(".reportBtn") === null) {
-            reportBtn.dataset.roomId = roomId;
+            reportBtn.dataset.roomId = roomViewing;
             chatTitle.appendChild(reportBtn);
         }
     }
@@ -345,19 +337,21 @@ async function loadRoom(room) {
 
     chatTitleAvatar.style.backgroundColor = getColorCode(firstChar);
 
-    await loadMessages(roomId);
-
+    await loadMessages(roomViewing);
     scrollToBottom();
+
     loader.classList.add("hide");
 }
 
 listRoom.forEach(room => {
-    room.addEventListener("click", function () {
-        loadRoom(room);
+    room.addEventListener("click", async function () {
+        roomViewing = room.dataset.roomId;
         room.style.backgroundColor = "#A9A9A9";
         listRoom.forEach(room1 => {
             if (room1.dataset.roomId != room.dataset.roomId) room1.style.backgroundColor = "";
         });
+
+        await loadRoom(room);
     });
 });
 
@@ -393,8 +387,6 @@ function checkType(file) {
 
     let isValid = false;
 
-    console.log(file.type);
-
     allowedTypes.forEach(type => {
         // các loại có prefix
         if (type.endsWith("/")) {
@@ -422,7 +414,26 @@ async function sendMessage() {
     messageInput.value = "";
     hiddenDiv.innerHTML = "";
 
+    if (content != "") {
+        numberMessage += 1;
+        messageInput.style.minHeight = "60px";
+        messageInput.style.maxHeight = "60px";
+
+        let messageData = {
+            userId: userLoginId,
+            roomId: roomViewing,
+            userName: userLoginName,
+            content: content,
+            type: "text",
+            fileName: ""
+        };
+
+        stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(messageData));
+    }
+
     if (pendingFile.length > 0) {
+        numberMessage += pendingFile.length;
+
         for (let file of pendingFile) {
             const authData = await fetch('/api/generate-signature').then(res => res.json());
 
@@ -449,7 +460,7 @@ async function sendMessage() {
 
             let messageData = {
                 userId: userLoginId,
-                roomId: roomId,
+                roomId: roomViewing,
                 userName: userLoginName,
                 content: urlFile,
                 type: type,
@@ -457,7 +468,6 @@ async function sendMessage() {
             }
 
             stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(messageData));
-            numberMessage += 1;
         }
 
         fileInput.value = "";
@@ -466,23 +476,6 @@ async function sendMessage() {
         cancelSendFile.classList.add("hide");
 
         if (numberMessage === 0) loader.classList.add("hide");
-    }
-
-    if (content != "") {
-        messageInput.style.minHeight = "60px";
-        messageInput.style.maxHeight = "60px";
-
-        let messageData = {
-            userId: userLoginId,
-            roomId: roomId,
-            userName: userLoginName,
-            content: content,
-            type: "text",
-            fileName: ""
-        };
-
-        stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(messageData));
-        numberMessage += 1;
     }
 }
 
@@ -641,6 +634,7 @@ async function addMessageToUI(message) {
     contentDiv.appendChild(datetime);
     newMessage.appendChild(contentDiv);
     messageArea.appendChild(newMessage);
+
     if (numberMessage === 0) loader.classList.add("hide");
 }
 
@@ -669,9 +663,10 @@ async function loadMessages(roomId) {
     const res = await fetch("/api/getMessages?roomId=" + roomId);
     const messages = await res.json();
 
-    (messages.reverse()).forEach(message => {
-        addMessageToUI(message);
-    });
+    for (const message of messages.reverse()) {
+        await addMessageToUI(message);
+        scrollToBottom();
+    }
 }
 
 buttonProfile.addEventListener("click", function () {
@@ -718,7 +713,7 @@ closeSearchBtn.addEventListener("click", function () {
     if (closeSearchBtn.classList.contains("hide")) return;
 
     listRoom.forEach(room => {
-        if (roomIds.includes(room.dataset.roomId) && room.dataset.roomId != roomId) {
+        if (roomIds.includes(room.dataset.roomId) && room.dataset.roomId != roomViewing) {
             room.style.backgroundColor = "";
         }
     });

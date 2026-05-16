@@ -10,22 +10,30 @@ body {
 }
 
 .container {
+    display: flex;
+    flex-direction: column;
     background-color: white;
     padding: 30px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 350px;
+    width: 550px;
     border: 1px solid black;
 }
 
 h3 {
     text-align: center;
     color: #333;
-    margin-bottom: 20px;
+    margin-bottom: 40px;
+}
+
+.row {
+    display: flex;
 }
 
 .form-group {
     margin-bottom: 15px;
+    margin-right: 10px;
+    flex: 1;
 }
 
 label {
@@ -44,6 +52,7 @@ input[type="password"] {
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
+    font-size: 14px;
 }
 
 button {

@@ -17,14 +17,24 @@ public interface UserRepo extends JpaRepository<User, String> {
         User findByEmail(String email);
 
         @Query(value = """
-                        SELECT u.user_id, u.user_name, u.bio FROM user AS u WHERE user_name LIKE ?1
+                        SELECT u.user_id, u.user_name, u.bio, u.address FROM user AS u WHERE user_name LIKE ?1
                         AND u.user_id <> ?2 AND EXISTS (SELECT rm1.user_id FROM room_member AS rm1
-                        JOIN room_member AS rm2 ON rm1.room_id = rm2.room_id
-                        JOIN room AS r ON r.room_id = rm1.room_id
+                                JOIN room_member AS rm2 ON rm1.room_id = rm2.room_id
+                                JOIN room AS r ON r.room_id = rm1.room_id
                         WHERE rm1.user_id = ?2 AND rm2.user_id = u.user_id AND r.type = "direct")
                         AND u.role = 'user'
                         """, nativeQuery = true)
         ArrayList<UserDTO2> findChattingUser(String name, String userId);
+
+        @Query(value = """
+                        SELECT u.user_id, u.user_name, u.bio, u.address FROM user AS u WHERE user_name LIKE ?1
+                        AND u.user_id <> ?2 AND NOT EXISTS (SELECT rm1.user_id FROM room_member AS rm1
+                                JOIN room_member AS rm2 ON rm1.room_id = rm2.room_id
+                                JOIN room AS r ON r.room_id = rm1.room_id
+                        WHERE rm1.user_id = ?2 AND rm2.user_id = u.user_id AND r.type = "direct")
+                        AND u.role = 'user'
+                                          """, nativeQuery = true)
+        ArrayList<UserDTO2> findNewUser(String name, String userId);
 
         @Query(value = """
                         SELECT u.* FROM user AS u
@@ -46,4 +56,26 @@ public interface UserRepo extends JpaRepository<User, String> {
 
         @Query(value = "SELECT * FROM user WHERE role='user' ORDER BY user_name", nativeQuery = true)
         ArrayList<User> findAllUser();
+
+        @Query(value = """
+                        SELECT u.user_id, u.user_name, u.bio, u.address FROM user AS u WHERE address LIKE ?1 
+                        AND user_id <> ?2 AND role = 'user' 
+                        AND NOT EXISTS (SELECT rm1.user_id FROM room_member AS rm1
+                                JOIN room_member AS rm2 ON rm1.room_id = rm2.room_id
+                                JOIN room AS r ON r.room_id = rm1.room_id
+                        WHERE rm1.user_id = ?2 AND rm2.user_id = u.user_id AND r.type = "direct")
+                        ORDER BY RAND() LIMIT 5
+                        """, nativeQuery = true)
+        ArrayList<UserDTO2> findSameAddress(String address, String userLoginId);
+
+        @Query(value = """
+                        SELECT u.user_id, u.user_name, u.bio, u.address FROM user AS u WHERE user_id <> ?1 
+                        AND role = 'user' AND address <> ?2
+                        AND NOT EXISTS (SELECT rm1.user_id FROM room_member AS rm1
+                                JOIN room_member AS rm2 ON rm1.room_id = rm2.room_id
+                                JOIN room AS r ON r.room_id = rm1.room_id
+                        WHERE rm1.user_id = ?1 AND rm2.user_id = u.user_id AND r.type = "direct")
+                        ORDER BY RAND() LIMIT 5
+                        """, nativeQuery = true)
+        ArrayList<UserDTO2> findRandomUser(String userLoginId, String address);
 }

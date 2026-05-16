@@ -14,24 +14,33 @@
 
         <form method="post">
 
-            <div class="form-group">
-                <label for="username">Tên người dùng:</label>
-                <input type="text" id="username" name="userName" required>
+            <div class="row">
+                <div class="form-group">
+                    <label for="username">Tên người dùng:</label>
+                    <input type="text" id="username" name="userName" maxlength="50" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" maxlength="45" required>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
-            </div>
+            <div class="row">
+                <div class="form-group">
+                    <label for="password">Mật khẩu:</label>
+                    <input type="password" id="password" name="password" maxlength="45" required>
+                </div>
 
-            <div class="form-group">
-                <label for="password">Mật khẩu:</label>
-                <input type="password" id="password" name="password" required>
+                <div class="form-group">
+                    <label for="bio">Địa chỉ:</label>
+                    <input type="text" id="bio" name="address" maxlength="60" required>
+                </div>
             </div>
 
             <div class="form-group">
                 <label for="bio">Giới thiệu bản thân (Không bắt buộc):</label>
-                <input type="text" id="bio" name="bio">
+                <input type="text" id="bio" name="bio" maxlength="60">
             </div>
 
             <div class="ruleDiv">

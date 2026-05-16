@@ -9,4 +9,5 @@ public class UserDTO2 {
     private String userId;
     private String userName;
     private String bio;
+    private String address;
 }

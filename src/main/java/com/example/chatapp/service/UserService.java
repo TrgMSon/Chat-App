@@ -41,6 +41,7 @@ public class UserService {
 
             user.setEmail(email);
             user.setUserName(user.getUserName().trim());
+            user.setAddress(user.getAddress().trim());
 
             userRepo.save(user);
             return true;
@@ -85,6 +86,10 @@ public class UserService {
         return userRepo.findChattingUser("%" + name + "%", userId);
     }
 
+    public ArrayList<UserDTO2> findRoomToAF(String name, String userId) {
+        return userRepo.findNewUser("%" + name + "%", userId);
+    }
+
     public User findUserInDirectRoom(String roomId, String userLoginId) {
         return userRepo.findUserInDirectRoom(roomId, userLoginId);
     }
@@ -101,12 +106,22 @@ public class UserService {
         ArrayList<User> users = userRepo.findAllUser();
         ArrayList<UserDTO2> userDTO2s = new ArrayList<>();
         for (User user : users) {
-            userDTO2s.add(new UserDTO2(user.getUserId(), user.getUserName(), user.getBio()));
+            userDTO2s.add(new UserDTO2(user.getUserId(), user.getUserName(), user.getBio(), user.getAddress()));
         }
         return userDTO2s;
     }
 
     public ArrayList<String> searchUser(String target) {
         return userRepo.findUserByTarget(target, "%" + target + "%");
+    }
+
+    public ArrayList<UserDTO2> findRecommendUsers(String address, String userLoginId) {
+        ArrayList<UserDTO2> users = new ArrayList<>();
+        ArrayList<UserDTO2> sameAddressUsers = userRepo.findSameAddress("%" + address + "%", userLoginId);
+        ArrayList<UserDTO2> randomUsers = userRepo.findRandomUser(userLoginId, address);
+
+        for (UserDTO2 user : sameAddressUsers) users.add(user);
+        for (UserDTO2 user : randomUsers) users.add(user);
+        return users;
     }
 }

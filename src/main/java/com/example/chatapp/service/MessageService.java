@@ -22,7 +22,7 @@ public class MessageService {
 
     public List<MessageDTO> getMessagesByRoom(String roomId, int index) {
         Pageable pageable = PageRequest.of(index, 10,
-                Sort.by(Sort.Order.desc("createdAt"), Sort.Order.desc("messageId")));
+                Sort.by(Sort.Order.desc("createdAt")));
                 
         Page<Message> pagingMessage = messageRepo.findMessagesByRoom(roomId, pageable);
         List<Message> messages = pagingMessage.getContent();

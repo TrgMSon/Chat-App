@@ -8,6 +8,7 @@ const searchInputMember = document.getElementById("searchInputMember");
 const listUserInfor = document.getElementById("listUserInfor");
 const listUserInforToGroup = document.getElementById("listUserInforToGroup");
 const listUserInforInGroup = document.getElementById("listUserInforInGroup");
+const listRecommendUser = document.getElementById("listRecommendUser");
 const viewBios = document.querySelectorAll(".viewBio");
 const chatOptions = document.querySelectorAll(".chatOption");
 const viewUserBio = document.getElementById("viewUserBio");
@@ -23,6 +24,7 @@ const closeViewMemberBtn = document.getElementById("closeViewMemberBtn");
 const reportWritter = document.getElementById("reportWritter");
 const acptSendReport = document.getElementById("sendReportBtn");
 const closeWritterBtn = document.getElementById("closeWritter");
+const reloadPageBtn = document.getElementById("reloadPageBtn");
 
 cancelSendFile.classList.add("hide");
 viewUserBio.classList.add("hide");
@@ -60,6 +62,10 @@ cancelSendFile.addEventListener("click", function (e) {
     cancelSendFile.classList.add("hide");
 });
 
+reloadPageBtn.addEventListener("click", function () {
+    window.location.href = "/home";
+});
+
 viewMemberDiv.classList.remove("createBox");
 viewMemberDiv.classList.add("hide");
 
@@ -69,9 +75,45 @@ addFriendDiv.classList.add("hide");
 addGroupDiv.classList.remove("createBox");
 addGroupDiv.classList.add("hide");
 
-addFriendBtn.addEventListener("click", function () {
+async function loadRecommendUsers() {
+    let userInfor = await fetch("/api/getUserInfor?userId=" + userLoginId).then(res => res.json());
+    let users = await fetch("/api/getRecommendUsers?address=" + userInfor.address + "&userLoginId=" + userInfor.userId).then(res => res.json());
+
+    if (users.length === 0) return;
+
+    listRecommendUser.innerHTML = "";
+
+    for (let i = 0; i < users.length; i++) {
+        let userNameElement = document.createElement("p");
+        let viewBio = document.createElement("button");
+        let chatOption = document.createElement("button");
+        let userInforDiv = document.createElement("div");
+
+        userInforDiv.classList.add("userInforDiv");
+        userNameElement.innerText = users[i].userName;
+
+        viewBio.classList.add("viewBio");
+        viewBio.innerText = "Xem giới thiệu";
+        viewBio.dataset.userName = users[i].userName;
+        viewBio.dataset.bio = users[i].bio;
+        viewBio.dataset.address = users[i].address;
+
+        chatOption.classList.add("chatOption");
+        chatOption.innerText = "Nhắn tin";
+        chatOption.dataset.userId = users[i].userId;
+
+        userInforDiv.appendChild(userNameElement);
+        userInforDiv.appendChild(viewBio);
+        userInforDiv.appendChild(chatOption);
+
+        listRecommendUser.appendChild(userInforDiv);
+    }
+}
+
+addFriendBtn.addEventListener("click", async function () {
     addFriendDiv.classList.remove("hide");
     addFriendDiv.classList.add("createBox");
+    await loadRecommendUsers();
 });
 
 closeAFBtn.addEventListener("click", function () {
@@ -115,6 +157,7 @@ async function loadChattingUser() {
         viewBio.dataset.userId = users[i].userId;
         viewBio.dataset.userName = users[i].userName;
         viewBio.dataset.bio = users[i].bio;
+        viewBio.dataset.address = users[i].address;
 
         userInforDiv.classList.add("userInforDiv");
         userInforDiv.appendChild(userNameElement);
@@ -172,6 +215,7 @@ formAF.addEventListener("submit", async function (event) {
         viewBio.innerText = "Xem giới thiệu";
         viewBio.dataset.userName = users[i].userName;
         viewBio.dataset.bio = users[i].bio;
+        viewBio.dataset.address = users[i].address;
 
         chatOption.classList.add("chatOption");
         chatOption.innerText = "Nhắn tin";
@@ -185,7 +229,7 @@ formAF.addEventListener("submit", async function (event) {
     }
 });
 
-listUserInfor.addEventListener("click", async function (e) {
+async function handleOptionInAF(e) {
     // nếu click vào nút viewBio
     if (e.target.classList.contains("viewBio")) {
         viewUserBio.style.left = "450px";
@@ -197,6 +241,7 @@ listUserInfor.addEventListener("click", async function (e) {
 
         viewUserBio.querySelector("#lbName").innerText = e.target.dataset.userName;
         viewUserBio.querySelector("#lbBio").innerText = e.target.dataset.bio;
+        viewUserBio.querySelector("#lbAddress").innerText = e.target.dataset.address;
     }
     else if (e.target.classList.contains("chatOption")) {
         e.preventDefault();
@@ -215,7 +260,10 @@ listUserInfor.addEventListener("click", async function (e) {
         addFriendDiv.classList.add("hide");
         listUserInfor.innerHTML = "";
     }
-});
+}
+
+listUserInfor.addEventListener("click", handleOptionInAF);
+listRecommendUser.addEventListener("click", handleOptionInAF);
 
 closeViewBio.addEventListener("click", function () {
     viewUserBio.classList.toggle("show");
@@ -237,6 +285,7 @@ listUserInforToGroup.addEventListener("click", function (e) {
 
         viewUserBio.querySelector("#lbName").innerText = e.target.dataset.userName;
         viewUserBio.querySelector("#lbBio").innerText = e.target.dataset.bio;
+        viewUserBio.querySelector("#lbAddress").innerText = e.target.dataset.address;
     }
 });
 
@@ -348,6 +397,7 @@ chatTitle.addEventListener("click", async function (e) {
 
         viewUserBio.querySelector("#lbName").innerText = userInfor.userName;
         viewUserBio.querySelector("#lbBio").innerText = userInfor.bio;
+        viewUserBio.querySelector("#lbAddress").innerText = userInfor.address;
 
         viewUserBio.classList.toggle("show");
     }

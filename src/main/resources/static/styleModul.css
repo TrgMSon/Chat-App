@@ -44,7 +44,7 @@
     margin-bottom: 10px;
 }
 
-#listUserInfor {
+#listUserInfor, #listRecommendUser {
     margin-left: 0px;
     padding-left: 5px
 }

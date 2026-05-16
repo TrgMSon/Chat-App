@@ -40,8 +40,9 @@ body {
     color: white;
 }
 
-#userInfor h3 {
+#reloadPageBtn {
     padding-left: 60px;
+    cursor: pointer;
 }
 
 .search-form {
@@ -237,11 +238,13 @@ body {
     display: none;
     position: absolute;
     border: 1px solid black;
+    border-radius: 4px;
     background-color: white;
     margin: 12px;
     padding: 12px;
-    width: 350px;
-    height: 250px;
+    width: fit-content;
+    /* width: 350px; */
+    height: 300px;
     left: 250px;
     top: 100px;
 }
@@ -259,6 +262,10 @@ body {
 
 .user-profile button {
     width: 50px;
+}
+
+.user-profile label {
+    white-space: pre-wrap;
 }
 
 .hide {
@@ -334,7 +341,7 @@ body {
 }
 
 .content-div.other {
-    max-width: 70%;
+    max-width: 80%;
 }
 
 .dateTag {
@@ -352,20 +359,14 @@ body {
     position: absolute;
     top: 0;
     left: -9999px; /* đẩy ra ngoài màn hình */
-
     visibility: hidden; /* vẫn render nhưng không thấy */
-
     white-space: pre-wrap;   /* giữ xuống dòng */
     word-wrap: break-word;   /* tránh tràn chữ */
-
     width: 100%;
-    
     font: inherit;        /* giống textarea */
     line-height: inherit;
     padding: 8px;
     border: 1px solid transparent;
-
     box-sizing: border-box;
-
     overflow: hidden;
 }

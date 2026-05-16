@@ -26,16 +26,6 @@ public interface RoomRepo extends JpaRepository<Room, String> {
             """, nativeQuery = true)
     ArrayList<String> findRoomIdByName(String roomName, String userId);
 
-    @Query(value = """
-            SELECT u.user_id, u.user_name, u.bio FROM user AS u WHERE user_name LIKE ?1
-            AND u.user_id <> ?2 AND NOT EXISTS (SELECT rm1.user_id FROM room_member AS rm1
-            JOIN room_member AS rm2 ON rm1.room_id = rm2.room_id
-            JOIN room AS r ON r.room_id = rm1.room_id
-            WHERE rm1.user_id = ?2 AND rm2.user_id = u.user_id AND r.type = "direct")
-            AND u.role = 'user'
-                              """, nativeQuery = true)
-    ArrayList<UserDTO2> findListRoom(String name, String userId);
-
     @Query(value = "SELECT * FROM room WHERE room_id = ?1", nativeQuery = true)
     Room isExistRoom(String roomId);
 

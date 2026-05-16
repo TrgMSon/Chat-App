@@ -76,7 +76,7 @@ public class ChatController {
     @GetMapping("/addFriendSearch")
     public ArrayList<UserDTO2> searchToAddFriend(@RequestParam String name, HttpSession session) {
         String userId = (String) session.getAttribute("userId");
-        return roomService.findRoomToAF(name, userId);
+        return userService.findRoomToAF(name, userId);
     }
 
     @GetMapping("/addMemberSearch")
@@ -128,4 +128,10 @@ public class ChatController {
     public User findUserInDirectRoom(@RequestParam String roomId, @RequestParam String userLoginId) {
         return userService.findUserInDirectRoom(roomId, userLoginId);
     }
+
+    @GetMapping("/getRecommendUsers")
+    public ArrayList<UserDTO2> getRecommendUsers(@RequestParam String address, @RequestParam String userLoginId) {
+        return userService.findRecommendUsers(address, userLoginId);
+    }
+    
 }

@@ -29,7 +29,7 @@
                             <button type="submit">Đăng xuất</button>
                         </form>
                     </div>
-                    <h3>Chat App</h3>
+                    <h3 id="reloadPageBtn">Chat App</h3>
                 </div>
 
                 <form id="searchFormInput">
@@ -95,10 +95,18 @@
                 <label th:text="${user.userName}"></label>
             </div>
             <div>
+                <label>Email: </label>
+                <label th:text="${user.email}"></label>
+            </div>
+            <div>
+                <label>Địa chỉ: </label>
+                <label th:text="${user.address}"></label>
+            </div>
+            <div>
                 <label>Giới thiệu: </label>
                 <label th:text="${user.bio}"></label>
             </div>
-
+            
             <button id="closeUserProfileBtn">Đóng</button>
         </div>
 
@@ -108,6 +116,10 @@
             <div>
                 <label>Tên đăng nhập: </label>
                 <label id="lbName"></label>
+            </div>
+            <div>
+                <label>Địa chỉ: </label>
+                <label id="lbAddress"></label>
             </div>
             <div>
                 <label>Giới thiệu: </label>
@@ -122,8 +134,17 @@
             <form id="formAF" class="createForm">
                 <input type="text" placeholder="Tìm kiếm" id="searchInputAF">
             </form>
+
             <div class="listUserArea">
                 <ul id="listUserInfor">
+                    <li class="userInforDiv">
+                    </li>
+                </ul>
+            </div>
+
+            <p>Có thể bạn quen:</p>
+            <div class="listUserArea">
+                <ul id="listRecommendUser">
                     <li class="userInforDiv">
                     </li>
                 </ul>

@@ -40,10 +40,6 @@ public class RoomService {
         return roomRepo.findRoomIdByName("%" + roomName + "%", userId);
     }
 
-    public ArrayList<UserDTO2> findRoomToAF(String name, String userId) {
-        return roomRepo.findListRoom("%" + name + "%", userId);
-    }
-
     public Room createRoom(String type) {
         Room room = new Room();
 
