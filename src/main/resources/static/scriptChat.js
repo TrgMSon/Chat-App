@@ -114,14 +114,21 @@ function onRoomReceived(payload) {
     stompClient.subscribe("/topic/room/" + roomData.roomId, onMessageReceived);
 
     listRoom = document.querySelectorAll("#listRoom li");
-    listRoom.forEach(room => {
+    for (let room of listRoom) {
         if (room.dataset.roomId === roomData.roomId) {
-            room.addEventListener("click", async function () {
+            room.onclick = async function () {
+                roomViewing = room.dataset.roomId;
+                
+                room.style.backgroundColor = "#A9A9A9";
+                listRoom.forEach(room1 => {
+                    if (room1.dataset.roomId != room.dataset.roomId) room1.style.backgroundColor = "";
+                });
+
                 await loadRoom(room);
-            });
-            return;
+            }
+            break;
         }
-    });
+    }
 
     loader.classList.add("hide");
     loader.style.left = "";
@@ -139,7 +146,7 @@ async function onMessageReceived(payload) {
         if (numberMessage > 0) {
             numberMessage -= 1;
         }
-        
+
         let enableScroll = false;
         if (isNearBottom()) enableScroll = true;
 
