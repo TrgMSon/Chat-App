@@ -40,7 +40,7 @@ public interface RoomRepo extends JpaRepository<Room, String> {
     void saveRoom(String roomId, String type, LocalDateTime createdAt);
 
     @Query(value = """
-            SELECT rm.user_id, u.user_name, u.bio FROM room_member AS rm
+            SELECT rm.user_id, u.user_name, u.bio, u.address FROM room_member AS rm
             JOIN user AS u ON u.user_id = rm.user_id
             WHERE room_id=?1
             """, nativeQuery = true)
