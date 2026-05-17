@@ -41,10 +41,10 @@ async function loadMessagePrevious() {
     for (let message of messages) {
         lastMessage = message;
         await addPreMessageToUI(message);
+        
+        let newHeight = messageArea.scrollHeight;
+        messageArea.scrollTop = newHeight - oldHeight;
     }
-
-    let newHeight = messageArea.scrollHeight;
-    messageArea.scrollTop = newHeight - oldHeight;
 
     loader.classList.add("hide");
     isLoading = false;
