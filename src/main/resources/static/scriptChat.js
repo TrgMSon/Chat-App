@@ -448,7 +448,7 @@ async function sendMessage() {
                 body: formData
             });
             let result = await response.json();
-            let urlFile = result.secure_url;
+            let urlFile = result.url;
 
             let type = "";
             let fileName = "";
