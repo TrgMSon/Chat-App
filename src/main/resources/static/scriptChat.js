@@ -139,9 +139,12 @@ async function onMessageReceived(payload) {
         if (numberMessage > 0) {
             numberMessage -= 1;
         }
-        await addMessageToUI(messageData);
+        
+        let enableScroll = false;
+        if (isNearBottom()) enableScroll = true;
 
-        if (userLoginId === messageData.userId || isNearBottom()) scrollToBottom();
+        await addMessageToUI(messageData);
+        if (userLoginId === messageData.userId || enableScroll) scrollToBottom();
     }
 
     listRoom.forEach(room => {
@@ -356,7 +359,7 @@ listRoom.forEach(room => {
 });
 
 function scrollToBottom() {
-    messageArea.scrollTop = messageArea.scrollHeight - messageArea.clientHeight + 200;
+    messageArea.scrollTop = messageArea.scrollHeight - messageArea.clientHeight + 250;
 }
 
 listRoom.forEach(room => {
@@ -464,7 +467,7 @@ async function sendMessage() {
                 userName: userLoginName,
                 content: urlFile,
                 type: type,
-                fileName: file.name
+                fileName: fileName
             }
 
             stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(messageData));
