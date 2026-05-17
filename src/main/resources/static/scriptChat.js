@@ -118,7 +118,7 @@ function onRoomReceived(payload) {
         if (room.dataset.roomId === roomData.roomId) {
             room.onclick = async function () {
                 roomViewing = room.dataset.roomId;
-                
+
                 room.style.backgroundColor = "#A9A9A9";
                 listRoom.forEach(room1 => {
                     if (room1.dataset.roomId != room.dataset.roomId) room1.style.backgroundColor = "";
@@ -274,7 +274,7 @@ messageInput.addEventListener("paste", function (event) {
     for (let i = 0; i < files.length; i++) {
         if (checkType(files[i])) {
             sendMessBtn.classList.remove("hide");
-            cancelSendImg.classList.remove("hide");
+            cancelSendFile.classList.remove("hide");
         }
         else {
             alert("File không hợp lệ");
@@ -285,7 +285,13 @@ messageInput.addEventListener("paste", function (event) {
             previewImage(files[i]);
             pendingFile.push(files[i]);
         }
-        else alert("File quá dung lượng cho phép, vui lòng thử lại");
+        else {
+            alert("File quá dung lượng cho phép, vui lòng thử lại");
+            if (pendingFile.length === 0) {
+                cancelSendFile.classList.add("hide");
+                if (messageInput.value === "") sendMessBtn.classList.add("hide");
+            }
+        }
     }
 });
 
