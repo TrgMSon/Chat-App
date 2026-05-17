@@ -38,10 +38,10 @@ async function loadMessagePrevious() {
         return;
     }
 
-    messages.forEach(message => {
+    for (let message of messages) {
         lastMessage = message;
-        addPreMessageToUI(message);
-    });
+        await addPreMessageToUI(message);
+    }
 
     let newHeight = messageArea.scrollHeight;
     messageArea.scrollTop = newHeight - oldHeight;
@@ -52,7 +52,7 @@ async function loadMessagePrevious() {
     pageIndex++;
 }
 
-function addPreMessageToUI(message) {
+async function addPreMessageToUI(message) {
     const newMessage = document.createElement("div");
     newMessage.classList.add("message");
 
@@ -105,11 +105,69 @@ function addPreMessageToUI(message) {
         contentElement.innerText = message.content;
         contentDiv.appendChild(contentElement);
     }
+    else if (message.type === "image") {
+        const realImg = document.createElement("img");
+        realImg.style.userSelect = "none";
+        realImg.src = "https://res.cloudinary.com/dsrecf30u/image/upload/v1775311940/id-loading-1_tptr6p.gif";
+        realImg.style.height = "500px";
+        realImg.style.width = "100%";
+
+        const waitingImg = document.createElement("img");
+        waitingImg.src = message.content;
+        waitingImg.style.userSelect = "none";
+        waitingImg.style.height = "500px";
+        waitingImg.style.width = "100%";
+
+        waitingImg.onload = function () {
+            realImg.src = message.content;
+        };
+        contentDiv.appendChild(realImg);
+    }
     else {
-        const imageElement = document.createElement("img");
-        imageElement.style.userSelect = "none";
-        imageElement.src = message.content;
-        contentDiv.appendChild(imageElement);
+        const fileDiv = document.createElement("div");
+        fileDiv.classList.add("file-div");
+
+        const iconFile = document.createElement("img");
+        iconFile.src = "https://res.cloudinary.com/dgtovt9xh/image/upload/v1778580283/simple-file-icon-the-icon-can-be-used-for-websites-print-templates-presentation-templates-illustrations-etc-free-vector_tqk4dn.webp";
+        iconFile.style.width = "100px";
+        iconFile.style.height = "100px";
+
+        const fileInfor = document.createElement("div");
+        fileInfor.classList.add("file-infor");
+
+        const fileName = document.createElement("p");
+        fileName.innerText = message.fileName;
+
+        const downloadOpt = document.createElement("a");
+        if (message.fileName.includes(".pdf")) {
+            let response = await fetch("/api/generate-url-dowload-pdf?publicId=" + getPublicId(message.content)).then(res => res.json());
+            downloadOpt.href = response.downloadUrl;
+            downloadOpt.innerText = "Tải về";
+        }
+        else {
+            downloadOpt.href = "#";
+            downloadOpt.innerText = "Tải về";
+            downloadOpt.addEventListener("click", async function (e) {
+                e.preventDefault();
+
+                const response = await fetch(message.content);
+                const blob = await response.blob();
+                const blobUrl = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+
+                a.href = blobUrl;
+                a.download = message.fileName;
+                a.click();
+
+                URL.revokeObjectURL(blobUrl);
+            });
+        }
+
+        fileInfor.appendChild(fileName);
+        fileInfor.appendChild(downloadOpt);
+        fileDiv.appendChild(iconFile);
+        fileDiv.appendChild(fileInfor);
+        contentDiv.appendChild(fileDiv);
     }
 
     contentDiv.appendChild(timeSend);
@@ -119,7 +177,7 @@ function addPreMessageToUI(message) {
         dateElement.innerText = tmpDate;
         dateElement.classList.add("dateTag");
 
-        if (dateFromDB === getCurrentDateTime()) dateElement.innerText = "Hôm nay"; 
+        if (dateFromDB === getCurrentDateTime()) dateElement.innerText = "Hôm nay";
 
         messageArea.prepend(dateElement);
         tmpDate = dateFromDB;
@@ -129,7 +187,7 @@ function addPreMessageToUI(message) {
 
     if (message === lastMessage) {
         dateElement.innerText = dateFromDB;
-        if (dateFromDB === getCurrentDateTime()) dateElement.innerText = "Hôm nay"; 
+        if (dateFromDB === getCurrentDateTime()) dateElement.innerText = "Hôm nay";
         dateElement.classList.add("dateTag");
         messageArea.prepend(dateElement);
     }
