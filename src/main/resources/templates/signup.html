@@ -12,35 +12,35 @@
     <div class="container">
         <h3>Bắt đầu với Chat App</h3>
 
-        <form method="post">
+        <form method="post" id="userForm">
 
             <div class="row">
                 <div class="form-group">
                     <label for="username">Tên người dùng:</label>
-                    <input type="text" id="username" name="userName" maxlength="50" required>
+                    <input type="text" id="username" name="userName" required>
                 </div>
 
                 <div class="form-group">
                     <label for="email">Email:</label>
-                    <input type="email" id="email" name="email" maxlength="45" required>
+                    <input type="email" id="email" name="email" required>
                 </div>
             </div>
 
             <div class="row">
                 <div class="form-group">
                     <label for="password">Mật khẩu:</label>
-                    <input type="password" id="password" name="password" maxlength="45" required>
+                    <input type="password" id="password" name="password" required>
                 </div>
 
                 <div class="form-group">
                     <label for="bio">Địa chỉ:</label>
-                    <input type="text" id="bio" name="address" maxlength="60" required>
+                    <input type="text" id="address" name="address" required>
                 </div>
             </div>
 
             <div class="form-group">
                 <label for="bio">Giới thiệu bản thân (Không bắt buộc):</label>
-                <input type="text" id="bio" name="bio" maxlength="60">
+                <input type="text" id="bio" name="bio">
             </div>
 
             <div class="ruleDiv">
@@ -63,6 +63,7 @@
 
     </div>
 
+    <script th:src="@{/scriptSignup.js}"></script>
 </body>
 
 </html>
