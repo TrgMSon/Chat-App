@@ -10,6 +10,7 @@ import java.util.Random;
 import java.nio.charset.StandardCharsets;
 
 import com.example.chatapp.dto.UserDTO2;
+import com.example.chatapp.dto.UserDTO5;
 import com.example.chatapp.model.User;
 import com.example.chatapp.repository.UserRepo;
 
@@ -123,5 +124,9 @@ public class UserService {
         for (UserDTO2 user : sameAddressUsers) users.add(user);
         for (UserDTO2 user : randomUsers) users.add(user);
         return users;
+    }
+
+    public boolean updateUserInfor(UserDTO5 userInfor, String userId) {
+        return userRepo.updateUserInfor(userInfor.getUserName(), userInfor.getAddress(), userInfor.getBio(), userId) > 0;
     }
 }

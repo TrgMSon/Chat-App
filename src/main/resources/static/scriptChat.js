@@ -20,6 +20,10 @@ const hiddenDiv = document.getElementById("hiddenDiv");
 const cancelSendFile = document.getElementById("cancelSendFile");
 const loader = document.querySelector(".loader");
 const sendMessBtn = document.getElementById("sendMessBtn");
+const userNameLb = document.getElementById("userNameLb");
+const emailLb = document.getElementById("emailLb");
+const addressLb = document.getElementById("addressLb");
+const bioLb = document.getElementById("bioLb");
 
 let userLoginId = null;
 let roomType = null;
@@ -518,6 +522,19 @@ function checkDate(date) {
     return false;
 }
 
+function parseTextToUrl(text) {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+
+    return text.replace(urlRegex, (url) => {
+        return `<a href="${url}">${url}</a>`;
+    });
+}
+
+function isUrl(text) {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    return urlRegex.test(text);
+}
+
 function getPublicId(url) {
     let fileName = url.split("/").pop();
     return fileName.split(".")[0] + "";
@@ -577,9 +594,18 @@ async function addMessageToUI(message) {
     }
 
     if (message.type === "text") {
-        const contentElement = document.createElement("p");
-        contentElement.innerText = message.content;
-        contentDiv.appendChild(contentElement);
+        if (!isUrl(message.content)) {
+            const contentElement = document.createElement("p");
+            contentElement.innerText = message.content;
+            contentDiv.appendChild(contentElement);
+        }
+        else {
+            const contentElement = document.createElement("a");
+            contentElement.style.marginTop = "20px";
+            contentElement.style.marginBottom = "20px";
+            contentElement.innerHTML = parseTextToUrl(message.content);
+            contentDiv.appendChild(contentElement);
+        }
     }
     else if (message.type === "image") {
         const realImg = document.createElement("img");
@@ -685,7 +711,13 @@ async function loadMessages(roomId) {
     }
 }
 
-buttonProfile.addEventListener("click", function () {
+buttonProfile.addEventListener("click", async function () {
+    let userInfor = await fetch("/api/getUserInfor?userId=" + userLoginId).then(res => res.json());
+    userNameLb.innerText = userInfor.userName;
+    emailLb.innerText = userInfor.email;
+    addressLb.innerText = userInfor.address;
+    bioLb.innerText = userInfor.bio;
+
     userProfile.classList.toggle("show");
 });
 

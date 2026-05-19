@@ -101,9 +101,18 @@ async function addPreMessageToUI(message) {
     }
 
     if (message.type === "text") {
-        const contentElement = document.createElement("p");
-        contentElement.innerText = message.content;
-        contentDiv.appendChild(contentElement);
+        if (!isUrl(message.content)) {
+            const contentElement = document.createElement("p");
+            contentElement.innerText = message.content;
+            contentDiv.appendChild(contentElement);
+        }
+        else {
+            const contentElement = document.createElement("a");
+            contentElement.style.marginTop = "20px";
+            contentElement.style.marginBottom = "20px";
+            contentElement.innerHTML = parseTextToUrl(message.content);
+            contentDiv.appendChild(contentElement);
+        }
     }
     else if (message.type === "image") {
         const realImg = document.createElement("img");

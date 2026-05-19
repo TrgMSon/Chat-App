@@ -102,4 +102,8 @@ public class RoomService {
     public ArrayList<UserDTO2> viewMember(String roomId) {
         return roomRepo.viewMemberInGroup(roomId);
     }
+
+    public boolean updateDirectRoomName(String newName, String userId) {
+        return roomRepo.updateDirectRoomName(newName, userId) > 0;
+    }
 }

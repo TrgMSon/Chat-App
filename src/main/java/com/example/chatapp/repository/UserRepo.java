@@ -78,4 +78,9 @@ public interface UserRepo extends JpaRepository<User, String> {
                         ORDER BY RAND() LIMIT 5
                         """, nativeQuery = true)
         ArrayList<UserDTO2> findRandomUser(String userLoginId, String address);
+
+        @Transactional
+        @Modifying
+        @Query(value = "UPDATE user SET user_name = ?1 , address = ?2 , bio = ?3 WHERE user_id = ?4", nativeQuery = true)
+        Integer updateUserInfor(String userName, String address, String bio, String userId);
 }

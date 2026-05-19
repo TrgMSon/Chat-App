@@ -171,6 +171,9 @@ async function loadUserDetail(liElement) {
     let emailElement = document.createElement("p");
     emailElement.innerText = "Email: " + userInfor.email;
 
+    let addressElement = document.createElement("p");
+    addressElement.innerText = "Địa chỉ: " + userInfor.address;
+
     let bioElement = document.createElement("p");
     bioElement.innerText = "Giới thiệu: " + userInfor.bio;
 
@@ -218,6 +221,7 @@ async function loadUserDetail(liElement) {
     userBox.appendChild(userIdElement);
     userBox.appendChild(userNameElement);
     userBox.appendChild(emailElement);
+    userBox.appendChild(addressElement);
     userBox.appendChild(bioElement);
     userBox.appendChild(statusElement);
     userBox.appendChild(banBtn);

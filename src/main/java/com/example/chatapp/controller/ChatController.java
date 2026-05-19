@@ -23,6 +23,8 @@ import com.example.chatapp.dto.MessageDTO;
 import com.example.chatapp.dto.ReportDTO;
 import com.example.chatapp.dto.RoomDTO2;
 import com.example.chatapp.dto.UserDTO2;
+import com.example.chatapp.dto.UserDTO5;
+import com.example.chatapp.dto.RoomDTO5;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -134,4 +136,14 @@ public class ChatController {
         return userService.findRecommendUsers(address, userLoginId);
     }
     
+    @PostMapping("/updateUserInfor")
+    public boolean updateUserInfor(@RequestBody UserDTO5 userInfor, HttpSession session) {
+        String userId = (String) session.getAttribute("userId");
+        return userService.updateUserInfor(userInfor, userId);
+    }
+
+    @PostMapping("/updateDirectRoomName")
+    public boolean updateDirectRoomName(@RequestBody RoomDTO5 roomInfor) {
+        return roomService.updateDirectRoomName(roomInfor.getNewName(), roomInfor.getUserId());
+    }
 }

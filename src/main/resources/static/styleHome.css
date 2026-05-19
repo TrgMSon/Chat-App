@@ -261,7 +261,8 @@ body {
 }
 
 .user-profile button {
-    width: 50px;
+    width: fit-content;
+    margin-bottom: 10px;
 }
 
 .user-profile label {
@@ -327,7 +328,7 @@ body {
     height: fit-content;
 }
 
-.content-div p, img {
+.content-div p, img, a {
     flex: 1;
 }
 
@@ -341,7 +342,8 @@ body {
 }
 
 .content-div.other {
-    max-width: 80%;
+    /* max-width: 80%; */
+    width: fit-content;
 }
 
 .dateTag {

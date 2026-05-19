@@ -25,6 +25,13 @@ const reportWritter = document.getElementById("reportWritter");
 const acptSendReport = document.getElementById("sendReportBtn");
 const closeWritterBtn = document.getElementById("closeWritter");
 const reloadPageBtn = document.getElementById("reloadPageBtn");
+const updateUserInforBtn = document.getElementById("updateUserInfor");
+const editForm = document.getElementById("editForm");
+const closeEditForm = document.getElementById("closeEditForm");
+const acptUpdateUserInfor = document.getElementById("acptUpdate");
+const userNameInput = document.getElementById("userNameInput");
+const addressInput = document.getElementById("addressInput");
+const bioInput = document.getElementById("bioInput");
 
 cancelSendFile.classList.add("hide");
 viewUserBio.classList.add("hide");
@@ -358,6 +365,7 @@ chatTitle.addEventListener("click", async function (e) {
             viewBio.dataset.userId = members[i].userId;
             viewBio.dataset.userName = members[i].userName;
             viewBio.dataset.bio = members[i].bio;
+            viewBio.dataset.address = members[i].address;
 
             reportBtn.classList.add("reportBtn");
             reportBtn.innerText = "Báo cáo";
@@ -414,6 +422,7 @@ listUserInforInGroup.addEventListener("click", async function (e) {
 
         viewUserBio.querySelector("#lbName").innerText = e.target.dataset.userName;
         viewUserBio.querySelector("#lbBio").innerText = e.target.dataset.bio;
+        viewUserBio.querySelector("#lbAddress").innerText = e.target.dataset.address;
     }
     else if (e.target.classList.contains("reportBtn")) {
         let reportedUserName = document.getElementById("reportedUserInfor");
@@ -467,4 +476,108 @@ closeWritterBtn.addEventListener("click", function () {
 closeViewMemberBtn.addEventListener("click", function () {
     viewMemberDiv.classList.remove("createBox");
     viewMemberDiv.classList.add("hide");
+});
+
+updateUserInforBtn.addEventListener("click", async function () {
+    userProfile.classList.remove("show");
+    editForm.classList.add("show");
+
+    let userInfor = await fetch("/api/getUserInfor?userId=" + userLoginId).then(res => res.json());
+    userNameInput.value = userInfor.userName;
+    addressInput.value = userInfor.address;
+    bioInput.value = userInfor.bio;
+
+    menuUserInfor.classList.remove("show");
+});
+
+closeEditForm.addEventListener("click", function () {
+    editForm.classList.remove("show");
+});
+
+async function isChangeName(newName) {
+    let userInfor = await fetch("/api/getUserInfor?userId=" + userLoginId).then(res => res.json());
+    if (newName != userInfor.userName) return true;
+    return false;
+}
+
+function checkInputEdit() {
+    let userName = userNameInput.value.trim();
+    let address = addressInput.value.trim();
+    let bio = bioInput.value.trim();
+
+    if (userName === "") {
+        alert("Vui lòng nhập đủ thông tin");
+        userNameInput.focus();
+        return false;
+    }
+
+    if (address === "") {
+        alert("Vui lòng nhập đủ thông tin");
+        addressInput.focus();
+        return false;
+    }
+
+    if (userName.length > 50) {
+        alert("Tên người dùng tối đa 50 ký tự");
+        userNameInput.focus();
+        return false;
+    }
+
+    if (address.length > 60) {
+        alert("Địa chỉ tối đa 60 ký tự");
+        addressInput.focus();
+        return false;
+    }
+
+    if (bio.length > 60) {
+        alert("Giới thiệu bản thân tối đa 60 ký tự");
+        bioInput.focus();
+        return false;
+    }
+
+    return true;
+}
+
+acptUpdateUserInfor.addEventListener("click", async function () {
+    if (checkInputEdit()) {
+        if (isChangeName(userNameInput.value.trim())) {
+            let response = await fetch("/api/updateDirectRoomName", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    newName: userNameInput.value.trim(),
+                    userId: userLoginId
+                })
+            }).then(res => res.text());
+
+            if (response === "false") {
+                alert("Có lỗi xảy ra khi cập nhật thông tin");
+                return;
+            }
+        }
+
+        let response = await fetch("/api/updateUserInfor", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                userName: userNameInput.value.trim(),
+                address: addressInput.value.trim(),
+                bio: bioInput.value.trim()
+            })
+        }).then(res => res.text());
+
+        if (response === "false") {
+            alert("Có lỗi xảy ra khi cập nhật thông tin");
+            return;
+        }
+
+        alert("Cập nhật thành công");
+        window.location.href = "/home";
+
+        editForm.classList.remove("show");
+    }
 });

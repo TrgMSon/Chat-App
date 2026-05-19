@@ -92,23 +92,45 @@
 
             <div>
                 <label>Tên đăng nhập: </label>
-                <label th:text="${user.userName}"></label>
+                <label id="userNameLb"></label>
             </div>
             <div>
                 <label>Email: </label>
-                <label th:text="${user.email}"></label>
+                <label id="emailLb"></label>
             </div>
             <div>
                 <label>Địa chỉ: </label>
-                <label th:text="${user.address}"></label>
+                <label id="addressLb"></label>
             </div>
             <div>
                 <label>Giới thiệu: </label>
-                <label th:text="${user.bio}"></label>
+                <label id="bioLb"></label>
             </div>
             
+            <button id="updateUserInfor">Cập nhật</button>
             <button id="closeUserProfileBtn">Đóng</button>
         </div>
+
+        <div class="user-profile" id="editForm">
+            <h3>Cập nhật thông tin người dùng </h3> <br>
+
+            <div>
+                <label>Tên đăng nhập: </label>
+                <input type="text" id="userNameInput">
+            </div>
+            <div>
+                <label>Địa chỉ: </label>
+                <input type="text" id="addressInput">
+            </div>
+            <div>
+                <label>Giới thiệu: </label>
+                <input type="text" id="bioInput">
+            </div>
+            
+            <button id="acptUpdate">Xác nhận</button>
+            <button id="closeEditForm">Hủy</button>
+        </div>
+
 
         <div class="user-profile" id="viewUserBio">
             <h3>Thông tin người dùng: </h3> <br>
