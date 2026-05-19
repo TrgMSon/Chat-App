@@ -10,7 +10,10 @@ import org.springframework.stereotype.Controller;
 
 import com.example.chatapp.dto.MessageDTO;
 import com.example.chatapp.dto.RoomDTO4;
+import com.example.chatapp.dto.RoomDTO5;
+import com.example.chatapp.dto.RoomDTO6;
 import com.example.chatapp.dto.RoomMemberDTO;
+import com.example.chatapp.dto.RoomMemberDTO2;
 import com.example.chatapp.dto.UserDTO3;
 import com.example.chatapp.dto.UserDTO4;
 import com.example.chatapp.model.Room;
@@ -69,5 +72,16 @@ public class WebSocketController {
     public void changeStatusUser(UserDTO4 user) {
         userService.changeStatusUser(user.getStatus(), user.getUserId());
         messagingTemplate.convertAndSendToUser(user.getUserId(), "/queue/force-logout", user);
+    }
+
+    @MessageMapping("/chat.updateRoomName")
+    public void updateRoomName(RoomDTO5 roomInfor) {
+        ArrayList<RoomMemberDTO2> roomDirects = roomService.getRoomMemberDirect(roomInfor.getUserId());
+        for (RoomMemberDTO2 rm : roomDirects) {
+            RoomDTO6 roomdto = new RoomDTO6();
+            roomdto.setRoomDTO5(roomInfor);
+            roomdto.setRoomId(rm.getRoomId());
+            messagingTemplate.convertAndSendToUser(rm.getUserId(), "/queue/update-room-name", roomdto);
+        }
     }
 }

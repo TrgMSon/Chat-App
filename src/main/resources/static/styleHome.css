@@ -183,7 +183,7 @@ body {
     resize: none;
 }
 
-#imageInput {
+#fileInput {
     width: 50%;
     height: fit-content;
     margin-top: 5px;
@@ -285,9 +285,10 @@ body {
     display: none;
     top: 40px;
     left: 90px;
-    width: 250px;
+    width: fit-content;
     height: 130px;
     background-color: white;
+    padding: 10px;
 }
 
 .drop-down p {
@@ -302,11 +303,12 @@ body {
 }
 
 .drop-down button {
-    width: 90%;
+    width: fit-content;
     font-size: 18px;
     border: none;
     text-align: left;
     cursor: pointer;
+    padding: 5px;
 }
 
 .drop-down button:hover {
@@ -328,7 +330,7 @@ body {
     height: fit-content;
 }
 
-.content-div p, img, a {
+.content-div p, img {
     flex: 1;
 }
 

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.chatapp.dto.RoomDTO;
 import com.example.chatapp.dto.RoomDTO4;
+import com.example.chatapp.dto.RoomMemberDTO2;
 import com.example.chatapp.dto.UserDTO2;
 import com.example.chatapp.model.Room;
 import com.example.chatapp.model.User;
@@ -105,5 +106,9 @@ public class RoomService {
 
     public boolean updateDirectRoomName(String newName, String userId) {
         return roomRepo.updateDirectRoomName(newName, userId) > 0;
+    }
+
+    public ArrayList<RoomMemberDTO2> getRoomMemberDirect(String userId) {
+        return roomRepo.findRoomMemberDirect(userId);
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import com.example.chatapp.dto.RoomMemberDTO2;
 import com.example.chatapp.dto.UserDTO2;
 import com.example.chatapp.model.Room;
 import com.example.chatapp.model.RoomMember;
@@ -58,4 +59,14 @@ public interface RoomRepo extends JpaRepository<Room, String> {
                                 AND rm2.user_id = ?2;
                             """, nativeQuery = true)
         Integer updateDirectRoomName(String newName, String userId);
+
+        @Query(value = """
+                        SELECT rm.user_id, rm.room_id FROM  room_member rm
+                                JOIN room r ON r.room_id = rm.room_id
+                                JOIN room_member rm2 ON rm2.room_id = r.room_id
+                        WHERE r.type = 'direct'
+                            AND rm.user_id <> ?1
+                            AND rm2.user_id = ?1
+                                                """, nativeQuery = true)
+        ArrayList<RoomMemberDTO2> findRoomMemberDirect(String userId);
 }
