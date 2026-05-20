@@ -18,8 +18,12 @@ import jakarta.transaction.Transactional;
 @Repository
 public interface RoomRepo extends JpaRepository<Room, String> {
         @Query(value = """
-                        SELECT rm.* FROM room_member AS rm WHERE rm.user_id = ?1 ORDER BY rm.room_name
-                        """, nativeQuery = true)
+                        SELECT rm.*, MAX(m.created_at) AS last_message FROM room_member AS rm
+                                JOIN message AS m on m.room_id = rm.room_id
+                        WHERE rm.user_id = 'U0152'
+                        GROUP BY rm.room_id
+                        ORDER BY last_message DESC
+                                                """, nativeQuery = true)
         ArrayList<RoomMember> getListRoom(String userId);
 
         @Query(value = """
