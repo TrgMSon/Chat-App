@@ -576,13 +576,13 @@ acptUpdateUserInfor.addEventListener("click", async function () {
             return;
         }
 
-        alert("Cập nhật thành công");
-        window.location.href = "/home";
-
         stompClient.send("/app/chat.updateRoomName", {}, JSON.stringify({
             newName: userNameInput.value.trim(),
             userId: userLoginId
         }));
+
+        alert("Cập nhật thành công");
+        window.location.href = "/home";
 
         editForm.classList.remove("show");
     }
