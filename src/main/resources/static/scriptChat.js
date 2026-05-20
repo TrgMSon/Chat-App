@@ -402,7 +402,8 @@ function checkType(file) {
         "application/pdf",
         "application/x-zip-compressed",
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     ];
 
     let isValid = false;
