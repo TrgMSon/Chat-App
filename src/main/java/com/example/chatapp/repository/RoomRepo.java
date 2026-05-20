@@ -20,7 +20,7 @@ public interface RoomRepo extends JpaRepository<Room, String> {
         @Query(value = """
                         SELECT rm.*, MAX(m.created_at) AS last_message FROM room_member AS rm
                                 JOIN message AS m on m.room_id = rm.room_id
-                        WHERE rm.user_id = 'U0152'
+                        WHERE rm.user_id = ?1
                         GROUP BY rm.room_id
                         ORDER BY last_message DESC
                                                 """, nativeQuery = true)
