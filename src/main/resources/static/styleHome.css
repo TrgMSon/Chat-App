@@ -346,8 +346,8 @@ body {
 }
 
 .content-div.other {
-    /* max-width: 80%; */
-    width: fit-content;
+    max-width: 80%;
+    /* width: fit-content; */
     min-width: 80px;
 }
 
@@ -381,4 +381,11 @@ body {
 .message-contain-url {
     margin-top: "20px";
     margin-bottom: "20px";
+}
+
+.file-name {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }

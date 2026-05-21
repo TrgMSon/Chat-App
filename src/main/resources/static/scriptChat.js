@@ -701,6 +701,7 @@ async function addMessageToUI(message) {
         fileInfor.classList.add("file-infor");
 
         const fileName = document.createElement("p");
+        fileName.classList.add("file-name");
         fileName.innerText = message.fileName;
 
         const downloadOpt = document.createElement("a");
