@@ -1,7 +1,5 @@
 package com.example.chatapp.model;
 
-import java.time.LocalDateTime;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
@@ -35,6 +33,6 @@ public class RoomMember {
     @Column(name="room_name", nullable=false)
     private String roomName;
 
-    @Column(name="joined_at", nullable=false)
-    private LocalDateTime joinedAt;
+    @Column(name="is_read_last_message", nullable=false)
+    private int isReadLastMessage;
 }

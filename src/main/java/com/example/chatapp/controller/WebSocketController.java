@@ -39,6 +39,7 @@ public class WebSocketController {
     public void sendMessage(MessageDTO message) {
         message.setCreatedAt(LocalDateTime.now());
         messageService.saveMessage(message);
+        roomService.updateLastMessageDate(message.getCreatedAt(), message.getRoomId());
         messagingTemplate.convertAndSend("/topic/room/" + message.getRoomId(), message);
     }
 

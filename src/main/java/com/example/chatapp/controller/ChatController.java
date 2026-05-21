@@ -25,6 +25,8 @@ import com.example.chatapp.dto.RoomDTO2;
 import com.example.chatapp.dto.UserDTO2;
 import com.example.chatapp.dto.UserDTO5;
 import com.example.chatapp.dto.RoomDTO5;
+import com.example.chatapp.dto.RoomMemberDTO2;
+import com.example.chatapp.dto.RoomMemberDTO3;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -145,5 +147,15 @@ public class ChatController {
     @PostMapping("/updateDirectRoomName")
     public boolean updateDirectRoomName(@RequestBody RoomDTO5 roomInfor) {
         return roomService.updateDirectRoomName(roomInfor.getNewName(), roomInfor.getUserId());
+    }
+
+    @PostMapping("/hasSeenLastMessage")
+    public void updateSeenLastMessage(@RequestBody RoomMemberDTO2 roomMemberDTO2) {
+        roomService.updateSeenLastMessage(roomMemberDTO2.getUserId(), roomMemberDTO2.getRoomId(), 1);
+    }
+
+    @PostMapping("/notSeenLastMessage")
+    public void updateNotSeenLastMessage(@RequestBody RoomMemberDTO3 roomMemberDTO3) {
+        roomService.updateNotSeenLastMessage(roomMemberDTO3.getRoomId(), 0);
     }
 }

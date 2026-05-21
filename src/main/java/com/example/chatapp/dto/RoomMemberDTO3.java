@@ -5,6 +5,6 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class UserDTO {
-    private String userId;
+public class RoomMemberDTO3 {
+    private String roomId;
 }

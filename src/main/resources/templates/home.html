@@ -46,7 +46,8 @@
             <ul id="listRoom" class="list-room">
                 <li class="room" th:each="room : ${rooms}" th:data-room-id="${room.roomId}"
                     th:data-room-name="${room.roomName}" th:data-room-type="${room.type}"
-                    th:data-first-char="${room.roomName.toUpperCase().substring(0, 1)}">
+                    th:data-first-char="${room.roomName.toUpperCase().substring(0, 1)}"
+                    th:data-is-read-last-message="${room.isReadLastMessage}">
 
                     <div class="avatar">
                         <h1 th:text="${room.roomName.toUpperCase().substring(0, 1)}"></h1>

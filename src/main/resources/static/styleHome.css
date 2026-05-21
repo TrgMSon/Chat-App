@@ -200,6 +200,8 @@ body {
     margin-bottom: 15px;
     padding: 10px 10px 10px 0px;
     border-radius: 4px;
+    white-space: pre-wrap;
+    word-break: break-word;
 }
 
 .message img {
@@ -340,12 +342,13 @@ body {
 
 .content-div.me {
     max-width: 700px;
-    min-width: 50px;
+    min-width: 80px;
 }
 
 .content-div.other {
     /* max-width: 80%; */
     width: fit-content;
+    min-width: 80px;
 }
 
 .dateTag {
@@ -373,4 +376,9 @@ body {
     border: 1px solid transparent;
     box-sizing: border-box;
     overflow: hidden;
+}
+
+.message-contain-url {
+    margin-top: "20px";
+    margin-bottom: "20px";
 }

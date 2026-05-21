@@ -32,7 +32,7 @@ public class RoomService {
         ArrayList<RoomDTO> roomDTOs = new ArrayList<>();
         for (RoomMember room : rooms) {
             roomDTOs.add(new RoomDTO(room.getRoom().getRoomId(), room.getRoom().getType(),
-                    room.getRoom().getCreatedAt(), room.getUser().getUserId(), room.getRoomName(), room.getJoinedAt()));
+                    room.getRoom().getLastMessageDate(), room.getUser().getUserId(), room.getRoomName(), room.getIsReadLastMessage()));
         }
         return roomDTOs;
     }
@@ -54,9 +54,8 @@ public class RoomService {
         }
         room.setRoomId(roomId);
         room.setType(type);
-        room.setCreatedAt(LocalDateTime.now());
 
-        roomRepo.saveRoom(room.getRoomId(), room.getType(), room.getCreatedAt());
+        roomRepo.saveRoom(room.getRoomId(), room.getType());
         
         return room;
     }
@@ -74,9 +73,8 @@ public class RoomService {
         rm.setRoom(room);
         rm.setUser(user.get());
         rm.setRoomName(user1.get().getUserName());
-        rm.setJoinedAt(room.getCreatedAt());
 
-        roomRepo.saveRoomMember(rm.getUser().getUserId(), rm.getRoom().getRoomId(), rm.getRoomName(), rm.getJoinedAt());
+        roomRepo.saveRoomMember(rm.getUser().getUserId(), rm.getRoom().getRoomId(), rm.getRoomName(), 0);
 
         return new RoomDTO4(rm.getRoom().getRoomId(), rm.getRoomName(), rm.getRoom().getType());
     }
@@ -93,9 +91,8 @@ public class RoomService {
         rm.setRoom(room);
         rm.setUser(user.get());
         rm.setRoomName(roomName);
-        rm.setJoinedAt(room.getCreatedAt());
 
-        roomRepo.saveRoomMember(rm.getUser().getUserId(), rm.getRoom().getRoomId(), rm.getRoomName(), rm.getJoinedAt());
+        roomRepo.saveRoomMember(rm.getUser().getUserId(), rm.getRoom().getRoomId(), rm.getRoomName(), 0);
 
         return new RoomDTO4(rm.getRoom().getRoomId(), rm.getRoomName(), rm.getRoom().getType());
     }
@@ -110,5 +107,17 @@ public class RoomService {
 
     public ArrayList<RoomMemberDTO2> getRoomMemberDirect(String userId) {
         return roomRepo.findRoomMemberDirect(userId);
+    }
+
+    public void updateSeenLastMessage(String userId, String roomId, int isReadLastMessage) {
+        roomRepo.updateSeenLastMessage(isReadLastMessage, userId, roomId);
+    }
+
+    public void updateNotSeenLastMessage(String roomId, int isReadLastMessage) {
+        roomRepo.updateNotSeenLastMessage(isReadLastMessage, roomId);
+    }
+
+    public void updateLastMessageDate(LocalDateTime lastMessageDate, String roomId) {
+        roomRepo.updateLastMessageDate(lastMessageDate, roomId);
     }
 }

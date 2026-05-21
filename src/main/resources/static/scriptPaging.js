@@ -41,7 +41,7 @@ async function loadMessagePrevious() {
     for (let message of messages) {
         lastMessage = message;
         await addPreMessageToUI(message);
-        
+
         let newHeight = messageArea.scrollHeight;
         messageArea.scrollTop = newHeight - oldHeight;
     }
@@ -202,12 +202,15 @@ async function addPreMessageToUI(message) {
     }
 }
 
-messageArea.addEventListener("scroll", function () {
-    let roomId = chatTitle.dataset.roomId;
-
-    listRoom.forEach(room => {
-        if (room.dataset.roomId === roomId && isNearBottom()) {
+messageArea.addEventListener("scroll", async function () {
+    for (let room of listRoom) {
+        if (room.dataset.roomId === roomViewing && isNearBottomChat()) {
             room.style.fontWeight = "";
+            if (room.dataset.isReadLastMessage === "0") {
+                room.dataset.isReadLastMessage = "1";
+                await updateSeenLastMessage(room);
+            }
+            break;
         }
-    })
-})
+    }
+});

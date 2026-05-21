@@ -6,6 +6,7 @@ const chatTitle = document.getElementById("chatTitle");
 const chatTitleText = document.getElementById("chatTitleText");
 const chatTitleIcon = document.getElementById("chatTitleIcon");
 let listRoom = document.querySelectorAll("#listRoom li");
+const listRoomElement = document.getElementById("listRoom");
 const welcomePage = document.getElementById("welcomePage");
 const userIcon = document.getElementById("userIcon");
 const menuUserInfor = document.getElementById("menu");
@@ -111,7 +112,7 @@ function addRoomToUI(roomData) {
     loader.style.top = "100px";
 }
 
-function onRoomReceived(payload) {
+async function onRoomReceived(payload) {
     let roomData = JSON.parse(payload.body);
 
     addRoomToUI(roomData);
@@ -120,8 +121,11 @@ function onRoomReceived(payload) {
     listRoom = document.querySelectorAll("#listRoom li");
     for (let room of listRoom) {
         if (room.dataset.roomId === roomData.roomId) {
-            room.onclick = async function () {
+            await updateNotSeenLastMessage(roomData.roomId);
+
+            room.addEventListener("click", async function () {
                 roomViewing = room.dataset.roomId;
+                room.style.fontWeight = "";
 
                 room.style.backgroundColor = "#A9A9A9";
                 listRoom.forEach(room1 => {
@@ -129,7 +133,13 @@ function onRoomReceived(payload) {
                 });
 
                 await loadRoom(room);
-            }
+
+                if (room.dataset.isReadLastMessage === "0") {
+                    room.style.fontWeight = "";
+                    room.dataset.isReadLastMessage = "1";
+                    await updateSeenLastMessage(room);
+                }
+            });
             break;
         }
     }
@@ -139,8 +149,33 @@ function onRoomReceived(payload) {
     loader.style.top = "100px";
 }
 
-function isNearBottom() {
+function isNearBottomChat() {
     return messageArea.scrollTop + messageArea.clientHeight >= messageArea.scrollHeight - 40;
+}
+
+async function updateNotSeenLastMessage(roomId) {
+    await fetch("/api/notSeenLastMessage", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            roomId: roomId
+        })
+    });
+}
+
+async function updateSeenLastMessage(room) {
+    await fetch("/api/hasSeenLastMessage", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            userId: userLoginId,
+            roomId: room.dataset.roomId
+        })
+    });
 }
 
 async function onMessageReceived(payload) {
@@ -152,17 +187,38 @@ async function onMessageReceived(payload) {
         }
 
         let enableScroll = false;
-        if (isNearBottom()) enableScroll = true;
+        if (isNearBottomChat()) enableScroll = true;
 
         await addMessageToUI(messageData);
         if (userLoginId === messageData.userId || enableScroll) scrollToBottom();
     }
 
-    listRoom.forEach(room => {
-        if (room.dataset.roomId === messageData.roomId && messageData.userId != userLoginId) room.style.fontWeight = "bold";
+    for (let room of listRoom) {
+        if (room.dataset.roomId === messageData.roomId && messageData.userId != userLoginId) {
+            room.style.fontWeight = "bold";
+            room.dataset.isReadLastMessage = "0";
+            listRoomElement.prepend(room);
+        }
 
-        if (isNearBottom() && roomViewing === messageData.roomId && messageData.userId != userLoginId) room.style.fontWeight = "";
-    });
+        if (isNearBottomChat() && roomViewing === messageData.roomId && messageData.userId != userLoginId) {
+            room.style.fontWeight = "";
+            listRoomElement.prepend(room);
+
+            if (room.dataset.isReadLastMessage === "0") {
+                room.dataset.isReadLastMessage = "1";
+                await updateSeenLastMessage(room);
+            }
+        }
+
+        if (roomViewing === room.dataset.roomId && roomViewing === messageData.roomId && messageData.userId === userLoginId) {
+            listRoomElement.prepend(room);
+            
+            if (room.dataset.isReadLastMessage === "0") {
+                room.dataset.isReadLastMessage = "1";
+                await updateSeenLastMessage(room);
+            }
+        }
+    }
 }
 
 closeSearchBtn.classList.add("hide");
@@ -364,14 +420,22 @@ async function loadRoom(room) {
 }
 
 listRoom.forEach(room => {
+    if (room.dataset.isReadLastMessage === "0") room.style.fontWeight = "bold";
     room.addEventListener("click", async function () {
         roomViewing = room.dataset.roomId;
         room.style.backgroundColor = "#A9A9A9";
+
         listRoom.forEach(room1 => {
             if (room1.dataset.roomId != room.dataset.roomId) room1.style.backgroundColor = "";
         });
 
         await loadRoom(room);
+
+        if (room.dataset.isReadLastMessage === "0") {
+            room.style.fontWeight = "";
+            room.dataset.isReadLastMessage = "1";
+            await updateSeenLastMessage(room);
+        }
     });
 });
 
@@ -427,6 +491,8 @@ function checkSize(file) {
 }
 
 async function sendMessage() {
+    await updateNotSeenLastMessage(roomViewing);
+
     let content = messageInput.value.trim();
 
     if (content === "" && pendingFile.length === 0) return;
@@ -595,18 +661,13 @@ async function addMessageToUI(message) {
     }
 
     if (message.type === "text") {
-        if (!isUrl(message.content)) {
-            const contentElement = document.createElement("p");
-            contentElement.innerText = message.content;
-            contentDiv.appendChild(contentElement);
-        }
+        const contentElement = document.createElement("p");
+        if (!isUrl(message.content)) contentElement.innerText = message.content;
         else {
-            const contentElement = document.createElement("a");
-            contentElement.style.marginTop = "20px";
-            contentElement.style.marginBottom = "20px";
+            contentElement.classList.add("message-contain-url");
             contentElement.innerHTML = parseTextToUrl(message.content);
-            contentDiv.appendChild(contentElement);
         }
+        contentDiv.appendChild(contentElement);
     }
     else if (message.type === "image") {
         const realImg = document.createElement("img");
@@ -700,6 +761,7 @@ messageForm.addEventListener("submit", function (e) {
     if (messageInput.value === "") sendMessBtn.classList.add("hide");
     if (messageInput.value.trim() != "" || (fileInput.files).length > 0) loader.classList.remove("hide");
     sendMessage();
+    cancelSendFile.classList.add("hide");
 });
 
 async function loadMessages(roomId) {
