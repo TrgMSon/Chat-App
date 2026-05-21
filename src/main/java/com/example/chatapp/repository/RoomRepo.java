@@ -81,8 +81,8 @@ public interface RoomRepo extends JpaRepository<Room, String> {
 
         @Transactional
         @Modifying
-        @Query(value = "UPDATE room_member SET is_read_last_message = ?1 WHERE room_id = ?2", nativeQuery = true)
-        void updateNotSeenLastMessage(int isReadLastMessage, String roomId);
+        @Query(value = "UPDATE room_member SET is_read_last_message = ?1 WHERE room_id = ?2 AND user_id <> ?3", nativeQuery = true)
+        void updateNotSeenLastMessage(int isReadLastMessage, String roomId, String userId);
 
         @Transactional
         @Modifying

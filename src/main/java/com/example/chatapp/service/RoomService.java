@@ -113,8 +113,8 @@ public class RoomService {
         roomRepo.updateSeenLastMessage(isReadLastMessage, userId, roomId);
     }
 
-    public void updateNotSeenLastMessage(String roomId, int isReadLastMessage) {
-        roomRepo.updateNotSeenLastMessage(isReadLastMessage, roomId);
+    public void updateNotSeenLastMessage(String userId, String roomId, int isReadLastMessage) {
+        roomRepo.updateNotSeenLastMessage(isReadLastMessage, roomId, userId);
     }
 
     public void updateLastMessageDate(LocalDateTime lastMessageDate, String roomId) {

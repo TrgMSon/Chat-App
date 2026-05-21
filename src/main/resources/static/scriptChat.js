@@ -121,7 +121,7 @@ async function onRoomReceived(payload) {
     listRoom = document.querySelectorAll("#listRoom li");
     for (let room of listRoom) {
         if (room.dataset.roomId === roomData.roomId) {
-            await updateNotSeenLastMessage(roomData.roomId);
+            await updateSeenLastMessage(room);
 
             room.addEventListener("click", async function () {
                 roomViewing = room.dataset.roomId;
@@ -153,13 +153,14 @@ function isNearBottomChat() {
     return messageArea.scrollTop + messageArea.clientHeight >= messageArea.scrollHeight - 40;
 }
 
-async function updateNotSeenLastMessage(roomId) {
+async function updateNotSeenLastMessage(roomId, userId) {
     await fetch("/api/notSeenLastMessage", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
+            userId: userLoginId,
             roomId: roomId
         })
     });
@@ -200,23 +201,25 @@ async function onMessageReceived(payload) {
             listRoomElement.prepend(room);
         }
 
-        if (isNearBottomChat() && roomViewing === messageData.roomId && messageData.userId != userLoginId) {
-            room.style.fontWeight = "";
-            listRoomElement.prepend(room);
+        // if (isNearBottomChat() && roomViewing === messageData.roomId && messageData.userId != userLoginId) {
+        //     room.style.fontWeight = "";
+        //     listRoomElement.prepend(room);
 
-            if (room.dataset.isReadLastMessage === "0") {
-                room.dataset.isReadLastMessage = "1";
-                await updateSeenLastMessage(room);
-            }
-        }
+        //     if (room.dataset.isReadLastMessage === "0") {
+        //         room.dataset.isReadLastMessage = "1";
+        //         await updateSeenLastMessage(room);
+        //     }
+
+        //     console.log('2');
+        // }
 
         if (roomViewing === room.dataset.roomId && roomViewing === messageData.roomId && messageData.userId === userLoginId) {
             listRoomElement.prepend(room);
             
-            if (room.dataset.isReadLastMessage === "0") {
-                room.dataset.isReadLastMessage = "1";
-                await updateSeenLastMessage(room);
-            }
+            // if (room.dataset.isReadLastMessage === "0") {
+            //     room.dataset.isReadLastMessage = "1";
+            //     await updateSeenLastMessage(room);
+            // }
         }
     }
 }
@@ -491,7 +494,7 @@ function checkSize(file) {
 }
 
 async function sendMessage() {
-    await updateNotSeenLastMessage(roomViewing);
+    await updateNotSeenLastMessage(roomViewing, userLoginId);
 
     let content = messageInput.value.trim();
 
