@@ -737,9 +737,11 @@ messageForm.addEventListener("keydown", function (e) {
 
         e.preventDefault();
         if (messageInput.value === "") sendMessBtn.classList.add("hide");
-
-        if (messageInput.value.trim() != "" || pendingFile.length > 0) loader.classList.remove("hide");
-        sendMessage();
+        if (messageInput.value.trim() != "" || pendingFile.length > 0) {
+            loader.classList.remove("hide");
+            sendMessage();
+        }
+        
     }
 });
 
