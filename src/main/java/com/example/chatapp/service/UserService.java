@@ -87,7 +87,7 @@ public class UserService {
         return userRepo.findChattingUser("%" + name + "%", userId);
     }
 
-    public ArrayList<UserDTO2> findRoomToAF(String name, String userId) {
+    public ArrayList<UserDTO2> findUserToAF(String name, String userId) {
         return userRepo.findNewUser("%" + name + "%", userId);
     }
 

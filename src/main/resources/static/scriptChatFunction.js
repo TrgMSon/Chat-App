@@ -42,7 +42,6 @@ viewUserBio.classList.add("hide");
 fileInput.addEventListener("change", function () {
     if (this.files.length > 0) {
         for (let i = 0; i < this.files.length; i++) {
-            console.log(this.files[i].type);
             if (!checkType(this.files[i])) {
                 alert("File không hợp lệ");
                 continue;

@@ -33,4 +33,4 @@ setTimeout(() => {
         stompClient.subscribe("/users/queue/update-room-name", onNewNameReceived);
         firstTime = false;
     }
-}, 600);
+}, 800);

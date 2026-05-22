@@ -79,7 +79,7 @@ public class ChatController {
     @GetMapping("/addFriendSearch")
     public ArrayList<UserDTO2> searchToAddFriend(@RequestParam String name, HttpSession session) {
         String userId = (String) session.getAttribute("userId");
-        return userService.findRoomToAF(name, userId);
+        return userService.findUserToAF(name, userId);
     }
 
     @GetMapping("/addMemberSearch")

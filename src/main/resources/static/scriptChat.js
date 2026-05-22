@@ -201,25 +201,8 @@ async function onMessageReceived(payload) {
             listRoomElement.prepend(room);
         }
 
-        // if (isNearBottomChat() && roomViewing === messageData.roomId && messageData.userId != userLoginId) {
-        //     room.style.fontWeight = "";
-        //     listRoomElement.prepend(room);
-
-        //     if (room.dataset.isReadLastMessage === "0") {
-        //         room.dataset.isReadLastMessage = "1";
-        //         await updateSeenLastMessage(room);
-        //     }
-
-        //     console.log('2');
-        // }
-
         if (roomViewing === room.dataset.roomId && roomViewing === messageData.roomId && messageData.userId === userLoginId) {
             listRoomElement.prepend(room);
-            
-            // if (room.dataset.isReadLastMessage === "0") {
-            //     room.dataset.isReadLastMessage = "1";
-            //     await updateSeenLastMessage(room);
-            // }
         }
     }
 }
