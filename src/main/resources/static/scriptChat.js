@@ -286,7 +286,7 @@ function preViewFile(file) {
     divPreview.style.width = "200px";
 
     let img = document.createElement("img");
-    img.src = "https://res.cloudinary.com/dgtovt9xh/image/upload/v1778580283/simple-file-icon-the-icon-can-be-used-for-websites-print-templates-presentation-templates-illustrations-etc-free-vector_tqk4dn.webp";
+    img.src = getIconFile(file.name);
     img.style.width = "50px";
     img.style.height = "60px";
     img.style.maxWidth = "50px";
@@ -486,6 +486,9 @@ async function sendMessage() {
     sendMessBtn.classList.add("hide");
     messageInput.value = "";
     hiddenDiv.innerHTML = "";
+    fileInput.value = "";
+    fileNames.innerHTML = "";
+    cancelSendFile.classList.add("hide");
 
     if (content != "") {
         numberMessage += 1;
@@ -543,10 +546,7 @@ async function sendMessage() {
             stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(messageData));
         }
 
-        fileInput.value = "";
-        fileNames.innerHTML = "";
         pendingFile = [];
-        cancelSendFile.classList.add("hide");
 
         if (numberMessage === 0) loader.classList.add("hide");
     }
@@ -591,6 +591,12 @@ function isUrl(text) {
 function getPublicId(url) {
     let fileName = url.split("/").pop();
     return fileName.split(".")[0] + "";
+}
+
+function getIconFile(fileName) {
+    if (fileName.toLowerCase().includes(".mp4")) return "https://res.cloudinary.com/dsrecf30u/image/upload/v1779583433/video-icon-in-trendy-flat-style-isolated-on-white-background-video-silhouette-symbol-for-your-website-design-logo-app-ui-illustration-eps10-free-vector_dr8paw.webp";
+    else if (fileName.toLowerCase().includes(".mp3")) return "https://res.cloudinary.com/dsrecf30u/image/upload/v1779583639/music-note-graphic-design-template-vector-illustration-png_269481_ulxphy.jpg";
+    return "https://res.cloudinary.com/dgtovt9xh/image/upload/v1778580283/simple-file-icon-the-icon-can-be-used-for-websites-print-templates-presentation-templates-illustrations-etc-free-vector_tqk4dn.webp";
 }
 
 async function addMessageToUI(message) {
@@ -679,7 +685,7 @@ async function addMessageToUI(message) {
         fileDiv.classList.add("file-div");
 
         const iconFile = document.createElement("img");
-        iconFile.src = "https://res.cloudinary.com/dgtovt9xh/image/upload/v1778580283/simple-file-icon-the-icon-can-be-used-for-websites-print-templates-presentation-templates-illustrations-etc-free-vector_tqk4dn.webp";
+        iconFile.src = getIconFile(message.fileName);
         iconFile.style.width = "100px";
         iconFile.style.height = "100px";
 
@@ -741,16 +747,17 @@ messageForm.addEventListener("keydown", function (e) {
             loader.classList.remove("hide");
             sendMessage();
         }
-        
+
     }
 });
 
 messageForm.addEventListener("submit", function (e) {
     e.preventDefault();
     if (messageInput.value === "") sendMessBtn.classList.add("hide");
-    if (messageInput.value.trim() != "" || (fileInput.files).length > 0) loader.classList.remove("hide");
-    sendMessage();
-    cancelSendFile.classList.add("hide");
+    if (messageInput.value.trim() != "" || (fileInput.files).length > 0) {
+        loader.classList.remove("hide");
+        sendMessage();
+    }
 });
 
 async function loadMessages(roomId) {

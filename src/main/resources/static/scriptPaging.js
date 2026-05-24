@@ -137,7 +137,7 @@ async function addPreMessageToUI(message) {
         fileDiv.classList.add("file-div");
 
         const iconFile = document.createElement("img");
-        iconFile.src = "https://res.cloudinary.com/dgtovt9xh/image/upload/v1778580283/simple-file-icon-the-icon-can-be-used-for-websites-print-templates-presentation-templates-illustrations-etc-free-vector_tqk4dn.webp";
+        iconFile.src = getIconFile(message.fileName);
         iconFile.style.width = "100px";
         iconFile.style.height = "100px";
 
