@@ -5,7 +5,7 @@ let lastMessage = null;
 tmpDate = null;
 
 messageArea.addEventListener("scroll", function () {
-    if (messageArea.scrollTop === 0) {
+    if (messageArea.scrollTop === 0 && tmpDate != null) {
         loadMessagePrevious();
     }
 });
@@ -15,8 +15,8 @@ listRoom.forEach(room => {
         pageIndex = 1;
         isLoading = false;
         hasMore = true;
-        tmpDate = null;
         lastMessage = null;
+        tmpDate = null;
     });
 });
 
