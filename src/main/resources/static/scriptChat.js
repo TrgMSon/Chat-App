@@ -124,6 +124,7 @@ async function onRoomReceived(payload) {
             await updateSeenLastMessage(room);
 
             room.addEventListener("click", async function () {
+                tmpDate = null;
                 roomViewing = room.dataset.roomId;
                 room.style.fontWeight = "";
 
@@ -408,6 +409,7 @@ async function loadRoom(room) {
 listRoom.forEach(room => {
     if (room.dataset.isReadLastMessage === "0") room.style.fontWeight = "bold";
     room.addEventListener("click", async function () {
+        tmpDate = null;
         roomViewing = room.dataset.roomId;
         room.style.backgroundColor = "#A9A9A9";
 
