@@ -124,8 +124,11 @@ async function onRoomReceived(payload) {
             await updateSeenLastMessage(room);
 
             room.addEventListener("click", async function () {
+                if (roomViewing === room.dataset.roomId) return;
+
                 roomViewing = room.dataset.roomId;
                 room.style.fontWeight = "";
+                loader.classList.remove("hide");
 
                 room.style.backgroundColor = "#A9A9A9";
                 listRoom.forEach(room1 => {
@@ -408,8 +411,11 @@ async function loadRoom(room) {
 listRoom.forEach(room => {
     if (room.dataset.isReadLastMessage === "0") room.style.fontWeight = "bold";
     room.addEventListener("click", async function () {
+        if (roomViewing === room.dataset.roomId) return;
+
         roomViewing = room.dataset.roomId;
         room.style.backgroundColor = "#A9A9A9";
+        loader.classList.remove("hide");
 
         listRoom.forEach(room1 => {
             if (room1.dataset.roomId != room.dataset.roomId) room1.style.backgroundColor = "";
@@ -742,12 +748,12 @@ messageForm.addEventListener("keydown", function (e) {
         }
 
         e.preventDefault();
+
         if (messageInput.value === "") sendMessBtn.classList.add("hide");
         if (messageInput.value.trim() != "" || pendingFile.length > 0) {
             loader.classList.remove("hide");
             sendMessage();
         }
-
     }
 });
 
