@@ -148,29 +148,22 @@ async function addPreMessageToUI(message) {
         fileName.innerText = message.fileName;
 
         const downloadOpt = document.createElement("a");
-        if (message.fileName.includes(".pdf")) {
-            let response = await fetch("/api/generate-url-dowload-pdf?publicId=" + getPublicId(message.content)).then(res => res.json());
-            downloadOpt.href = response.downloadUrl;
-            downloadOpt.innerText = "Tải về";
-        }
-        else {
-            downloadOpt.href = "#";
-            downloadOpt.innerText = "Tải về";
-            downloadOpt.addEventListener("click", async function (e) {
-                e.preventDefault();
+        downloadOpt.href = "#";
+        downloadOpt.innerText = "Tải về";
+        downloadOpt.addEventListener("click", async function (e) {
+            e.preventDefault();
 
-                const response = await fetch(message.content);
-                const blob = await response.blob();
-                const blobUrl = URL.createObjectURL(blob);
-                const a = document.createElement("a");
+            const response = await fetch(message.content);
+            const blob = await response.blob();
+            const blobUrl = URL.createObjectURL(blob);
+            const a = document.createElement("a");
 
-                a.href = blobUrl;
-                a.download = message.fileName;
-                a.click();
+            a.href = blobUrl;
+            a.download = message.fileName;
+            a.click();
 
-                URL.revokeObjectURL(blobUrl);
-            });
-        }
+            URL.revokeObjectURL(blobUrl);
+        });
 
         fileInfor.appendChild(fileName);
         fileInfor.appendChild(downloadOpt);
