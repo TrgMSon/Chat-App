@@ -3,7 +3,6 @@ package com.example.chatapp.service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.chatapp.dto.ReportDTO;
@@ -13,8 +12,11 @@ import com.example.chatapp.repository.ReportRepo;
 
 @Service
 public class ReportService {
-    @Autowired
     private ReportRepo reportRepo;
+
+    public ReportService(ReportRepo reportRepo) {
+        this.reportRepo = reportRepo;
+    }
 
     public ArrayList<ReportDTO2> getAllReports() {
         ArrayList<Report> reports = reportRepo.getAllReports();

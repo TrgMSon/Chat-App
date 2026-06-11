@@ -1,6 +1,5 @@
 package com.example.chatapp.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,8 +15,11 @@ import com.example.chatapp.repository.UserRepo;
 
 @Service
 public class UserService {
-    @Autowired
     private UserRepo userRepo;
+
+    public UserService(UserRepo userRepo) {
+        this.userRepo = userRepo;
+    }
 
     public boolean saveUser(User user) {
         String email = user.getEmail().trim();

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Random;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.chatapp.dto.RoomDTO;
@@ -21,11 +20,13 @@ import com.example.chatapp.repository.UserRepo;
 
 @Service
 public class RoomService {
-    @Autowired
     private RoomRepo roomRepo;
-
-    @Autowired
     private UserRepo userRepo;
+
+    public RoomService(RoomRepo roomRepo, UserRepo userRepo) {
+        this.roomRepo = roomRepo;
+        this.userRepo = userRepo;
+    }
 
     public ArrayList<RoomDTO> getListRoom(String userId) {
         ArrayList<RoomMember> rooms = roomRepo.getListRoom(userId);

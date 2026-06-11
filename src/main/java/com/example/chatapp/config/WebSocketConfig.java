@@ -1,6 +1,5 @@
 package com.example.chatapp.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -13,8 +12,11 @@ import com.example.chatapp.interceptor.UserInterceptor;
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
-    @Autowired
     private UserInterceptor userInterceptor;
+
+    public WebSocketConfig(UserInterceptor userInterceptor) {
+        this.userInterceptor = userInterceptor;
+    }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {

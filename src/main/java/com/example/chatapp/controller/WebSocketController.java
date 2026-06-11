@@ -3,7 +3,6 @@ package com.example.chatapp.controller;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
@@ -23,17 +22,15 @@ import com.example.chatapp.service.UserService;
 
 @Controller
 public class WebSocketController {
-    @Autowired
     private SimpMessagingTemplate messagingTemplate;
-
-    @Autowired
     private MessageService messageService;
-
-    @Autowired
     private UserService userService;
-
-    @Autowired
     private RoomService roomService;
+
+    public WebSocketController(SimpMessagingTemplate messagingTemplate, MessageService messageService, UserService userService, RoomService roomService) {
+        this.messagingTemplate = messagingTemplate;
+        this.messageService = messageService;
+    }
 
     @MessageMapping("/chat.sendMessage")
     public void sendMessage(MessageDTO message) {

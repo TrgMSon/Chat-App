@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
 
 import com.example.chatapp.dto.RoomMemberDTO2;
 import com.example.chatapp.dto.UserDTO2;
@@ -15,7 +14,6 @@ import com.example.chatapp.model.RoomMember;
 
 import jakarta.transaction.Transactional;
 
-@Repository
 public interface RoomRepo extends JpaRepository<Room, String> {
         @Query(value = """
                         SELECT rm.* FROM room_member AS rm

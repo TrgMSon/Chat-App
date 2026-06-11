@@ -5,14 +5,12 @@ import java.util.ArrayList;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
 
 import com.example.chatapp.dto.UserDTO2;
 import com.example.chatapp.model.User;
 
 import jakarta.transaction.Transactional;
 
-@Repository
 public interface UserRepo extends JpaRepository<User, String> {
         User findByEmail(String email);
 

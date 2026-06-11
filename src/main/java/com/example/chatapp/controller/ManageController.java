@@ -2,7 +2,6 @@ package com.example.chatapp.controller;
 
 import java.util.ArrayList;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,11 +16,13 @@ import com.example.chatapp.service.UserService;
 @RestController
 @RequestMapping("/api/manage")
 public class ManageController {
-    @Autowired
     private ReportService reportService;
-
-    @Autowired
     private UserService userService;
+
+    public ManageController(ReportService reportService, UserService userService) {
+        this.reportService = reportService;
+        this.userService = userService;
+    }
 
     @GetMapping("/getReports")
     public ArrayList<ReportDTO2> getAllReports() {

@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,20 +31,19 @@ import jakarta.servlet.http.HttpSession;
 @RestController
 @RequestMapping("/api")
 public class ChatController {
-    @Autowired
     private MessageService messageService;
-
-    @Autowired
     private Cloudinary cloudinary;
-
-    @Autowired
     private UserService userService;
-
-    @Autowired
     private RoomService roomService;
-
-    @Autowired
     private ReportService reportService;
+
+    public ChatController(MessageService messageService, Cloudinary cloudinary, UserService userService, RoomService roomService, ReportService reportService) {
+        this.messageService = messageService;
+        this.cloudinary = cloudinary;
+        this.userService = userService;
+        this.roomService = roomService;
+        this.reportService = reportService;
+    }
 
     @GetMapping("/getMessages")
     public List<MessageDTO> getMessages(@RequestParam String roomId) {

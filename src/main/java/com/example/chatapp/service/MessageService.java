@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,8 +16,11 @@ import com.example.chatapp.model.Message;
 
 @Service
 public class MessageService {
-    @Autowired
     private MessageRepo messageRepo;
+
+    public MessageService(MessageRepo messageRepo) {
+        this.messageRepo = messageRepo;
+    }
 
     public List<MessageDTO> getMessagesByRoom(String roomId, int index) {
         Pageable pageable = PageRequest.of(index, 10,
