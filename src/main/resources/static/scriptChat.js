@@ -410,7 +410,7 @@ async function loadRoom(room) {
     await loadMessages(roomViewing);
     scrollToBottom();
     
-    if (!uploading.includes(roomViewing)) loader.classList.add("hide");
+    loader.classList.add("hide");
 }
 
 listRoom.forEach(room => {
@@ -487,8 +487,8 @@ function checkSize(file) {
     return file.size <= 10 * 1024 * 1024;
 }
 
-async function sendMessage() {
-    await updateNotSeenLastMessage(roomViewing, userLoginId);
+async function sendMessage(roomId) {
+    await updateNotSeenLastMessage(roomId, userLoginId);
 
     let content = messageInput.value.trim();
 
@@ -503,13 +503,13 @@ async function sendMessage() {
 
     if (content != "") {
         numberMessage += 1;
-        if (!uploading.includes(roomViewing)) uploading.push(roomViewing);
+        if (!uploading.includes(roomId)) uploading.push(roomId);
         messageInput.style.minHeight = "60px";
         messageInput.style.maxHeight = "60px";
 
         let messageData = {
             userId: userLoginId,
-            roomId: roomViewing,
+            roomId: roomId,
             userName: userLoginName,
             content: content,
             type: "text",
@@ -521,7 +521,7 @@ async function sendMessage() {
 
     if (pendingFile.length > 0) {
         numberMessage += pendingFile.length;
-        if (!uploading.includes(roomViewing)) uploading.push(roomViewing);
+        if (!uploading.includes(roomId)) uploading.push(roomId);
 
         for (let file of pendingFile) {
             const authData = await fetch('/api/generate-signature').then(res => res.json());
@@ -549,7 +549,7 @@ async function sendMessage() {
 
             let messageData = {
                 userId: userLoginId,
-                roomId: roomViewing,
+                roomId: roomId,
                 userName: userLoginName,
                 content: urlFile,
                 type: type,
@@ -752,7 +752,7 @@ messageForm.addEventListener("keydown", function (e) {
         if (messageInput.value === "") sendMessBtn.classList.add("hide");
         if (messageInput.value.trim() != "" || pendingFile.length > 0) {
             loader.classList.remove("hide");
-            sendMessage();
+            sendMessage(roomViewing);
         }
     }
 });
@@ -762,7 +762,7 @@ messageForm.addEventListener("submit", function (e) {
     if (messageInput.value === "") sendMessBtn.classList.add("hide");
     if (messageInput.value.trim() != "" || (fileInput.files).length > 0) {
         loader.classList.remove("hide");
-        sendMessage();
+        sendMessage(roomViewing);
     }
 });
 
