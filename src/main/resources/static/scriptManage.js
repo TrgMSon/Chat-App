@@ -283,10 +283,10 @@ manageUserBtn.addEventListener("click", async function () {
             }
         });
 
-        let userDiv = document.createElement("div");
+        let userDiv = document.createElement("div"); // Từng hàng của người dùng
         userDiv.classList.add("item");
 
-        let userLabel = document.createElement("p");
+        let userLabel = document.createElement("p"); // Nhãn cho từng dòng
         userLabel.innerText = users[i].userName + " (ID: " + users[i].userId + ")";
 
         userDiv.appendChild(userLabel);

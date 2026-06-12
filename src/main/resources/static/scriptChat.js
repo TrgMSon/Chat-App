@@ -56,7 +56,7 @@ function connect() {
 function onConnected() {
     console.log("Kết nối WebSocket thành công");
 
-    listRoom.forEach(room => {
+    listRoom.forEach(room => {add
         stompClient.subscribe("/topic/room/" + room.dataset.roomId, onMessageReceived); // tin nhắn realtime
     });
 
