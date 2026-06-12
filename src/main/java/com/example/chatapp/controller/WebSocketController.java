@@ -30,6 +30,8 @@ public class WebSocketController {
     public WebSocketController(SimpMessagingTemplate messagingTemplate, MessageService messageService, UserService userService, RoomService roomService) {
         this.messagingTemplate = messagingTemplate;
         this.messageService = messageService;
+        this.roomService = roomService;
+        this.userService = userService;
     }
 
     @MessageMapping("/chat.sendMessage")

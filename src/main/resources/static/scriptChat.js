@@ -32,6 +32,7 @@ let roomViewing = "";
 let tmpDate = null;
 let numberMessage = 0;
 let pendingFile = [];
+let uploading = [];
 const userLoginName = userIcon.dataset.userName;
 
 async function initUserId() {
@@ -194,6 +195,10 @@ async function onMessageReceived(payload) {
         if (isNearBottomChat()) enableScroll = true;
 
         await addMessageToUI(messageData);
+        if (numberMessage === 0) {
+            loader.classList.add("hide");
+            uploading = uploading.filter(roomId => roomId !== roomViewing);
+        }
         if (userLoginId === messageData.userId || enableScroll) scrollToBottom();
     }
 
@@ -404,8 +409,8 @@ async function loadRoom(room) {
 
     await loadMessages(roomViewing);
     scrollToBottom();
-
-    loader.classList.add("hide");
+    
+    if (!uploading.includes(roomViewing)) loader.classList.add("hide");
 }
 
 listRoom.forEach(room => {
@@ -498,6 +503,7 @@ async function sendMessage() {
 
     if (content != "") {
         numberMessage += 1;
+        if (!uploading.includes(roomViewing)) uploading.push(roomViewing);
         messageInput.style.minHeight = "60px";
         messageInput.style.maxHeight = "60px";
 
@@ -515,6 +521,7 @@ async function sendMessage() {
 
     if (pendingFile.length > 0) {
         numberMessage += pendingFile.length;
+        if (!uploading.includes(roomViewing)) uploading.push(roomViewing);
 
         for (let file of pendingFile) {
             const authData = await fetch('/api/generate-signature').then(res => res.json());
@@ -731,7 +738,7 @@ async function addMessageToUI(message) {
     newMessage.appendChild(contentDiv);
     messageArea.appendChild(newMessage);
 
-    if (numberMessage === 0) loader.classList.add("hide");
+    
 }
 
 messageForm.addEventListener("keydown", function (e) {
