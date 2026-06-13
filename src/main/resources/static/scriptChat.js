@@ -205,7 +205,7 @@ async function onMessageReceived(payload) {
         if (isNearBottomChat()) enableScroll = true;
 
         await addMessageToUI(messageData);
-        if (numberMessage === 0) loader.classList.add("hide");
+        if (numberMessage === 0 && messageData.userId === userLoginId) loader.classList.add("hide");
 
         if (userLoginId === messageData.userId || enableScroll) scrollToBottom();
     }
@@ -753,9 +753,7 @@ async function addMessageToUI(message) {
 
 messageForm.addEventListener("keydown", function (e) {
     if (e.key === "Enter") {
-        if (e.shiftKey) {
-            return;
-        }
+        if (e.shiftKey) return;
 
         e.preventDefault();
 
@@ -768,7 +766,6 @@ messageForm.addEventListener("keydown", function (e) {
 });
 
 messageForm.addEventListener("submit", function (e) {
-    console.log("hello");
     e.preventDefault();
     if (messageInput.value === "") sendMessBtn.classList.add("hide");
     if (messageInput.value.trim() != "" || pendingFile.length > 0) {
@@ -789,6 +786,7 @@ async function loadMessages(roomId) {
 
 buttonProfile.addEventListener("click", async function () {
     let userInfor = await fetch("/api/getUserInfor?userId=" + userLoginId).then(res => res.json());
+
     userNameLb.innerText = userInfor.userName;
     emailLb.innerText = userInfor.email;
     addressLb.innerText = userInfor.address;
