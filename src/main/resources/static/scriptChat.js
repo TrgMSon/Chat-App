@@ -194,7 +194,7 @@ async function updateSeenLastMessage(room) {
 async function onMessageReceived(payload) {
     let messageData = JSON.parse(payload.body);
 
-    uploading = uploading.filter(roomId => roomId !== roomViewing);
+    if (messageData.userId === userLoginId) uploading = uploading.filter(roomId => roomId !== roomViewing);
 
     if (roomViewing === messageData.roomId) {
         if (numberMessage > 0) {
