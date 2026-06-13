@@ -66,7 +66,7 @@ function onConnected() {
 }
 
 function onError() {
-    alert("Lỗi kết nối WebSocket");
+    console.log("Lỗi kết nối WebSocket");
 }
 
 function onStatusReceived(payload) {
