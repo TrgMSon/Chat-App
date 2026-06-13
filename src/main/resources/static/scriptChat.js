@@ -72,10 +72,18 @@ function onError() {
 function onStatusReceived(payload) {
     let data = JSON.parse(payload.body);
     if (data.status === "banned") {
-        setTimeout(() => {
-            window.location.href = "/logout";
-        }, 3000);
         alert("Tài khoản của bạn đã bị khóa");
+
+        setTimeout(() => {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/logout';
+
+            form.style.display = 'none';
+            document.body.appendChild(form);
+
+            form.submit();
+        }, 10);
     }
 }
 
@@ -198,7 +206,7 @@ async function onMessageReceived(payload) {
 
         await addMessageToUI(messageData);
         if (numberMessage === 0) loader.classList.add("hide");
-            
+
         if (userLoginId === messageData.userId || enableScroll) scrollToBottom();
     }
 
@@ -411,7 +419,7 @@ async function loadRoom(room) {
 
     await loadMessages(roomViewing);
     scrollToBottom();
-    
+
     if (!uploading.includes(roomViewing)) loader.classList.add("hide");
 }
 
@@ -740,7 +748,7 @@ async function addMessageToUI(message) {
     newMessage.appendChild(contentDiv);
     messageArea.appendChild(newMessage);
 
-    
+
 }
 
 messageForm.addEventListener("keydown", function (e) {
@@ -817,8 +825,11 @@ searchForm.addEventListener("submit", async function (event) {
     }
 
     listRoom.forEach(room => {
-        if (roomIds.includes(room.dataset.roomId)) {
-            room.style.backgroundColor = "#A9A9A9";
+        if (roomIds.includes(room.dataset.roomId) || room.dataset.roomId === roomViewing) {
+            room.style.display = "";
+        }
+        else {
+            room.style.display = "none";
         }
     });
 
@@ -829,9 +840,7 @@ closeSearchBtn.addEventListener("click", function () {
     if (closeSearchBtn.classList.contains("hide")) return;
 
     listRoom.forEach(room => {
-        if (roomIds.includes(room.dataset.roomId) && room.dataset.roomId != roomViewing) {
-            room.style.backgroundColor = "";
-        }
+        room.style.display = "";
     });
 
     searchInput.value = "";

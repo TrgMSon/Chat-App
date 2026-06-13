@@ -93,7 +93,7 @@ manageReportBtn.addEventListener("click", async function () {
 
     manageReportBtn.style.backgroundColor = "#1E90FF";
     manageUserBtn.style.backgroundColor = "";
-    searchInput.placeholder = "Tìm kiếm theo ngày";
+    searchInput.placeholder = "Tìm kiếm theo ngày/tháng/năm";
     viewUser = false;
     viewReport = true;
 
@@ -116,7 +116,6 @@ manageReportBtn.addEventListener("click", async function () {
         liElement.addEventListener("click", function () {
             if (document.querySelector(".detailBox") === null) {
                 liElement.style.backgroundColor = "#A9A9A9";
-                unMark(reports[i].reportId);
                 loadReportDetail(liElement);
             }
         });
@@ -152,7 +151,14 @@ function formatDate(date) {
 }
 
 logoutBtn.addEventListener("click", function () {
-    window.location.href = "/logout";
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '/logout';
+
+    form.style.display = 'none';
+    document.body.appendChild(form);
+
+    form.submit();
 });
 
 async function loadUserDetail(liElement) {
@@ -230,21 +236,17 @@ async function loadUserDetail(liElement) {
     mainView2.appendChild(userBox);
 }
 
-function unMark(target) {
+function unMark() {
     if (viewUser === true) {
         let liElements = document.querySelectorAll(".listUser li");
         liElements.forEach(li => {
-            if (li.dataset.userId != target) {
-                li.style.backgroundColor = "";
-            }
+            li.style.display = "";
         });
     }
     else if (viewReport === true) {
         let liElements = document.querySelectorAll(".listReport li");
         liElements.forEach(li => {
-            if (li.dataset.reportId != target) {
-                li.style.backgroundColor = "";
-            }
+            li.style.display = "";
         });
     }
 }
@@ -278,7 +280,6 @@ manageUserBtn.addEventListener("click", async function () {
         liElement.addEventListener("click", function () {
             if (document.querySelector(".detailBox") === null) {
                 liElement.style.backgroundColor = "#A9A9A9";
-                unMark(users[i].userId);
                 loadUserDetail(liElement);
             }
         });
@@ -326,14 +327,17 @@ searchForm.addEventListener("submit", async function (e) {
 
         if (userIds.length === 0) {
             alert("Không tìm thấy kết quả phù hợp");
-            unMark("");
+            unMark();
             return;
         }
 
         let liElements = document.querySelectorAll(".listUser li");
         liElements.forEach(liElement => {
             if (userIds.includes(liElement.dataset.userId)) {
-                liElement.style.backgroundColor = "#A9A9A9";
+                liElement.style.display = "";
+            }
+            else {
+                liElement.style.display = "none";
             }
         });
     }
@@ -350,14 +354,17 @@ searchForm.addEventListener("submit", async function (e) {
 
         if (reportIds.length === 0) {
             alert("Không tìm thấy kết quả phù hợp");
-            unMark("");
+            unMark();
             return;
         }
 
         let liElements = document.querySelectorAll(".listReport li");
         liElements.forEach(liElement => {
             if (reportIds.includes(liElement.dataset.reportId)) {
-                liElement.style.backgroundColor = "#A9A9A9";
+                liElement.style.display = "";
+            }
+            else {
+                liElement.style.display = "none";
             }
         });
     }
@@ -366,7 +373,7 @@ searchForm.addEventListener("submit", async function (e) {
 
 closeSearch.addEventListener("click", function () {
     if (!closeSearch.classList.contains("hide")) {
-        unMark("");
+        unMark();
         searchInput.value = "";
         closeSearch.classList.add("hide");
     }

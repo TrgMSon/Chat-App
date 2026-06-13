@@ -80,7 +80,7 @@ public class MainController {
 
         User user = userService.findUserById(userId);
 
-        if (user.getRole().equals("user")) return "redirect:/login";
+        if (!user.getRole().equals("admin")) return "redirect:/login";
 
         int qtyUser = userService.getQtyUser();
         int qtyReport = reportService.getQtyReport();
@@ -134,8 +134,10 @@ public class MainController {
             return "redirect:/login";
         }
 
+        User user = userService.findUserById(userId);
+        if (!user.getRole().equals("user")) return "redirect:/login";
+
         ArrayList<RoomDTO> rooms = roomService.getListRoom(userId);
-        User user = (User) userService.findUserById(userId);
 
         model.addAttribute("user", user);
         model.addAttribute("rooms", rooms);
@@ -144,12 +146,6 @@ public class MainController {
 
     @PostMapping("/logout")
     public String logout(HttpSession session) {
-        session.invalidate();
-        return "redirect:/login";
-    }
-
-    @GetMapping("/logout")
-    public String doLogout(HttpSession session) {
         session.invalidate();
         return "redirect:/login";
     }
