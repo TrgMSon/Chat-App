@@ -760,9 +760,10 @@ messageForm.addEventListener("keydown", function (e) {
 });
 
 messageForm.addEventListener("submit", function (e) {
+    console.log("hello");
     e.preventDefault();
     if (messageInput.value === "") sendMessBtn.classList.add("hide");
-    if (messageInput.value.trim() != "" || (fileInput.files).length > 0) {
+    if (messageInput.value.trim() != "" || pendingFile.length > 0) {
         loader.classList.remove("hide");
         sendMessage(roomViewing);
     }
