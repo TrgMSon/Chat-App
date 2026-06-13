@@ -4,9 +4,7 @@ const password = document.getElementById("password");
 const address = document.getElementById("address");
 const bio = document.getElementById("bio");
 const userForm = document.getElementById("userForm");
-const retypePassword = document.getElementById("retype-password");
 const togglePasswordBtn = document.getElementById("toggle-password");
-const toggleRetypePasswordBtn = document.getElementById("toggle-retype-password");
 
 userForm.addEventListener("submit", function (e) {
     if (userName.value.trim().length > 50) {
@@ -49,18 +47,6 @@ togglePasswordBtn.addEventListener("click", function(e) {
     const currentType = password.getAttribute("type");
     const newType = currentType === "password" ? "text" : "password";
     password.setAttribute("type", newType);
-
-    if (newType === "password") {
-        this.textContent = "🙈";
-    } else {
-        this.textContent = "🙉";
-    }
-});
-
-toggleRetypePasswordBtn.addEventListener("click", function(e) {
-    const currentType = retypePassword.getAttribute("type");
-    const newType = currentType === "password" ? "text" : "password";
-    retypePassword.setAttribute("type", newType);
 
     if (newType === "password") {
         this.textContent = "🙈";

@@ -186,6 +186,8 @@ async function updateSeenLastMessage(room) {
 async function onMessageReceived(payload) {
     let messageData = JSON.parse(payload.body);
 
+    uploading = uploading.filter(roomId => roomId !== roomViewing);
+
     if (roomViewing === messageData.roomId) {
         if (numberMessage > 0) {
             numberMessage -= 1;
@@ -195,10 +197,8 @@ async function onMessageReceived(payload) {
         if (isNearBottomChat()) enableScroll = true;
 
         await addMessageToUI(messageData);
-        if (numberMessage === 0) {
-            loader.classList.add("hide");
-            uploading = uploading.filter(roomId => roomId !== roomViewing);
-        }
+        if (numberMessage === 0) loader.classList.add("hide");
+            
         if (userLoginId === messageData.userId || enableScroll) scrollToBottom();
     }
 
@@ -336,7 +336,9 @@ messageInput.addEventListener("paste", function (event) {
         }
 
         if (checkSize(files[i])) {
-            previewImage(files[i]);
+            if (files[i].type.startsWith("image/")) previewImage(files[i]);
+            else preViewFile(files[i]);
+
             pendingFile.push(files[i]);
         }
         else {
@@ -410,7 +412,7 @@ async function loadRoom(room) {
     await loadMessages(roomViewing);
     scrollToBottom();
     
-    loader.classList.add("hide");
+    if (!uploading.includes(roomViewing)) loader.classList.add("hide");
 }
 
 listRoom.forEach(room => {

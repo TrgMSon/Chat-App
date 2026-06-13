@@ -99,14 +99,12 @@ button:hover {
     text-decoration: underline;
 }
 
-#password,
-#retype-password {
+#password {
     padding-right: 40px;
 }
 
 /* --- STYLE RIÊNG CHO NÚT ẨN/HIỆN MẬT KHẨU --- */
-.toggle-password,
-.toggle-retype-password {
+.toggle-password {
     position: absolute;
     right: 10px;
     bottom: 9px;
@@ -121,8 +119,7 @@ button:hover {
     cursor: pointer;
 }
 
-.toggle-password:hover,
-.toggle-retype-password:hover {
+.toggle-password:hover {
     background-color: transparent; /* Không đổi màu nền khi hover */
     transform: scale(1.15); /* Phóng to nhẹ icon */
     transition: transform 0.2s ease;
