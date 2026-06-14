@@ -31,16 +31,16 @@ public class MainController {
         this.roomService = roomService;
     }
     
-    @GetMapping(value = {"/login", "/"})
+    @GetMapping("/login")
     public String login() {
         return "login";
     }
 
-    @PostMapping(value = {"/login", "/"})
-    public String checkLogin(@ModelAttribute User user, RedirectAttributes ra, HttpSession session) {
+    @PostMapping("/login")
+    public String checkLogin(@ModelAttribute User user, Model model, HttpSession session) {
         String email = user.getEmail();
 
-        if (email.equals(""))
+        if (email.isEmpty())
             return "redirect:/login";
 
         if (userService.authUser(user)) {
@@ -54,20 +54,46 @@ public class MainController {
                     return "redirect:/home";
                 }
                 else {
-                    ra.addFlashAttribute("error", "Tài khoản của bạn đang bị khóa");
-                    return "redirect:/login";
+                    model.addAttribute("error", "Tài khoản của bạn đang bị khóa");
+                    return "login";
                 }
-            }
-            else if (role.equals("admin")) {
+            } else if (role.equals("admin")) {
                 session.setAttribute("userId", user.getUserId());
                 return "redirect:/manage";
             }
 
-            return "redirect:/login";
-        } else {
-            ra.addFlashAttribute("error", "Email hoặc mật khẩu không đúng, vui lòng thử lại.");
-            return "redirect:/login";
+            return "login";
         }
+
+        model.addAttribute("error", "Email hoặc mật khẩu không đúng, vui lòng thử lại.");
+        return "login";
+    }
+
+    @GetMapping("/signup")
+    public String signup() {
+        return "signup";
+    }
+
+    @PostMapping("/signup")
+    public String checkSignup(@ModelAttribute User user, Model model, RedirectAttributes ra) {
+        String email = user.getEmail().trim();
+        if (email.isEmpty())
+            return "redirect:/signup";
+
+        user.setBio(user.getBio().trim());
+        user.setEmail(email);
+        user.setPassword(user.getPassword().trim());
+        user.setUserName(user.getUserName().trim());
+        user.setRole("user");
+        user.setStatus("allowed");
+
+        if (!userService.saveUser(user)) {
+            model.addAttribute("error", "Email đã tồn tại, vui lòng đăng nhập hoặc sử dụng email khác.");
+            return "signup";
+        }
+
+        ra.addFlashAttribute("message", "Đăng ký tài khoản thành công, vui lòng đăng nhập");
+        return "redirect:/login";
     }
 
     @GetMapping("/manage")
@@ -93,37 +119,6 @@ public class MainController {
         model.addAttribute("userName", user.getUserName());
 
         return "management";
-    }
-
-    @GetMapping("/signup")
-    public String signup() {
-        return "signup";
-    }
-
-    @PostMapping("/signup")
-    public String checkSignup(@ModelAttribute User user, Model model, @RequestParam String action, RedirectAttributes ra) {
-        if (action.equals("register")) {
-            String email = user.getEmail().trim();
-
-            if (email.equals(""))
-                return "redirect:/signup";
-
-            user.setBio(user.getBio().trim());
-            user.setEmail(email);
-            user.setPassword(user.getPassword().trim());
-            user.setUserName(user.getUserName().trim());
-            user.setRole("user");
-            user.setStatus("allowed");
-
-            if (userService.saveUser(user)) {
-                ra.addFlashAttribute("message", "Đăng ký tài khoản thành công");
-                return "redirect:/login";
-            } else {
-                ra.addFlashAttribute("error", "Tài khoản đã tồn tại, vui lòng thử lại.");
-                return "redirect:/signup";
-            }
-        }
-        return "redirect:/login";
     }
 
     @GetMapping("/home")
