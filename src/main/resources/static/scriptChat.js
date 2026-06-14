@@ -31,6 +31,7 @@ let roomType = null;
 let roomViewing = "";
 let tmpDate = null;
 let numberMessage = 0;
+let searching = false;
 let pendingFile = [];
 let uploading = [];
 const userLoginName = userIcon.dataset.userName;
@@ -88,9 +89,11 @@ function onStatusReceived(payload) {
 }
 
 function addRoomToUI(roomData) {
-    loader.classList.remove("hide");
-    loader.style.left = "40px";
-    loader.style.top = "130px";
+    if (!searching) {
+        loader.classList.remove("hide");
+        loader.style.left = "40px";
+        loader.style.top = "130px";
+    }
 
     let roomList = document.getElementById("listRoom");
     let roomElement = document.createElement("li");
@@ -114,11 +117,9 @@ function addRoomToUI(roomData) {
     roomElement.appendChild(avatarDiv);
     roomElement.appendChild(roomNameElement);
 
-    roomList.prepend(roomElement);
+    if (searching) roomElement.style.display = "none";
 
-    loader.classList.add("hide");
-    loader.style.left = "";
-    loader.style.top = "100px";
+    roomList.prepend(roomElement);
 }
 
 async function onRoomReceived(payload) {
@@ -811,6 +812,7 @@ let roomIds = null;
 searchForm.addEventListener("submit", async function (event) {
     event.preventDefault();
 
+    searching = true;
     let roomName = searchInput.value.trim();
     if (roomName === "") return;
 
@@ -823,8 +825,9 @@ searchForm.addEventListener("submit", async function (event) {
     }
 
     listRoom.forEach(room => {
-        if (roomIds.includes(room.dataset.roomId) || room.dataset.roomId === roomViewing) {
+        if (roomIds.includes(room.dataset.roomId)) {
             room.style.display = "";
+            room.style.backgroundColor = "";
         }
         else {
             room.style.display = "none";
@@ -839,9 +842,10 @@ closeSearchBtn.addEventListener("click", function () {
 
     listRoom.forEach(room => {
         room.style.display = "";
+        if (room.dataset.roomId === roomViewing) room.style.backgroundColor = "#A9A9A9";
     });
 
+    searching = false;
     searchInput.value = "";
-
     closeSearchBtn.classList.add("hide");
 });
