@@ -31,7 +31,6 @@ let roomType = null;
 let roomViewing = "";
 let tmpDate = null;
 let numberMessage = 0;
-let searching = false;
 let pendingFile = [];
 let uploading = [];
 const userLoginName = userIcon.dataset.userName;
@@ -89,11 +88,9 @@ function onStatusReceived(payload) {
 }
 
 function addRoomToUI(roomData) {
-    if (!searching) {
-        loader.classList.remove("hide");
-        loader.style.left = "40px";
-        loader.style.top = "130px";
-    }
+    loader.classList.remove("hide");
+    loader.style.left = "40px";
+    loader.style.top = "130px";
 
     let roomList = document.getElementById("listRoom");
     let roomElement = document.createElement("li");
@@ -117,9 +114,11 @@ function addRoomToUI(roomData) {
     roomElement.appendChild(avatarDiv);
     roomElement.appendChild(roomNameElement);
 
-    if (searching) roomElement.style.display = "none";
-
     roomList.prepend(roomElement);
+
+    loader.classList.add("hide");
+    loader.style.left = "";
+    loader.style.top = "100px";
 }
 
 async function onRoomReceived(payload) {
@@ -812,7 +811,6 @@ let roomIds = null;
 searchForm.addEventListener("submit", async function (event) {
     event.preventDefault();
 
-    searching = true;
     let roomName = searchInput.value.trim();
     if (roomName === "") return;
 
@@ -825,9 +823,8 @@ searchForm.addEventListener("submit", async function (event) {
     }
 
     listRoom.forEach(room => {
-        if (roomIds.includes(room.dataset.roomId)) {
+        if (roomIds.includes(room.dataset.roomId) || room.dataset.roomId === roomViewing) {
             room.style.display = "";
-            room.style.backgroundColor = "";
         }
         else {
             room.style.display = "none";
@@ -842,10 +839,9 @@ closeSearchBtn.addEventListener("click", function () {
 
     listRoom.forEach(room => {
         room.style.display = "";
-        if (room.dataset.roomId === roomViewing) room.style.backgroundColor = "#A9A9A9";
     });
 
-    searching = false;
     searchInput.value = "";
+
     closeSearchBtn.classList.add("hide");
 });
