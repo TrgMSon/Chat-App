@@ -36,7 +36,7 @@ public class MainController {
     }
 
     @PostMapping(value = {"login", "/"})
-    public String checkLogin(@ModelAttribute User user, Model model, HttpSession session) {
+    public String checkLogin(@ModelAttribute User user, RedirectAttributes ra, HttpSession session) {
         String email = user.getEmail();
 
         if (email.isEmpty())
@@ -53,19 +53,21 @@ public class MainController {
                     return "redirect:/home";
                 }
                 else {
-                    model.addAttribute("error", "Tài khoản của bạn đang bị khóa");
-                    return "login";
+                    ra.addFlashAttribute("error", "Tài khoản của bạn đang bị khóa");
+                    ra.addFlashAttribute("lastEmail", email);
+                    return "redirect:/login";
                 }
             } else if (role.equals("admin")) {
                 session.setAttribute("userId", user.getUserId());
                 return "redirect:/manage";
             }
 
-            return "login";
+            return "redirect:/login";
         }
 
-        model.addAttribute("error", "Email hoặc mật khẩu không đúng, vui lòng thử lại.");
-        return "login";
+        ra.addFlashAttribute("error", "Email hoặc mật khẩu không đúng, vui lòng thử lại");
+        ra.addFlashAttribute("lastEmail", email);
+        return "redirect:/login";
     }
 
     @GetMapping("/signup")
@@ -74,7 +76,7 @@ public class MainController {
     }
 
     @PostMapping("/signup")
-    public String checkSignup(@ModelAttribute User user, Model model, RedirectAttributes ra) {
+    public String checkSignup(@ModelAttribute User user, RedirectAttributes ra) {
         String email = user.getEmail().trim();
         if (email.isEmpty())
             return "redirect:/signup";
@@ -87,8 +89,8 @@ public class MainController {
         user.setStatus("allowed");
 
         if (!userService.saveUser(user)) {
-            model.addAttribute("error", "Email đã tồn tại, vui lòng đăng nhập hoặc sử dụng email khác.");
-            return "signup";
+            ra.addFlashAttribute("error", "Email đã tồn tại, vui lòng đăng nhập hoặc sử dụng email khác");
+            return "redirect:/signup";
         }
 
         ra.addFlashAttribute("message", "Đăng ký tài khoản thành công, vui lòng đăng nhập");
