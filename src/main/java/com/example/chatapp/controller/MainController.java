@@ -31,12 +31,12 @@ public class MainController {
         this.roomService = roomService;
     }
     
-    @GetMapping("/login")
+    @GetMapping(value = {"login", "/"})
     public String login() {
         return "login";
     }
 
-    @PostMapping("/login")
+    @PostMapping(value = {"login", "/"})
     public String checkLogin(@ModelAttribute User user, Model model, HttpSession session) {
         String email = user.getEmail();
 
