@@ -130,7 +130,28 @@ async function addPreMessageToUI(message) {
         waitingImg.onload = function () {
             realImg.src = message.content;
         };
+
+        const downloadOpt = document.createElement("a");
+        downloadOpt.href = "#";
+        downloadOpt.innerText = "Tải về";
+        downloadOpt.style.margin = "5px 0px 5px 0px";
+        downloadOpt.addEventListener("click", async function (e) {
+            e.preventDefault();
+
+            const response = await fetch(message.content);
+            const blob = await response.blob();
+            const blobUrl = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+
+            a.href = blobUrl;
+            a.download = getPublicId(message.content);
+            a.click();
+
+            URL.revokeObjectURL(blobUrl);
+        });
+
         contentDiv.appendChild(realImg);
+        contentDiv.appendChild(downloadOpt);
     }
     else {
         const fileDiv = document.createElement("div");
